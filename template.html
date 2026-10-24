@@ -80,13 +80,16 @@
   .btn-aksi { flex: 1; padding: 8px; border: none; border-radius: 8px; font-size: 0.75em; font-weight: 700; cursor: pointer; color: white; }
   .btn-aksi:active { opacity: 0.8; }
   .btn-export { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
-  .btn-reset { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
-  .sync-status { font-size: 0.65em; text-align: center; margin-top: 4px; color: #059669; font-style: italic; min-height: 12px; }
+  .btn-setup { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+  .sync-status { font-size: 0.65em; text-align: center; margin-top: 4px; color: #888; font-style: italic; min-height: 12px; }
+  .sync-status.success { color: #059669; }
+  .sync-status.error { color: #dc2626; }
   .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
   .modal-overlay.active { display: flex; }
   .modal-box { background: white; border-radius: 15px; padding: 20px; max-width: 320px; width: 100%; text-align: center; }
   .modal-box h3 { margin-bottom: 10px; color: #333; font-size: 1.1em; }
   .modal-box p { color: #666; font-size: 0.9em; margin-bottom: 15px; white-space: pre-line; }
+  .modal-box input { width: 100%; padding: 8px; border: 2px solid #667eea; border-radius: 8px; font-size: 0.85em; margin-bottom: 10px; }
   .modal-buttons { display: flex; gap: 10px; }
   .modal-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.9em; }
   .modal-btn.ya { background: #10b981; color: white; }
@@ -113,11 +116,11 @@
     <span class="kontanan-sub">Tap untuk mencatat hari libur kerja</span>
   </button>
   <div class="scroll-area">
-    <div class="section-title">📅 7 Hari ke Depan</div>
+    <div class="section-title"> 7 Hari ke Depan</div>
     <div id="day-list" class="card-box"></div>
-    <div class="section-title">🗓️ 4 Minggu ke Depan</div>
+    <div class="section-title">️ 4 Minggu ke Depan</div>
     <div id="week-list" class="card-box"></div>
-    <div class="section-title">💰 Kalkulator Hak Pekerja</div>
+    <div class="section-title"> Kalkulator Upah Pekerja</div>
     <div class="card-box calc-card">
       <div class="rate-info"><strong>📋 Rate:</strong> HK Rp170rb | Sejam Rp21.250 | Lembur Gov: 1-2jam=Rp31.875, 3+=Rp42.500 | Lembur PT: Rp7.000/jam</div>
       <div class="calc-row"><span>Bulan:</span> <strong id="stat-bulan">...</strong></div>
@@ -127,7 +130,7 @@
       <div class="calc-row" style="margin-bottom: 4px;"><span style="font-weight: 600; font-size: 0.75em;">📌 Tanggal Kontanan Bulan Ini:</span></div>
       <div id="catatan-list" class="catatan-list"></div>
       <div class="calc-divider"></div>
-      <div class="calc-input-group"><label>⏱️ Jam Lembur (Manual):</label><input type="number" id="input-lembur" value="0" min="0"></div>
+      <div class="calc-input-group"><label>️ Jam Lembur (Manual):</label><input type="number" id="input-lembur" value="0" min="0"></div>
       <div class="compare-container">
         <div class="compare-box diberikan"><div class="label">DIBERIKAN</div><div class="value" id="kontanan-diberikan">Rp 0</div></div>
         <div class="compare-box seharusnya"><div class="label">SEHARUSNYA</div><div class="value" id="kontanan-seharusnya">Rp 0</div></div>
@@ -138,20 +141,20 @@
         <div class="compare-box diberikan"><div class="label">LEMBUR DIBERIKAN</div><div class="value" id="lembur-diberikan">Rp 0</div></div>
         <div class="compare-box seharusnya"><div class="label">LEMBUR SEHARUSNYA</div><div class="value" id="lembur-seharusnya">Rp 0</div></div>
       </div>
-      <div class="selisih-box"><span> Selisih Lembur:</span><strong id="selisih-lembur">Rp 0</strong></div>
-      <div class="total-box"><span>💸 TOTAL HAK HILANG:</span><strong id="total-selisih">Rp 0</strong></div>
+      <div class="selisih-box"><span>📉 Selisih Lembur:</span><strong id="selisih-lembur">Rp 0</strong></div>
+      <div class="total-box"><span>💸 TOTAL UPAH HILANG:</span><strong id="total-selisih">Rp 0</strong></div>
       <div class="action-buttons">
         <button class="btn-aksi btn-export" onclick="exportExcel()">📊 Export Excel</button>
-        <button class="btn-aksi btn-reset" onclick="resetBulan()">🗑️ Reset</button>
+        <button class="btn-aksi btn-setup" onclick="setupToken()">🔑 Setup Token</button>
       </div>
       <div id="sync-status" class="sync-status"></div>
-      <div class="info-hk">*Data tersimpan di browser & auto-reset via Python</div>
+      <div class="info-hk">*Data tersimpan di GitHub (data.json)</div>
     </div>
   </div>
 </div>
 <div id="modal-kontanan" class="modal-overlay">
   <div class="modal-box">
-    <h3>🏖️ Konfirmasi Kontanan</h3>
+    <h3>️ Konfirmasi Kontanan</h3>
     <p id="modal-tanggal">Apakah Anda bekerja hari ini?</p>
     <div class="modal-buttons">
       <button class="modal-btn tidak" onclick="tutupModal()">Tidak</button>
@@ -159,88 +162,129 @@
     </div>
   </div>
 </div>
+<div id="modal-token" class="modal-overlay">
+  <div class="modal-box">
+    <h3>🔑 Setup GitHub Token</h3>
+    <p>Masukkan Personal Access Token untuk menyimpan data ke GitHub.</p>
+    <input type="password" id="input-token" placeholder="ghp_xxxxxxxxxxxx">
+    <div class="modal-buttons">
+      <button class="modal-btn tidak" onclick="tutupModalToken()">Batal</button>
+      <button class="modal-btn ya" onclick="simpanToken()">Simpan</button>
+    </div>
+  </div>
+</div>
 <script>
   const SHIFT_DATA = __SHIFT_DATA_PLACEHOLDER__;
-  const STORAGE_KEY = 'shiftminder_data';
+  const TOKEN_KEY = 'shiftminder_gh_token';
+  const REPO_OWNER = 'coalhunter';
+  const REPO_NAME = 'shiftminder';
+  const DATA_FILE_PATH = 'data.json';
 
-  // ===== HYBRID STORAGE LOGIC =====
-  function getBulanKey() { return SHIFT_DATA.monthly_stats.month_key; }
-  
-  function getSavedData() {
-    try {
-      const all = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-      const key = getBulanKey();
-      
-      // Jika bulan di localStorage beda dengan Python, RESET otomatis!
-      if (!all[key] || all[key].month_key !== key) {
-        all[key] = { month_key: key, kontanan_days: [], lembur_jam: 0 };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-        showStatus('📅 Bulan baru! Data direset otomatis.');
-      }
-      return all[key];
-    } catch { return { month_key: getBulanKey(), kontanan_days: [], lembur_jam: 0 }; }
+  function getToken() { return localStorage.getItem(TOKEN_KEY); }
+  function setupToken() {
+    document.getElementById('input-token').value = getToken() || '';
+    document.getElementById('modal-token').classList.add('active');
+  }
+  function tutupModalToken() { document.getElementById('modal-token').classList.remove('active'); }
+  function simpanToken() {
+    const token = document.getElementById('input-token').value.trim();
+    if (token) {
+      localStorage.setItem(TOKEN_KEY, token);
+      showStatus('✅ Token tersimpan!', 'success');
+    }
+    tutupModalToken();
   }
 
-  function saveSavedData(data) {
-    const all = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-    all[getBulanKey()] = data;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  async function getDataFromRepo() {
+    const token = getToken();
+    if (!token) { showStatus('⚠️ Klik "Setup Token" dulu!', 'error'); return null; }
+    try {
+      const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE_PATH}`, {
+        headers: { 'Accept': 'application/vnd.github.v3+json', 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error('File tidak ditemukan');
+      const data = await res.json();
+      return { content: JSON.parse(atob(data.content)), sha: data.sha };
+    } catch (e) { console.error('Gagal baca data.json:', e); return null; }
+  }
+
+  async function updateDataInRepo(newData, sha) {
+    const token = getToken();
+    if (!token) { showStatus('⚠️ Token belum disetup!', 'error'); return false; }
+    const content = btoa(JSON.stringify(newData, null, 2));
+    const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE_PATH}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `Update data - ${new Date().toISOString()}`, content, sha })
+    });
+    if (!res.ok) { const err = await res.json(); throw new Error(err.message || 'Gagal update'); }
+    return true;
+  }
+
+  function showStatus(msg, type) {
+    const el = document.getElementById('sync-status');
+    el.textContent = msg;
+    el.className = 'sync-status ' + (type || '');
+    setTimeout(() => { el.textContent = ''; el.className = 'sync-status'; }, 4000);
   }
 
   function tanyaKontanan() {
+    if (!getToken()) { showStatus('️ Klik "Setup Token" dulu!', 'error'); setupToken(); return; }
     const today = new Date();
     const hariIndo = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
     const bulanIndo = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    const tglStr = `${hariIndo[today.getDay()]}, ${today.getDate()} ${bulanIndo[today.getMonth()]} ${today.getFullYear()}`;
-    document.getElementById('modal-tanggal').textContent = `Apakah Anda bekerja hari ini?\n(${tglStr})`;
+    document.getElementById('modal-tanggal').textContent = `Apakah Anda bekerja hari ini?\n(${hariIndo[today.getDay()]}, ${today.getDate()} ${bulanIndo[today.getMonth()]} ${today.getFullYear()})`;
     document.getElementById('modal-kontanan').classList.add('active');
   }
   function tutupModal() { document.getElementById('modal-kontanan').classList.remove('active'); }
   
-  function catatKontanan() {
+  async function catatKontanan() {
     const today = new Date();
     const tanggalHariIni = today.getDate();
-    const saved = getSavedData();
-    if (!saved.kontanan_days.includes(tanggalHariIni)) {
-      saved.kontanan_days.push(tanggalHariIni);
-      saved.kontanan_days.sort((a,b) => a-b);
-      saveSavedData(saved);
+    showStatus(' Menyimpan ke GitHub...', '');
+    const repoData = await getDataFromRepo();
+    if (!repoData) { showStatus('❌ Gagal baca data', 'error'); tutupModal(); return; }
+    const data = repoData.content;
+    if (!data.kontanan_days.includes(tanggalHariIni)) {
+      data.kontanan_days.push(tanggalHariIni);
+      data.kontanan_days.sort((a,b) => a-b);
     }
+    try {
+      await updateDataInRepo(data, repoData.sha);
+      showStatus('✅ Berhasil dicatat!', 'success');
+      setTimeout(() => { forceRefresh(); }, 1200);
+    } catch (e) { showStatus('❌ Gagal: ' + e.message, 'error'); }
     tutupModal();
-    showStatus('✅ Berhasil dicatat di browser!');
-    render();
   }
 
-  function hapusCatatanTanggal(tanggal) {
+  async function hapusCatatanTanggal(tanggal) {
     if (!confirm(`Hapus catatan tanggal ${tanggal}?`)) return;
-    const saved = getSavedData();
-    saved.kontanan_days = saved.kontanan_days.filter(d => d !== tanggal);
-    saveSavedData(saved);
-    showStatus('🗑️ Dihapus!');
-    render();
+    showStatus('⏳ Menghapus...', '');
+    const repoData = await getDataFromRepo();
+    if (!repoData) return;
+    const data = repoData.content;
+    data.kontanan_days = data.kontanan_days.filter(d => d !== tanggal);
+    try {
+      await updateDataInRepo(data, repoData.sha);
+      showStatus('✅ Dihapus!', 'success');
+      setTimeout(() => { forceRefresh(); }, 1200);
+    } catch (e) { showStatus(' Gagal: ' + e.message, 'error'); }
   }
 
-  function resetBulan() {
-    if (confirm('Yakin hapus semua catatan bulan ini?')) {
-      const saved = getSavedData();
-      saved.kontanan_days = [];
-      saved.lembur_jam = 0;
-      saveSavedData(saved);
-      showStatus('🗑️ Data bulan ini direset!');
-      render();
+  async function simpanLembur(jam) {
+    const repoData = await getDataFromRepo();
+    if (!repoData) return;
+    const data = repoData.content;
+    if (data.lembur_jam !== jam) {
+      data.lembur_jam = jam;
+      try { await updateDataInRepo(data, repoData.sha); } catch (e) { console.error('Gagal simpan lembur:', e); }
     }
-  }
-
-  function showStatus(msg) {
-    const el = document.getElementById('sync-status');
-    el.textContent = msg;
-    setTimeout(() => { el.textContent = ''; }, 3000);
   }
 
   function exportExcel() {
     const data = SHIFT_DATA;
     const stats = data.monthly_stats;
-    const saved = getSavedData();
+    const saved = data.saved_data || { kontanan_days: [], lembur_jam: 0 };
     const hariKontanan = saved.kontanan_days.length;
     const jamLembur = saved.lembur_jam || 0;
     const kontananDiberikan = hariKontanan * stats.rate_hk;
@@ -256,7 +300,7 @@
     const [tahun, bulan] = stats.month_key.split('-');
     const namaBulan = stats.month_name.split(' ')[0];
     const tglList = saved.kontanan_days.map(d => `${d} ${namaBulan} ${tahun}`).join(', ') || '-';
-    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Rekap HK ${namaBulan}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="3" style="background:#667eea;color:white;font-size:14pt;font-weight:bold;text-align:center;">REKAP HARIAN KONTAN & LEMBUR - ${namaBulan.toUpperCase()} ${tahun}</td></tr><tr><td colspan="3" style="background:#f0f0f0;font-weight:bold;">Informasi Umum</td></tr><tr><td>Bulan</td><td colspan="2">${namaBulan} ${tahun}</td></tr><tr><td>Total Hari Minggu</td><td colspan="2">${stats.total_minggu} hari</td></tr><tr><td>Rate HK Normal</td><td colspan="2">Rp ${fmt(stats.rate_hk)}</td></tr><tr><td>Rate Kontanan (HK x 2)</td><td colspan="2">Rp ${fmt(stats.rate_kontanan)}</td></tr><tr><td>Rate Lembur Pemerintah (Jam 1-2)</td><td colspan="2">Rp ${fmt(stats.rate_lembur_jam1)}/jam</td></tr><tr><td>Rate Lembur Pemerintah (Jam 3+)</td><td colspan="2">Rp ${fmt(stats.rate_lembur_jam2)}/jam</td></tr><tr><td>Rate Lembur Perusahaan</td><td colspan="2">Rp ${fmt(stats.rate_lembur_perusahaan)}/jam</td></tr><tr><td colspan="3" style="background:#f0f0f0;font-weight:bold;">Perhitungan Kontanan</td></tr><tr><td>Tanggal Kontanan</td><td colspan="2">${tglList}</td></tr><tr><td>Jumlah Hari Kontanan</td><td colspan="2">${hariKontanan} hari</td></tr><tr><td>Diberikan (HK x 1)</td><td colspan="2">Rp ${fmt(kontananDiberikan)}</td></tr><tr><td>Seharusnya (HK x 2)</td><td colspan="2">Rp ${fmt(kontananSeharusnya)}</td></tr><tr><td style="background:#fee2e2;font-weight:bold;">Selisih Kontanan</td><td colspan="2" style="background:#fee2e2;font-weight:bold;">Rp ${fmt(selisihKontanan)}</td></tr><tr><td colspan="3" style="background:#f0f0f0;font-weight:bold;">Perhitungan Lembur</td></tr><tr><td>Total Jam Lembur</td><td colspan="2">${jamLembur} jam</td></tr><tr><td>Diberikan</td><td colspan="2">Rp ${fmt(lemburDiberikan)}</td></tr><tr><td>Seharusnya (Pemerintah)</td><td colspan="2">Rp ${fmt(lemburSeharusnya)}</td></tr><tr><td style="background:#fee2e2;font-weight:bold;">Selisih Lembur</td><td colspan="2" style="background:#fee2e2;font-weight:bold;">Rp ${fmt(selisihLembur)}</td></tr><tr><td colspan="3" style="background:#7c3aed;color:white;font-weight:bold;font-size:12pt;">TOTAL HAK YANG HILANG: Rp ${fmt(totalSelisih)}</td></tr><tr><td colspan="3" style="font-size:8pt;color:#888;">Dibuat oleh ShiftMinder - ${new Date().toLocaleString('id-ID')}</td></tr></table></body></html>`;
+    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Rekap HK ${namaBulan}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="3" style="background:#667eea;color:white;font-size:14pt;font-weight:bold;text-align:center;">REKAP HARIAN KONTAN & LEMBUR - ${namaBulan.toUpperCase()} ${tahun}</td></tr><tr><td colspan="3" style="background:#f0f0f0;font-weight:bold;">Informasi Umum</td></tr><tr><td>Bulan</td><td colspan="2">${namaBulan} ${tahun}</td></tr><tr><td>Total Hari Minggu</td><td colspan="2">${stats.total_minggu} hari</td></tr><tr><td>Rate HK Normal</td><td colspan="2">Rp ${fmt(stats.rate_hk)}</td></tr><tr><td>Rate Kontanan (HK x 2)</td><td colspan="2">Rp ${fmt(stats.rate_kontanan)}</td></tr><tr><td>Rate Lembur Pemerintah (Jam 1-2)</td><td colspan="2">Rp ${fmt(stats.rate_lembur_jam1)}/jam</td></tr><tr><td>Rate Lembur Pemerintah (Jam 3+)</td><td colspan="2">Rp ${fmt(stats.rate_lembur_jam2)}/jam</td></tr><tr><td>Rate Lembur Perusahaan</td><td colspan="2">Rp ${fmt(stats.rate_lembur_perusahaan)}/jam</td></tr><tr><td colspan="3" style="background:#f0f0f0;font-weight:bold;">Perhitungan Kontanan</td></tr><tr><td>Tanggal Kontanan</td><td colspan="2">${tglList}</td></tr><tr><td>Jumlah Hari Kontanan</td><td colspan="2">${hariKontanan} hari</td></tr><tr><td>Diberikan (HK x 1)</td><td colspan="2">Rp ${fmt(kontananDiberikan)}</td></tr><tr><td>Seharusnya (HK x 2)</td><td colspan="2">Rp ${fmt(kontananSeharusnya)}</td></tr><tr><td style="background:#fee2e2;font-weight:bold;">Selisih Kontanan</td><td colspan="2" style="background:#fee2e2;font-weight:bold;">Rp ${fmt(selisihKontanan)}</td></tr><tr><td colspan="3" style="background:#f0f0f0;font-weight:bold;">Perhitungan Lembur</td></tr><tr><td>Total Jam Lembur</td><td colspan="2">${jamLembur} jam</td></tr><tr><td>Diberikan</td><td colspan="2">Rp ${fmt(lemburDiberikan)}</td></tr><tr><td>Seharusnya (Pemerintah)</td><td colspan="2">Rp ${fmt(lemburSeharusnya)}</td></tr><tr><td style="background:#fee2e2;font-weight:bold;">Selisih Lembur</td><td colspan="2" style="background:#fee2e2;font-weight:bold;">Rp ${fmt(selisihLembur)}</td></tr><tr><td colspan="3" style="background:#7c3aed;color:white;font-weight:bold;font-size:12pt;">TOTAL UPAH YANG HILANG: Rp ${fmt(totalSelisih)}</td></tr><tr><td colspan="3" style="font-size:8pt;color:#888;">Dibuat oleh ShiftMinder - ${new Date().toLocaleString('id-ID')}</td></tr></table></body></html>`;
     const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -282,7 +326,7 @@
 
     const today = new Date();
     const btnKontanan = document.getElementById('btn-kontanan');
-    const saved = getSavedData();
+    const saved = data.saved_data || { kontanan_days: [], lembur_jam: 0 };
     
     if (today.getDay() === 0) {
       btnKontanan.style.display = 'block';
@@ -312,7 +356,7 @@
 
     document.getElementById('stat-bulan').textContent = stats.month_name;
     document.getElementById('stat-minggu').textContent = stats.total_minggu + ' hari';
-    document.getElementById('stat-kontanan').textContent = hariKontanan + ' hari';
+    document.getElementById('stat-kontanan').textContent = hariKontanan + ' hari (GitHub)';
 
     const listContainer = document.getElementById('catatan-list');
     if (saved.kontanan_days.length === 0) {
@@ -349,11 +393,7 @@
     inputLembur.addEventListener('input', () => {
       hitungLembur();
       clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        const s = getSavedData();
-        s.lembur_jam = parseInt(inputLembur.value) || 0;
-        saveSavedData(s);
-      }, 500);
+      timeout = setTimeout(() => simpanLembur(parseInt(inputLembur.value) || 0), 1000);
     });
     hitungLembur();
   }
