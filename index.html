@@ -9,43 +9,32 @@
 <meta http-equiv="Expires" content="0">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body {
-    height: 100%; overflow: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #333; -webkit-tap-highlight-color: transparent;
-  }
+  html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #333; -webkit-tap-highlight-color: transparent; }
   body { display: flex; flex-direction: column; padding: 10px; }
   .container { flex: 1; display: flex; flex-direction: column; max-width: 600px; margin: 0 auto; width: 100%; overflow: hidden; }
   .header { text-align: center; margin-bottom: 6px; flex-shrink: 0; }
   .header h1 { color: white; font-size: 1.3em; margin-bottom: 2px; }
   .header .subtitle { color: rgba(255,255,255,0.85); font-size: 0.7em; }
-  
   .btn-refresh { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 3px 10px; border-radius: 12px; font-size: 0.65em; cursor: pointer; margin: 0 auto 6px; display: block; }
   .btn-refresh:active { background: rgba(255,255,255,0.4); }
-
   .today-card { background: white; border-radius: 12px; padding: 12px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 6px; position: relative; flex-shrink: 0; }
   .today-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; border-radius: 12px 12px 0 0; }
   .today-card.pagi::before { background: linear-gradient(90deg, #f6d365, #fda085); }
   .today-card.siang::before { background: linear-gradient(90deg, #4facfe, #00f2fe); }
   .today-card.libur::before { background: linear-gradient(90deg, #fa709a, #fee140); }
-  
   .today-emoji { font-size: 1.8em; margin-bottom: 2px; }
   .today-date { color: #888; font-size: 0.75em; }
   .today-status { font-size: 1.3em; font-weight: 800; margin: 2px 0; }
   .today-time { font-size: 0.85em; color: #555; }
   .updated { color: #aaa; font-size: 0.6em; margin-top: 4px; }
-
   .kontanan-action { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 10px; border-radius: 10px; font-size: 0.85em; font-weight: 700; cursor: pointer; margin-bottom: 6px; box-shadow: 0 3px 8px rgba(217, 119, 6, 0.3); flex-shrink: 0; display: none; }
   .kontanan-action:active { transform: scale(0.98); }
   .kontanan-action.sudah-catat { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
   .kontanan-sub { font-size: 0.7em; font-weight: 400; opacity: 0.9; display: block; margin-top: 2px; }
-
   .section-title { color: white; font-size: 0.8em; margin: 4px 0; font-weight: 600; flex-shrink: 0; }
   .scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; min-height: 0; }
   .scroll-area::-webkit-scrollbar { width: 3px; }
   .scroll-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
-
   .card-box { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.1); margin-bottom: 6px; }
   .day-item, .week-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; border-bottom: 1px solid #f0f0f0; }
   .day-item:last-child, .week-item:last-child { border-bottom: none; }
@@ -58,7 +47,6 @@
   .status-siang { background: #e0f4ff; color: #2980b9; }
   .status-libur { background: #ffe0ec; color: #c0392b; }
   .week-range { font-weight: 500; color: #555; font-size: 0.75em; }
-
   .calc-card { padding: 8px; }
   .calc-row { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 0.7em; color: #555; }
   .calc-row strong { color: #333; }
@@ -67,7 +55,6 @@
   .calc-input-group label { font-weight: 600; color: #333; font-size: 0.75em; }
   .calc-input-group input { width: 60px; padding: 4px 8px; border: 2px solid #667eea; border-radius: 6px; font-size: 0.9em; font-weight: bold; text-align: center; outline: none; }
   .info-hk { font-size: 0.6em; color: #888; text-align: center; font-style: italic; }
-  
   .compare-container { display: flex; gap: 6px; margin-bottom: 6px; }
   .compare-box { flex: 1; padding: 6px 4px; border-radius: 8px; text-align: center; }
   .compare-box.diberikan { background: #f1f5f9; border: 1px solid #cbd5e1; }
@@ -77,37 +64,29 @@
   .compare-box.seharusnya .label { color: #059669; }
   .compare-box .value { font-size: 0.85em; font-weight: 800; color: #334155; }
   .compare-box.seharusnya .value { color: #059669; }
-
   .selisih-box { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 8px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
   .selisih-box span { font-size: 0.7em; opacity: 0.9; }
   .selisih-box strong { font-size: 0.95em; font-weight: 800; }
-
   .total-box { background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); color: white; padding: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
   .total-box span { font-size: 0.75em; font-weight: 600; }
   .total-box strong { font-size: 1em; font-weight: 800; }
-
   .rate-info { background: #fef3c7; border: 1px solid #fbbf24; border-radius: 6px; padding: 6px; margin-bottom: 6px; font-size: 0.65em; color: #92400e; line-height: 1.3; }
   .rate-info strong { color: #78350f; }
-
   .catatan-list { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0; }
   .catatan-tag { background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 10px; font-size: 0.7em; font-weight: 600; display: flex; align-items: center; gap: 4px; }
   .catatan-tag .hapus { cursor: pointer; color: #dc2626; font-weight: 800; margin-left: 2px; }
   .no-catatan { font-size: 0.7em; color: #888; font-style: italic; text-align: center; padding: 4px; }
-
   .action-buttons { display: flex; gap: 6px; margin-top: 6px; }
   .btn-aksi { flex: 1; padding: 8px; border: none; border-radius: 8px; font-size: 0.75em; font-weight: 700; cursor: pointer; color: white; }
   .btn-aksi:active { opacity: 0.8; }
   .btn-export { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
-
-  .sync-status { font-size: 0.65em; text-align: center; margin-top: 4px; color: #888; font-style: italic; min-height: 12px; }
-  .sync-status.success { color: #059669; }
-  .sync-status.error { color: #dc2626; }
-
+  .btn-reset { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
+  .sync-status { font-size: 0.65em; text-align: center; margin-top: 4px; color: #059669; font-style: italic; min-height: 12px; }
   .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
   .modal-overlay.active { display: flex; }
   .modal-box { background: white; border-radius: 15px; padding: 20px; max-width: 320px; width: 100%; text-align: center; }
   .modal-box h3 { margin-bottom: 10px; color: #333; font-size: 1.1em; }
-  .modal-box p { color: #666; font-size: 0.9em; margin-bottom: 15px; }
+  .modal-box p { color: #666; font-size: 0.9em; margin-bottom: 15px; white-space: pre-line; }
   .modal-buttons { display: flex; gap: 10px; }
   .modal-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.9em; }
   .modal-btn.ya { background: #10b981; color: white; }
@@ -121,9 +100,7 @@
     <h1>⏰ Jadwal Shift Kerja</h1>
     <p class="subtitle">Pagi (07-14) · Siang (14-21) · Minggu Libur</p>
   </div>
-
   <button onclick="forceRefresh()" class="btn-refresh">🔄 Paksa Refresh</button>
-
   <div id="today-card" class="today-card">
     <div class="today-emoji" id="today-emoji">...</div>
     <div class="today-date" id="today-date">Memuat...</div>
@@ -131,68 +108,50 @@
     <div class="today-time" id="today-time">...</div>
     <div class="updated" id="updated">...</div>
   </div>
-
   <button id="btn-kontanan" class="kontanan-action" onclick="tanyaKontanan()">
     🏖️ Ada Kontanan Hari Ini?
     <span class="kontanan-sub">Tap untuk mencatat hari libur kerja</span>
   </button>
-
   <div class="scroll-area">
     <div class="section-title">📅 7 Hari ke Depan</div>
     <div id="day-list" class="card-box"></div>
-
     <div class="section-title">🗓️ 4 Minggu ke Depan</div>
     <div id="week-list" class="card-box"></div>
-
     <div class="section-title">💰 Kalkulator Hak Pekerja</div>
     <div class="card-box calc-card">
-      
-      <div class="rate-info">
-        <strong>📋 Rate:</strong> HK Rp170rb | Sejam Rp21.250 | Lembur Gov: 1-2jam=Rp31.875, 3+=Rp42.500 | Lembur PT: Rp7.000/jam
-      </div>
-
+      <div class="rate-info"><strong>📋 Rate:</strong> HK Rp170rb | Sejam Rp21.250 | Lembur Gov: 1-2jam=Rp31.875, 3+=Rp42.500 | Lembur PT: Rp7.000/jam</div>
       <div class="calc-row"><span>Bulan:</span> <strong id="stat-bulan">...</strong></div>
       <div class="calc-row"><span>Hari Minggu:</span> <strong id="stat-minggu">...</strong></div>
       <div class="calc-row"><span>📝 Kontanan Tercatat:</span> <strong id="stat-kontanan">0 hari</strong></div>
       <div class="calc-divider"></div>
-
       <div class="calc-row" style="margin-bottom: 4px;"><span style="font-weight: 600; font-size: 0.75em;">📌 Tanggal Kontanan Bulan Ini:</span></div>
       <div id="catatan-list" class="catatan-list"></div>
-      
       <div class="calc-divider"></div>
-      
       <div class="calc-input-group"><label>⏱️ Jam Lembur (Manual):</label><input type="number" id="input-lembur" value="0" min="0"></div>
-
       <div class="compare-container">
         <div class="compare-box diberikan"><div class="label">DIBERIKAN</div><div class="value" id="kontanan-diberikan">Rp 0</div></div>
         <div class="compare-box seharusnya"><div class="label">SEHARUSNYA</div><div class="value" id="kontanan-seharusnya">Rp 0</div></div>
       </div>
-      <div class="selisih-box"><span> Selisih Kontanan:</span><strong id="selisih-kontanan">Rp 0</strong></div>
-
+      <div class="selisih-box"><span>📉 Selisih Kontanan:</span><strong id="selisih-kontanan">Rp 0</strong></div>
       <div class="calc-divider"></div>
-
       <div class="compare-container">
         <div class="compare-box diberikan"><div class="label">LEMBUR DIBERIKAN</div><div class="value" id="lembur-diberikan">Rp 0</div></div>
         <div class="compare-box seharusnya"><div class="label">LEMBUR SEHARUSNYA</div><div class="value" id="lembur-seharusnya">Rp 0</div></div>
       </div>
-      <div class="selisih-box"><span>📉 Selisih Lembur:</span><strong id="selisih-lembur">Rp 0</strong></div>
-
+      <div class="selisih-box"><span> Selisih Lembur:</span><strong id="selisih-lembur">Rp 0</strong></div>
       <div class="total-box"><span>💸 TOTAL HAK HILANG:</span><strong id="total-selisih">Rp 0</strong></div>
-
       <div class="action-buttons">
         <button class="btn-aksi btn-export" onclick="exportExcel()">📊 Export Excel</button>
+        <button class="btn-aksi btn-reset" onclick="resetBulan()">🗑️ Reset</button>
       </div>
       <div id="sync-status" class="sync-status"></div>
-
-      <div class="info-hk">*Data tersimpan otomatis di GitHub (data.json)</div>
+      <div class="info-hk">*Data tersimpan di browser & auto-reset via Python</div>
     </div>
   </div>
 </div>
-
-<!-- Modal Konfirmasi Kontanan -->
 <div id="modal-kontanan" class="modal-overlay">
   <div class="modal-box">
-    <h3>️ Konfirmasi Kontanan</h3>
+    <h3>🏖️ Konfirmasi Kontanan</h3>
     <p id="modal-tanggal">Apakah Anda bekerja hari ini?</p>
     <div class="modal-buttons">
       <button class="modal-btn tidak" onclick="tutupModal()">Tidak</button>
@@ -200,63 +159,32 @@
     </div>
   </div>
 </div>
-
 <script>
-  const SHIFT_DATA = {"last_updated": "25-10-2026 04:08:42", "today": {"day_name": "Minggu", "full_date": "Minggu, 25 Oktober 2026", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, "next_7_days": [{"day_name": "Senin", "short_date": "26 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Selasa", "short_date": "27 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Rabu", "short_date": "28 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Kamis", "short_date": "29 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Jumat", "short_date": "30 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Sabtu", "short_date": "31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Minggu", "short_date": "1 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}], "next_4_weeks": [{"week_label": "26 Okt - 31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"week_label": "2 Nov - 7 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "9 Nov - 14 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"week_label": "16 Nov - 21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "monthly_stats": {"month_name": "Oktober 2026", "month_key": "2026-10", "total_minggu": 4, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}, "saved_data": {"month_key": "2026-10", "kontanan_days": [], "lembur_jam": 0}};
-  
-  const REPO_OWNER = 'coalhunter';
-  const REPO_NAME = 'shiftminder';
-  const DATA_FILE_PATH = 'data.json';
-  
-  const _tk = ['Z2hwX1F6ZXl0aU9KQXZQcUlGcVpiTHZhNU5IaVdYNU5aUzRMUkE2VA=='];
-  const GITHUB_TOKEN = atob(_tk[0]);
+  const SHIFT_DATA = {"last_updated": "25-10-2026 04:28:41", "today": {"day_name": "Minggu", "full_date": "Minggu, 25 Oktober 2026", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, "next_7_days": [{"day_name": "Senin", "short_date": "26 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Selasa", "short_date": "27 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Rabu", "short_date": "28 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Kamis", "short_date": "29 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Jumat", "short_date": "30 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Sabtu", "short_date": "31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Minggu", "short_date": "1 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}], "next_4_weeks": [{"week_label": "26 Okt - 31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "2 Nov - 7 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "9 Nov - 14 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "16 Nov - 21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "monthly_stats": {"month_name": "Oktober 2026", "month_key": "2026-10", "total_minggu": 4, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}};
+  const STORAGE_KEY = 'shiftminder_data';
 
-  async function getDataFromRepo() {
+  // ===== HYBRID STORAGE LOGIC =====
+  function getBulanKey() { return SHIFT_DATA.monthly_stats.month_key; }
+  
+  function getSavedData() {
     try {
-      const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE_PATH}`, {
-        headers: { 
-          'Accept': 'application/vnd.github.v3+json',
-          'Authorization': `Bearer ${GITHUB_TOKEN}`
-        }
-      });
-      if (!res.ok) throw new Error('File tidak ditemukan');
-      const data = await res.json();
-      const content = atob(data.content);
-      return { content: JSON.parse(content), sha: data.sha };
-    } catch (e) {
-      console.error('Gagal baca data.json:', e);
-      return null;
-    }
+      const all = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      const key = getBulanKey();
+      
+      // Jika bulan di localStorage beda dengan Python, RESET otomatis!
+      if (!all[key] || all[key].month_key !== key) {
+        all[key] = { month_key: key, kontanan_days: [], lembur_jam: 0 };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+        showStatus('📅 Bulan baru! Data direset otomatis.');
+      }
+      return all[key];
+    } catch { return { month_key: getBulanKey(), kontanan_days: [], lembur_jam: 0 }; }
   }
 
-  async function updateDataInRepo(newData, sha) {
-    const content = btoa(JSON.stringify(newData, null, 2));
-    const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE_PATH}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${GITHUB_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message: `Update data kontanan - ${new Date().toISOString()}`,
-        content: content,
-        sha: sha
-      })
-    });
-    
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.message || 'Gagal update');
-    }
-    return true;
-  }
-
-  function showSyncStatus(msg, type) {
-    const el = document.getElementById('sync-status');
-    el.textContent = msg;
-    el.className = 'sync-status ' + (type || '');
-    setTimeout(() => { el.textContent = ''; }, 4000);
+  function saveSavedData(data) {
+    const all = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    all[getBulanKey()] = data;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
   }
 
   function tanyaKontanan() {
@@ -269,142 +197,80 @@
   }
   function tutupModal() { document.getElementById('modal-kontanan').classList.remove('active'); }
   
-  async function catatKontanan() {
+  function catatKontanan() {
     const today = new Date();
     const tanggalHariIni = today.getDate();
-    
-    showSyncStatus('⏳ Menyimpan ke GitHub...', '');
-    const repoData = await getDataFromRepo();
-    
-    if (!repoData) {
-      showSyncStatus('❌ Gagal baca data dari repo', 'error');
-      tutupModal();
-      return;
-    }
-    
-    const data = repoData.content;
-    if (!data.kontanan_days.includes(tanggalHariIni)) {
-      data.kontanan_days.push(tanggalHariIni);
-      data.kontanan_days.sort((a,b) => a-b);
-    }
-    
-    try {
-      await updateDataInRepo(data, repoData.sha);
-      showSyncStatus('✅ Berhasil dicatat di GitHub!', 'success');
-      setTimeout(() => { forceRefresh(); }, 1200);
-    } catch (e) {
-      showSyncStatus('❌ Gagal: ' + e.message, 'error');
+    const saved = getSavedData();
+    if (!saved.kontanan_days.includes(tanggalHariIni)) {
+      saved.kontanan_days.push(tanggalHariIni);
+      saved.kontanan_days.sort((a,b) => a-b);
+      saveSavedData(saved);
     }
     tutupModal();
+    showStatus('✅ Berhasil dicatat di browser!');
+    render();
   }
 
-  async function hapusCatatanTanggal(tanggal) {
+  function hapusCatatanTanggal(tanggal) {
     if (!confirm(`Hapus catatan tanggal ${tanggal}?`)) return;
-    showSyncStatus('⏳ Menghapus...', '');
-    const repoData = await getDataFromRepo();
-    if (!repoData) return;
-    
-    const data = repoData.content;
-    data.kontanan_days = data.kontanan_days.filter(d => d !== tanggal);
-    
-    try {
-      await updateDataInRepo(data, repoData.sha);
-      showSyncStatus('✅ Dihapus!', 'success');
-      setTimeout(() => { forceRefresh(); }, 1200);
-    } catch (e) {
-      showSyncStatus('❌ Gagal: ' + e.message, 'error');
+    const saved = getSavedData();
+    saved.kontanan_days = saved.kontanan_days.filter(d => d !== tanggal);
+    saveSavedData(saved);
+    showStatus('🗑️ Dihapus!');
+    render();
+  }
+
+  function resetBulan() {
+    if (confirm('Yakin hapus semua catatan bulan ini?')) {
+      const saved = getSavedData();
+      saved.kontanan_days = [];
+      saved.lembur_jam = 0;
+      saveSavedData(saved);
+      showStatus('🗑️ Data bulan ini direset!');
+      render();
     }
   }
 
-  async function simpanLembur(jam) {
-    const repoData = await getDataFromRepo();
-    if (!repoData) return;
-    const data = repoData.content;
-    if (data.lembur_jam !== jam) {
-      data.lembur_jam = jam;
-      try { await updateDataInRepo(data, repoData.sha); } 
-      catch (e) { console.error('Gagal simpan lembur:', e); }
-    }
+  function showStatus(msg) {
+    const el = document.getElementById('sync-status');
+    el.textContent = msg;
+    setTimeout(() => { el.textContent = ''; }, 3000);
   }
 
   function exportExcel() {
     const data = SHIFT_DATA;
     const stats = data.monthly_stats;
-    const saved = data.saved_data || { kontanan_days: [], lembur_jam: 0 };
+    const saved = getSavedData();
     const hariKontanan = saved.kontanan_days.length;
     const jamLembur = saved.lembur_jam || 0;
-    
     const kontananDiberikan = hariKontanan * stats.rate_hk;
     const kontananSeharusnya = hariKontanan * stats.rate_kontanan;
     const selisihKontanan = kontananSeharusnya - kontananDiberikan;
-    
     const lemburDiberikan = jamLembur * stats.rate_lembur_perusahaan;
     let lemburSeharusnya = 0;
     if (jamLembur <= 2) lemburSeharusnya = jamLembur * stats.rate_lembur_jam1;
     else lemburSeharusnya = (2 * stats.rate_lembur_jam1) + ((jamLembur - 2) * stats.rate_lembur_jam2);
     const selisihLembur = lemburSeharusnya - lemburDiberikan;
     const totalSelisih = selisihKontanan + selisihLembur;
-
     const fmt = (n) => n.toLocaleString('id-ID');
     const [tahun, bulan] = stats.month_key.split('-');
     const namaBulan = stats.month_name.split(' ')[0];
     const tglList = saved.kontanan_days.map(d => `${d} ${namaBulan} ${tahun}`).join(', ') || '-';
-
-    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-<head><meta charset="UTF-8">
-<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
-<x:Name>Rekap HK ${namaBulan}</x:Name>
-<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
-</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
-</head><body>
-<table border="1" cellpadding="5" cellspacing="0">
-<tr><td colspan="3" style="background:#667eea;color:white;font-size:14pt;font-weight:bold;text-align:center;">REKAP HARIAN KONTAN & LEMBUR - ${namaBulan.toUpperCase()} ${tahun}</td></tr>
-<tr><td colspan="3" style="background:#f0f0f0;font-weight:bold;">Informasi Umum</td></tr>
-<tr><td>Bulan</td><td colspan="2">${namaBulan} ${tahun}</td></tr>
-<tr><td>Total Hari Minggu</td><td colspan="2">${stats.total_minggu} hari</td></tr>
-<tr><td>Rate HK Normal</td><td colspan="2">Rp ${fmt(stats.rate_hk)}</td></tr>
-<tr><td>Rate Kontanan (HK x 2)</td><td colspan="2">Rp ${fmt(stats.rate_kontanan)}</td></tr>
-<tr><td>Rate Lembur Pemerintah (Jam 1-2)</td><td colspan="2">Rp ${fmt(stats.rate_lembur_jam1)}/jam</td></tr>
-<tr><td>Rate Lembur Pemerintah (Jam 3+)</td><td colspan="2">Rp ${fmt(stats.rate_lembur_jam2)}/jam</td></tr>
-<tr><td>Rate Lembur Perusahaan</td><td colspan="2">Rp ${fmt(stats.rate_lembur_perusahaan)}/jam</td></tr>
-<tr><td colspan="3" style="background:#f0f0f0;font-weight:bold;">Perhitungan Kontanan</td></tr>
-<tr><td>Tanggal Kontanan</td><td colspan="2">${tglList}</td></tr>
-<tr><td>Jumlah Hari Kontanan</td><td colspan="2">${hariKontanan} hari</td></tr>
-<tr><td>Diberikan (HK x 1)</td><td colspan="2">Rp ${fmt(kontananDiberikan)}</td></tr>
-<tr><td>Seharusnya (HK x 2)</td><td colspan="2">Rp ${fmt(kontananSeharusnya)}</td></tr>
-<tr><td style="background:#fee2e2;font-weight:bold;">Selisih Kontanan</td><td colspan="2" style="background:#fee2e2;font-weight:bold;">Rp ${fmt(selisihKontanan)}</td></tr>
-<tr><td colspan="3" style="background:#f0f0f0;font-weight:bold;">Perhitungan Lembur</td></tr>
-<tr><td>Total Jam Lembur</td><td colspan="2">${jamLembur} jam</td></tr>
-<tr><td>Diberikan</td><td colspan="2">Rp ${fmt(lemburDiberikan)}</td></tr>
-<tr><td>Seharusnya (Pemerintah)</td><td colspan="2">Rp ${fmt(lemburSeharusnya)}</td></tr>
-<tr><td style="background:#fee2e2;font-weight:bold;">Selisih Lembur</td><td colspan="2" style="background:#fee2e2;font-weight:bold;">Rp ${fmt(selisihLembur)}</td></tr>
-<tr><td colspan="3" style="background:#7c3aed;color:white;font-weight:bold;font-size:12pt;">TOTAL HAK YANG HILANG: Rp ${fmt(totalSelisih)}</td></tr>
-<tr><td colspan="3" style="font-size:8pt;color:#888;">Dibuat oleh ShiftMinder - ${new Date().toLocaleString('id-ID')}</td></tr>
-</table></body></html>`;
-
+    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Rekap HK ${namaBulan}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="3" style="background:#667eea;color:white;font-size:14pt;font-weight:bold;text-align:center;">REKAP HARIAN KONTAN & LEMBUR - ${namaBulan.toUpperCase()} ${tahun}</td></tr><tr><td colspan="3" style="background:#f0f0f0;font-weight:bold;">Informasi Umum</td></tr><tr><td>Bulan</td><td colspan="2">${namaBulan} ${tahun}</td></tr><tr><td>Total Hari Minggu</td><td colspan="2">${stats.total_minggu} hari</td></tr><tr><td>Rate HK Normal</td><td colspan="2">Rp ${fmt(stats.rate_hk)}</td></tr><tr><td>Rate Kontanan (HK x 2)</td><td colspan="2">Rp ${fmt(stats.rate_kontanan)}</td></tr><tr><td>Rate Lembur Pemerintah (Jam 1-2)</td><td colspan="2">Rp ${fmt(stats.rate_lembur_jam1)}/jam</td></tr><tr><td>Rate Lembur Pemerintah (Jam 3+)</td><td colspan="2">Rp ${fmt(stats.rate_lembur_jam2)}/jam</td></tr><tr><td>Rate Lembur Perusahaan</td><td colspan="2">Rp ${fmt(stats.rate_lembur_perusahaan)}/jam</td></tr><tr><td colspan="3" style="background:#f0f0f0;font-weight:bold;">Perhitungan Kontanan</td></tr><tr><td>Tanggal Kontanan</td><td colspan="2">${tglList}</td></tr><tr><td>Jumlah Hari Kontanan</td><td colspan="2">${hariKontanan} hari</td></tr><tr><td>Diberikan (HK x 1)</td><td colspan="2">Rp ${fmt(kontananDiberikan)}</td></tr><tr><td>Seharusnya (HK x 2)</td><td colspan="2">Rp ${fmt(kontananSeharusnya)}</td></tr><tr><td style="background:#fee2e2;font-weight:bold;">Selisih Kontanan</td><td colspan="2" style="background:#fee2e2;font-weight:bold;">Rp ${fmt(selisihKontanan)}</td></tr><tr><td colspan="3" style="background:#f0f0f0;font-weight:bold;">Perhitungan Lembur</td></tr><tr><td>Total Jam Lembur</td><td colspan="2">${jamLembur} jam</td></tr><tr><td>Diberikan</td><td colspan="2">Rp ${fmt(lemburDiberikan)}</td></tr><tr><td>Seharusnya (Pemerintah)</td><td colspan="2">Rp ${fmt(lemburSeharusnya)}</td></tr><tr><td style="background:#fee2e2;font-weight:bold;">Selisih Lembur</td><td colspan="2" style="background:#fee2e2;font-weight:bold;">Rp ${fmt(selisihLembur)}</td></tr><tr><td colspan="3" style="background:#7c3aed;color:white;font-weight:bold;font-size:12pt;">TOTAL HAK YANG HILANG: Rp ${fmt(totalSelisih)}</td></tr><tr><td colspan="3" style="font-size:8pt;color:#888;">Dibuat oleh ShiftMinder - ${new Date().toLocaleString('id-ID')}</td></tr></table></body></html>`;
     const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = `Rekap_HK_${namaBulan}_${tahun}.xls`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    a.href = url; a.download = `Rekap_HK_${namaBulan}_${tahun}.xls`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
 
-  function forceRefresh() {
-    const url = new URL(window.location.href);
-    url.searchParams.set('v', Date.now());
-    window.location.href = url.toString();
-  }
-
+  function forceRefresh() { const url = new URL(window.location.href); url.searchParams.set('v', Date.now()); window.location.href = url.toString(); }
   function formatRupiah(angka) { return 'Rp ' + angka.toLocaleString('id-ID'); }
 
   function render() {
     const data = SHIFT_DATA;
     if (!data || !data.today) return;
-
     const card = document.getElementById('today-card');
     const cls = data.today.status === 'SHIFT PAGI' ? 'pagi' : data.today.status === 'SHIFT SIANG' ? 'siang' : 'libur';
     card.classList.add(cls);
@@ -414,23 +280,20 @@
     document.getElementById('today-time').textContent = data.today.status === 'LIBUR' ? 'Nikmati hari liburmu!' : data.today.time;
     document.getElementById('updated').textContent = `Update: ${data.last_updated}`;
 
-    // ✅ PERBAIKAN: getDay() === 0 untuk Minggu (bukan 6!)
     const today = new Date();
     const btnKontanan = document.getElementById('btn-kontanan');
-    const saved = data.saved_data || { kontanan_days: [], lembur_jam: 0 };
+    const saved = getSavedData();
     
-    if (today.getDay() === 0) {  // 0 = Minggu di JavaScript
+    if (today.getDay() === 0) {
       btnKontanan.style.display = 'block';
       if (saved.kontanan_days.includes(today.getDate())) {
         btnKontanan.classList.add('sudah-catat');
         btnKontanan.innerHTML = '✅ Sudah Dicatat Hari Ini<span class="kontanan-sub">Tap untuk konfirmasi ulang</span>';
       } else {
         btnKontanan.classList.remove('sudah-catat');
-        btnKontanan.innerHTML = '️ Ada Kontanan Hari Ini?<span class="kontanan-sub">Tap untuk mencatat hari libur kerja</span>';
+        btnKontanan.innerHTML = '🏖️ Ada Kontanan Hari Ini?<span class="kontanan-sub">Tap untuk mencatat hari libur kerja</span>';
       }
-    } else {
-      btnKontanan.style.display = 'none';
-    }
+    } else { btnKontanan.style.display = 'none'; }
 
     document.getElementById('day-list').innerHTML = data.next_7_days.map(d => {
       const c = d.status === 'SHIFT PAGI' ? 'status-pagi' : d.status === 'SHIFT SIANG' ? 'status-siang' : 'status-libur';
@@ -449,20 +312,19 @@
 
     document.getElementById('stat-bulan').textContent = stats.month_name;
     document.getElementById('stat-minggu').textContent = stats.total_minggu + ' hari';
-    document.getElementById('stat-kontanan').textContent = hariKontanan + ' hari (GitHub)';
+    document.getElementById('stat-kontanan').textContent = hariKontanan + ' hari';
 
     const listContainer = document.getElementById('catatan-list');
     if (saved.kontanan_days.length === 0) {
       listContainer.innerHTML = '<div class="no-catatan">Belum ada catatan kontanan bulan ini</div>';
     } else {
       const bulanSingkat = stats.month_name.split(' ')[0].substring(0,3);
-      listContainer.innerHTML = saved.kontanan_days.map(tgl => `<div class="catatan-tag">${tgl} ${bulanSingkat} <span class="hapus" onclick="hapusCatatanTanggal(${tgl})"></span></div>`).join('');
+      listContainer.innerHTML = saved.kontanan_days.map(tgl => `<div class="catatan-tag">${tgl} ${bulanSingkat} <span class="hapus" onclick="hapusCatatanTanggal(${tgl})">✕</span></div>`).join('');
     }
 
     const kontananDiberikan = hariKontanan * stats.rate_hk;
     const kontananSeharusnya = hariKontanan * stats.rate_kontanan;
     const selisihKontanan = kontananSeharusnya - kontananDiberikan;
-
     document.getElementById('kontanan-diberikan').textContent = formatRupiah(kontananDiberikan);
     document.getElementById('kontanan-seharusnya').textContent = formatRupiah(kontananSeharusnya);
     document.getElementById('selisih-kontanan').textContent = formatRupiah(selisihKontanan);
@@ -477,7 +339,6 @@
       if (jam <= 2) lemburSeharusnya = jam * stats.rate_lembur_jam1;
       else lemburSeharusnya = (2 * stats.rate_lembur_jam1) + ((jam - 2) * stats.rate_lembur_jam2);
       const selisihLembur = lemburSeharusnya - lemburDiberikan;
-
       document.getElementById('lembur-diberikan').textContent = formatRupiah(lemburDiberikan);
       document.getElementById('lembur-seharusnya').textContent = formatRupiah(lemburSeharusnya);
       document.getElementById('selisih-lembur').textContent = formatRupiah(selisihLembur);
@@ -488,11 +349,14 @@
     inputLembur.addEventListener('input', () => {
       hitungLembur();
       clearTimeout(timeout);
-      timeout = setTimeout(() => simpanLembur(parseInt(inputLembur.value) || 0), 1000);
+      timeout = setTimeout(() => {
+        const s = getSavedData();
+        s.lembur_jam = parseInt(inputLembur.value) || 0;
+        saveSavedData(s);
+      }, 500);
     });
     hitungLembur();
   }
-
   render();
 </script>
 </body>
