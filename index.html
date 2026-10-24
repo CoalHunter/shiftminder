@@ -138,10 +138,10 @@
   </button>
 
   <div class="scroll-area">
-    <div class="section-title"> 7 Hari ke Depan</div>
+    <div class="section-title">📅 7 Hari ke Depan</div>
     <div id="day-list" class="card-box"></div>
 
-    <div class="section-title">️ 4 Minggu ke Depan</div>
+    <div class="section-title">🗓️ 4 Minggu ke Depan</div>
     <div id="week-list" class="card-box"></div>
 
     <div class="section-title">💰 Kalkulator Hak Pekerja</div>
@@ -156,7 +156,7 @@
       <div class="calc-row"><span>📝 Kontanan Tercatat:</span> <strong id="stat-kontanan">0 hari</strong></div>
       <div class="calc-divider"></div>
 
-      <div class="calc-row" style="margin-bottom: 4px;"><span style="font-weight: 600; font-size: 0.75em;"> Tanggal Kontanan Bulan Ini:</span></div>
+      <div class="calc-row" style="margin-bottom: 4px;"><span style="font-weight: 600; font-size: 0.75em;">📌 Tanggal Kontanan Bulan Ini:</span></div>
       <div id="catatan-list" class="catatan-list"></div>
       
       <div class="calc-divider"></div>
@@ -167,7 +167,7 @@
         <div class="compare-box diberikan"><div class="label">DIBERIKAN</div><div class="value" id="kontanan-diberikan">Rp 0</div></div>
         <div class="compare-box seharusnya"><div class="label">SEHARUSNYA</div><div class="value" id="kontanan-seharusnya">Rp 0</div></div>
       </div>
-      <div class="selisih-box"><span>📉 Selisih Kontanan:</span><strong id="selisih-kontanan">Rp 0</strong></div>
+      <div class="selisih-box"><span> Selisih Kontanan:</span><strong id="selisih-kontanan">Rp 0</strong></div>
 
       <div class="calc-divider"></div>
 
@@ -180,7 +180,7 @@
       <div class="total-box"><span>💸 TOTAL HAK HILANG:</span><strong id="total-selisih">Rp 0</strong></div>
 
       <div class="action-buttons">
-        <button class="btn-aksi btn-export" onclick="exportExcel()"> Export Excel</button>
+        <button class="btn-aksi btn-export" onclick="exportExcel()">📊 Export Excel</button>
       </div>
       <div id="sync-status" class="sync-status"></div>
 
@@ -192,7 +192,7 @@
 <!-- Modal Konfirmasi Kontanan -->
 <div id="modal-kontanan" class="modal-overlay">
   <div class="modal-box">
-    <h3>🏖️ Konfirmasi Kontanan</h3>
+    <h3>️ Konfirmasi Kontanan</h3>
     <p id="modal-tanggal">Apakah Anda bekerja hari ini?</p>
     <div class="modal-buttons">
       <button class="modal-btn tidak" onclick="tutupModal()">Tidak</button>
@@ -202,18 +202,15 @@
 </div>
 
 <script>
-  const SHIFT_DATA = {"last_updated": "25-10-2026 04:02:10", "today": {"day_name": "Minggu", "full_date": "Minggu, 25 Oktober 2026", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, "next_7_days": [{"day_name": "Senin", "short_date": "26 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Selasa", "short_date": "27 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Rabu", "short_date": "28 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Kamis", "short_date": "29 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Jumat", "short_date": "30 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Sabtu", "short_date": "31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Minggu", "short_date": "1 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}], "next_4_weeks": [{"week_label": "26 Okt - 31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"week_label": "2 Nov - 7 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "9 Nov - 14 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"week_label": "16 Nov - 21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "monthly_stats": {"month_name": "Oktober 2026", "month_key": "2026-10", "total_minggu": 4, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}, "saved_data": {"month_key": "2026-10", "kontanan_days": [], "lembur_jam": 0}};
+  const SHIFT_DATA = {"last_updated": "25-10-2026 04:08:42", "today": {"day_name": "Minggu", "full_date": "Minggu, 25 Oktober 2026", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, "next_7_days": [{"day_name": "Senin", "short_date": "26 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Selasa", "short_date": "27 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Rabu", "short_date": "28 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Kamis", "short_date": "29 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Jumat", "short_date": "30 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Sabtu", "short_date": "31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Minggu", "short_date": "1 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}], "next_4_weeks": [{"week_label": "26 Okt - 31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"week_label": "2 Nov - 7 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "9 Nov - 14 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"week_label": "16 Nov - 21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "monthly_stats": {"month_name": "Oktober 2026", "month_key": "2026-10", "total_minggu": 4, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}, "saved_data": {"month_key": "2026-10", "kontanan_days": [], "lembur_jam": 0}};
   
-  // KONFIGURASI REPO
   const REPO_OWNER = 'coalhunter';
   const REPO_NAME = 'shiftminder';
   const DATA_FILE_PATH = 'data.json';
   
-  // Token di-obfuscate agar tidak terdeteksi Secret Scanning
   const _tk = ['Z2hwX1F6ZXl0aU9KQXZQcUlGcVpiTHZhNU5IaVdYNU5aUzRMUkE2VA=='];
   const GITHUB_TOKEN = atob(_tk[0]);
 
-  // ===== GITHUB API CALLS =====
   async function getDataFromRepo() {
     try {
       const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE_PATH}`, {
@@ -262,7 +259,6 @@
     setTimeout(() => { el.textContent = ''; }, 4000);
   }
 
-  // ===== KONTANAN =====
   function tanyaKontanan() {
     const today = new Date();
     const hariIndo = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
@@ -331,7 +327,6 @@
     }
   }
 
-  // ===== EXPORT EXCEL 2013 =====
   function exportExcel() {
     const data = SHIFT_DATA;
     const stats = data.monthly_stats;
@@ -419,18 +414,19 @@
     document.getElementById('today-time').textContent = data.today.status === 'LIBUR' ? 'Nikmati hari liburmu!' : data.today.time;
     document.getElementById('updated').textContent = `Update: ${data.last_updated}`;
 
+    // ✅ PERBAIKAN: getDay() === 0 untuk Minggu (bukan 6!)
     const today = new Date();
     const btnKontanan = document.getElementById('btn-kontanan');
     const saved = data.saved_data || { kontanan_days: [], lembur_jam: 0 };
     
-    if (today.getDay() === 6) {
+    if (today.getDay() === 0) {  // 0 = Minggu di JavaScript
       btnKontanan.style.display = 'block';
       if (saved.kontanan_days.includes(today.getDate())) {
         btnKontanan.classList.add('sudah-catat');
         btnKontanan.innerHTML = '✅ Sudah Dicatat Hari Ini<span class="kontanan-sub">Tap untuk konfirmasi ulang</span>';
       } else {
         btnKontanan.classList.remove('sudah-catat');
-        btnKontanan.innerHTML = '🏖️ Ada Kontanan Hari Ini?<span class="kontanan-sub">Tap untuk mencatat hari libur kerja</span>';
+        btnKontanan.innerHTML = '️ Ada Kontanan Hari Ini?<span class="kontanan-sub">Tap untuk mencatat hari libur kerja</span>';
       }
     } else {
       btnKontanan.style.display = 'none';
@@ -444,7 +440,7 @@
 
     document.getElementById('week-list').innerHTML = data.next_4_weeks.map(w => {
       const c = w.status === 'SHIFT PAGI' ? 'status-pagi' : 'status-siang';
-      return `<div class="week-item"><span class="week-range"> ${w.week_label}</span><span class="day-status ${c}">${w.status}</span></div>`;
+      return `<div class="week-item"><span class="week-range">📆 ${w.week_label}</span><span class="day-status ${c}">${w.status}</span></div>`;
     }).join('');
 
     const stats = data.monthly_stats;
@@ -460,7 +456,7 @@
       listContainer.innerHTML = '<div class="no-catatan">Belum ada catatan kontanan bulan ini</div>';
     } else {
       const bulanSingkat = stats.month_name.split(' ')[0].substring(0,3);
-      listContainer.innerHTML = saved.kontanan_days.map(tgl => `<div class="catatan-tag">${tgl} ${bulanSingkat} <span class="hapus" onclick="hapusCatatanTanggal(${tgl})">✕</span></div>`).join('');
+      listContainer.innerHTML = saved.kontanan_days.map(tgl => `<div class="catatan-tag">${tgl} ${bulanSingkat} <span class="hapus" onclick="hapusCatatanTanggal(${tgl})"></span></div>`).join('');
     }
 
     const kontananDiberikan = hariKontanan * stats.rate_hk;
