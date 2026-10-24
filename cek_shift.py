@@ -1,19 +1,27 @@
 import datetime
 import json
+from datetime import timezone, timedelta
 
 def hitung_shift(target_date):
-    anchor_monday = datetime.date(2026, 10, 19)  # SENIN Shift Pagi pertama
+    anchor_monday = datetime.date(2026, 10, 19)
     delta_weeks = (target_date - anchor_monday).days // 7
     
-    if target_date.weekday() == 6:  # Minggu
+    if target_date.weekday() == 6:
         return {"status": "LIBUR", "time": "-", "emoji": "🏖️"}
     elif delta_weeks % 2 == 0:
         return {"status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}
     else:
         return {"status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}
 
+def get_wib_now():
+    # WIB = UTC+7
+    wib_tz = timezone(timedelta(hours=7))
+    return datetime.datetime.now(wib_tz)
+
 def generate_data():
-    today = datetime.date.today()
+    now_wib = get_wib_now()
+    today = now_wib.date()
+    
     hari_indo = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
     bulan_indo = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
                   'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
@@ -51,7 +59,7 @@ def generate_data():
         })
     
     return {
-        "last_updated": datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
+        "last_updated": now_wib.strftime("%d-%m-%Y %H:%M:%S"),
         "today": today_data,
         "next_7_days": next_7_days,
         "next_4_weeks": next_4_weeks
@@ -60,16 +68,13 @@ def generate_data():
 if __name__ == "__main__":
     data = generate_data()
     
-    # Baca template
     with open("template.html", "r", encoding="utf-8") as f:
         html = f.read()
     
-    # Suntik JSON ke placeholder
     json_str = json.dumps(data, ensure_ascii=False)
     html = html.replace("__SHIFT_DATA_PLACEHOLDER__", json_str)
     
-    # Simpan sebagai index.html
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
     
-    print(f"✅ Done! Hari ini: {data['today']['status']}")
+    print(f"✅ Done! Hari ini (WIB): {data['today']['day_name']}, {data['today']['status']}")
