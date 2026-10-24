@@ -1,1 +1,157 @@
-<!-- Akan di-generate otomatis oleh Python -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jadwal Shift Kerja</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #333;
+  }
+  .container { max-width: 600px; margin: 0 auto; }
+  h1 { color: white; text-align: center; margin-bottom: 8px; font-size: 1.8em; }
+  .subtitle { color: rgba(255,255,255,0.85); text-align: center; margin-bottom: 25px; font-size: 0.9em; }
+  
+  .today-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .today-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+  }
+  .today-card.pagi::before { background: linear-gradient(90deg, #f6d365, #fda085); }
+  .today-card.siang::before { background: linear-gradient(90deg, #4facfe, #00f2fe); }
+  .today-card.libur::before { background: linear-gradient(90deg, #fa709a, #fee140); }
+  
+  .today-emoji { font-size: 3em; margin-bottom: 10px; }
+  .today-date { color: #888; font-size: 0.95em; margin-bottom: 8px; }
+  .today-status { font-size: 2em; font-weight: 800; margin: 10px 0; }
+  .today-time { font-size: 1.2em; color: #555; font-weight: 500; }
+  .updated { color: #aaa; font-size: 0.75em; margin-top: 15px; }
+  
+  .section-title {
+    color: white;
+    font-size: 1.1em;
+    margin: 25px 0 12px;
+    font-weight: 600;
+  }
+  
+  .day-list { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+  .day-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .day-item:last-child { border-bottom: none; }
+  .day-info { display: flex; align-items: center; gap: 12px; }
+  .day-emoji { font-size: 1.3em; }
+  .day-name { font-weight: 600; }
+  .day-date { color: #888; font-size: 0.85em; }
+  .day-status {
+    font-weight: 600;
+    font-size: 0.85em;
+    padding: 5px 12px;
+    border-radius: 20px;
+  }
+  .status-pagi { background: #fff4e0; color: #e67e22; }
+  .status-siang { background: #e0f4ff; color: #2980b9; }
+  .status-libur { background: #ffe0ec; color: #c0392b; }
+  
+  .week-list { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 30px; }
+  .week-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .week-item:last-child { border-bottom: none; }
+  .week-range { font-weight: 500; color: #555; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>⏰ Jadwal Shift Kerja</h1>
+  <p class="subtitle">Pagi (07:00-14:00) · Siang (14:00-21:00) · Minggu Libur</p>
+
+  <div id="today-card" class="today-card">
+    <div class="today-emoji" id="today-emoji">...</div>
+    <div class="today-date" id="today-date">Memuat...</div>
+    <div class="today-status" id="today-status">...</div>
+    <div class="today-time" id="today-time">...</div>
+    <div class="updated" id="updated">...</div>
+  </div>
+
+  <div class="section-title">📅 7 Hari ke Depan</div>
+  <div id="day-list" class="day-list"></div>
+
+  <div class="section-title">🗓️ 4 Minggu ke Depan</div>
+  <div id="week-list" class="week-list"></div>
+</div>
+
+<script>
+  const SHIFT_DATA = /*__SHIFT_DATA_START*/{}/*__SHIFT_DATA_END*/;
+
+  function render() {
+    const data = SHIFT_DATA;
+    if (!data || !data.today) return;
+
+    // Hari ini
+    const card = document.getElementById('today-card');
+    card.classList.add(data.today.status === 'SHIFT PAGI' ? 'pagi' : data.today.status === 'SHIFT SIANG' ? 'siang' : 'libur');
+    document.getElementById('today-emoji').textContent = data.today.emoji;
+    document.getElementById('today-date').textContent = data.today.full_date;
+    document.getElementById('today-status').textContent = data.today.status;
+    document.getElementById('today-time').textContent = data.today.status === 'LIBUR' ? 'Nikmati hari liburmu!' : data.today.time;
+    document.getElementById('updated').textContent = `Diperbarui: ${data.last_updated}`;
+
+    // 7 hari ke depan
+    const dayList = document.getElementById('day-list');
+    dayList.innerHTML = data.next_7_days.map(d => {
+      const cls = d.status === 'SHIFT PAGI' ? 'status-pagi' : d.status === 'SHIFT SIANG' ? 'status-siang' : 'status-libur';
+      const label = d.status === 'LIBUR' ? 'LIBUR' : `${d.status} · ${d.time}`;
+      return `
+        <div class="day-item">
+          <div class="day-info">
+            <span class="day-emoji">${d.emoji}</span>
+            <div>
+              <div class="day-name">${d.day_name}</div>
+              <div class="day-date">${d.short_date}</div>
+            </div>
+          </div>
+          <span class="day-status ${cls}">${label}</span>
+        </div>`;
+    }).join('');
+
+    // 4 minggu ke depan
+    const weekList = document.getElementById('week-list');
+    weekList.innerHTML = data.next_4_weeks.map(w => {
+      const cls = w.status === 'SHIFT PAGI' ? 'status-pagi' : 'status-siang';
+      return `
+        <div class="week-item">
+          <span class="week-range">📆 ${w.week_label}</span>
+          <span class="day-status ${cls}">${w.status}</span>
+        </div>`;
+    }).join('');
+  }
+
+  render();
+</script>
+</body>
+</html>
