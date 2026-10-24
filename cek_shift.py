@@ -1,13 +1,14 @@
 import datetime
 import json
 import calendar
+import os
 
 def hitung_shift(target_date):
     anchor_monday = datetime.date(2026, 10, 19)
     delta_weeks = (target_date - anchor_monday).days // 7
     
     if target_date.weekday() == 6:
-        return {"status": "LIBUR", "time": "-", "emoji": "️"}
+        return {"status": "LIBUR", "time": "-", "emoji": "🏖️"}
     elif delta_weeks % 2 == 0:
         return {"status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}
     else:
@@ -57,24 +58,21 @@ def generate_data():
     year, month = today.year, today.month
     total_days_in_month = calendar.monthrange(year, month)[1]
     
-    libur_days = 0
-    for d in range(1, total_days_in_month + 1):
-        date_obj = datetime.date(year, month, d)
-        if date_obj.weekday() == 6:
-            libur_days += 1
+    libur_days = sum(1 for d in range(1, total_days_in_month + 1)
+                     if datetime.date(year, month, d).weekday() == 6)
 
-    # Perhitungan Upah Sejam & Lembur Pemerintah
     hk_normal = 170000
-    upah_sejam = hk_normal / 8  # Rp 21.250/jam
-    
+    upah_sejam = hk_normal / 8
+
     monthly_stats = {
         "month_name": f"{bulan_indo[month-1]} {year}",
-        "total_minggu": libur_days, 
+        "month_key": f"{year}-{str(month).zfill(2)}",
+        "total_minggu": libur_days,
         "rate_hk": hk_normal,
-        "rate_kontanan": hk_normal * 2,  # 340.000
-        "rate_lembur_jam1": round(upah_sejam * 1.5),  # 31.875 (2 jam pertama)
-        "rate_lembur_jam2": round(upah_sejam * 2),    # 42.500 (jam ke-3 dst)
-        "rate_lembur_perusahaan": 7000  # 21.000 / 3 jam = 7.000/jam
+        "rate_kontanan": hk_normal * 2,
+        "rate_lembur_jam1": round(upah_sejam * 1.5),
+        "rate_lembur_jam2": round(upah_sejam * 2),
+        "rate_lembur_perusahaan": 7000
     }
     
     return {
@@ -85,8 +83,49 @@ def generate_data():
         "monthly_stats": monthly_stats
     }
 
-if __name__ == "__main__":
-    data = generate_data()
+def reset_data_json_if_needed(data):
+    """Reset data.json otomatis jika bulan sudah berganti."""
+    data_file = "data.json"
+    current_month_key = data["monthly_stats"]["month_key"]
+    
+    if os.path.exists(data_file):
+        try:
+            with open(data_file, "r", encoding="utf-8") as f:
+                existing = json.load(f)
+            # Jika bulan di file != bulan sekarang → reset
+            if existing.get("month_key") != current_month_key:
+                print(f"📅 Bulan berganti! Reset data.json dari {existing.get('month_key')} ke {current_month_key}")
+                save_data_json(current_month_key)
+                return
+        except:
+            pass
+    
+    # Jika file belum ada, buat baru
+    if not os.path.exists(data_file):
+        print("📄 data.json belum ada, membuat baru...")
+        save_data_json(current_month_key)
+
+def save_data_json(month_key):
+    data_json = {
+        "month_key": month_key,
+        "kontanan_days": [],
+        "lembur_jam": 0
+    }
+    with open("data.json", "w", encoding="utf-8") as f:
+        json.dump(data_json, f, ensure_ascii=False, indent=2)
+    print("✅ data.json berhasil di-reset/dibuat")
+
+def inject_to_html(data):
+    # Baca data.json untuk disuntikkan ke HTML
+    data_file = "data.json"
+    if os.path.exists(data_file):
+        with open(data_file, "r", encoding="utf-8") as f:
+            saved_data = json.load(f)
+    else:
+        saved_data = {"kontanan_days": [], "lembur_jam": 0}
+    
+    # Gabungkan data shift + data tersimpan
+    data["saved_data"] = saved_data
     
     with open("template.html", "r", encoding="utf-8") as f:
         html = f.read()
@@ -96,5 +135,9 @@ if __name__ == "__main__":
     
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
-    
+
+if __name__ == "__main__":
+    data = generate_data()
+    reset_data_json_if_needed(data)
+    inject_to_html(data)
     print(f"✅ Berhasil! Hari ini: {data['today']['day_name']}, {data['today']['status']}")
