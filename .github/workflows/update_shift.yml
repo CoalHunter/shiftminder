@@ -3,11 +3,13 @@ name: Update Jadwal Shift
 on:
   schedule:
     - cron: '0 23 * * *'   # Jam 06:00 WIB setiap hari
-  workflow_dispatch:        # Bisa dijalankan manual
+  workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Jakarta      # ← TAMBAH INI!
     steps:
       - uses: actions/checkout@v4
 
