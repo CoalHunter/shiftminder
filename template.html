@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jadwal Shift & HK</title>
+
+<!-- META TAG ANTI-CACHE (Mencegah browser menyimpan file lama) -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -15,7 +21,22 @@
   }
   .container { max-width: 600px; margin: 0 auto; }
   h1 { color: white; text-align: center; margin-bottom: 8px; font-size: 1.8em; }
-  .subtitle { color: rgba(255,255,255,0.85); text-align: center; margin-bottom: 25px; font-size: 0.9em; }
+  .subtitle { color: rgba(255,255,255,0.85); text-align: center; margin-bottom: 15px; font-size: 0.9em; }
+  
+  /* Tombol Refresh Cache */
+  .btn-refresh-container { text-align: center; margin-bottom: 20px; }
+  .btn-refresh {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+  }
+  .btn-refresh:active { background: rgba(255, 255, 255, 0.4); transform: scale(0.95); }
   
   .today-card {
     background: white; border-radius: 20px; padding: 30px; text-align: center;
@@ -107,6 +128,11 @@
   <h1>⏰ Jadwal Shift Kerja</h1>
   <p class="subtitle">Pagi (07:00-14:00) · Siang (14:00-21:00) · Minggu Libur</p>
 
+  <!-- TOMBOL PAKSA REFRESH -->
+  <div class="btn-refresh-container">
+    <button onclick="forceRefresh()" class="btn-refresh">🔄 Paksa Refresh (Hapus Cache)</button>
+  </div>
+
   <div id="today-card" class="today-card">
     <div class="today-emoji" id="today-emoji">...</div>
     <div class="today-date" id="today-date">Memuat...</div>
@@ -140,13 +166,11 @@
     </div>
     <div class="calc-divider"></div>
     
-    <!-- Input Kontanan -->
     <div class="calc-input-group">
       <label>🏖️ Hari Kontanan (Kerja di Minggu):</label>
       <input type="number" id="input-kontanan" value="0" min="0">
     </div>
 
-    <!-- Perbandingan Kontanan -->
     <div class="compare-container">
       <div class="compare-box diberikan">
         <div class="label">DIBERIKAN (HK x 1)</div>
@@ -164,13 +188,11 @@
 
     <div class="calc-divider"></div>
 
-    <!-- Input Lembur -->
     <div class="calc-input-group">
-      <label> Jam Lembur Biasa (Total Jam):</label>
+      <label>⏱️ Jam Lembur Biasa (Total Jam):</label>
       <input type="number" id="input-lembur" value="0" min="0">
     </div>
 
-    <!-- Perbandingan Lembur -->
     <div class="compare-container">
       <div class="compare-box diberikan">
         <div class="label">DIBERIKAN (Rp 7.000/jam)</div>
@@ -182,11 +204,10 @@
       </div>
     </div>
     <div class="selisih-box">
-      <span>📉 Selisih Lembur:</span>
+      <span> Selisih Lembur:</span>
       <strong id="selisih-lembur">Rp 0</strong>
     </div>
 
-    <!-- TOTAL SELISIH -->
     <div class="total-box">
       <span>💸 TOTAL HAK YANG HILANG:</span>
       <strong id="total-selisih">Rp 0</strong>
@@ -198,6 +219,14 @@
 
 <script>
   const SHIFT_DATA = __SHIFT_DATA_PLACEHOLDER__;
+
+  // FUNGSI PAKSA REFRESH (CACHE BUSTING)
+  function forceRefresh() {
+    // Menambahkan parameter waktu unik di belakang URL untuk memaksa browser mengambil file baru
+    const url = new URL(window.location.href);
+    url.searchParams.set('v', Date.now());
+    window.location.href = url.toString();
+  }
 
   function formatRupiah(angka) {
     return 'Rp ' + angka.toLocaleString('id-ID');
@@ -241,7 +270,6 @@
     inputKontanan.max = stats.total_minggu;
     
     function hitungSemua() {
-      // 1. Hitung Kontanan
       const hariKontanan = parseInt(inputKontanan.value) || 0;
       const kontananDiberikan = hariKontanan * stats.rate_hk;
       const kontananSeharusnya = hariKontanan * stats.rate_kontanan;
@@ -251,7 +279,6 @@
       document.getElementById('kontanan-seharusnya').textContent = formatRupiah(kontananSeharusnya);
       document.getElementById('selisih-kontanan').textContent = formatRupiah(selisihKontanan);
 
-      // 2. Hitung Lembur (Aturan Pemerintah: 2 jam pertama 1.5x, jam ke-3+ 2x)
       const jamLembur = parseInt(inputLembur.value) || 0;
       const lemburDiberikan = jamLembur * stats.rate_lembur_perusahaan;
       
@@ -268,7 +295,6 @@
       document.getElementById('lembur-seharusnya').textContent = formatRupiah(lemburSeharusnya);
       document.getElementById('selisih-lembur').textContent = formatRupiah(selisihLembur);
 
-      // 3. Total Selisih
       const totalSelisih = selisihKontanan + selisihLembur;
       document.getElementById('total-selisih').textContent = formatRupiah(totalSelisih);
     }
