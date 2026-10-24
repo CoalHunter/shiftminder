@@ -1,0 +1,27 @@
+name: Update Jadwal Shift Otomatis
+
+on:
+  schedule:
+    - cron: '0 23 * * *'  # 06:00 WIB
+  workflow_dispatch:
+
+jobs:
+  update-shift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate index.html
+        run: python cek_shift.py
+
+      - name: Commit perubahan
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --staged --quiet || git commit -m "chore: update jadwal shift"
+          git push
