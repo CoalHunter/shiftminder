@@ -1,5 +1,7 @@
 {
   "month_key": "2026-10",
-  "kontanan_days": [],
+  "kontanan_days": [
+    25
+  ],
   "lembur_jam": 0
 }
