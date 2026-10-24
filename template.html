@@ -50,26 +50,56 @@
   .status-libur { background: #ffe0ec; color: #c0392b; }
   .week-range { font-weight: 500; color: #555; }
 
-  /* --- Style Kalkulator HK --- */
   .calc-card { padding: 20px; }
   .calc-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95em; color: #555; }
   .calc-row strong { color: #333; }
   .calc-divider { height: 1px; background: #eee; margin: 15px 0; }
   .calc-input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-  .calc-input-group label { font-weight: 600; color: #333; }
+  .calc-input-group label { font-weight: 600; color: #333; font-size: 0.9em; }
   .calc-input-group input {
     width: 80px; padding: 8px 12px; border: 2px solid #667eea; border-radius: 8px;
     font-size: 1.1em; font-weight: bold; text-align: center; outline: none;
   }
   .calc-input-group input:focus { border-color: #764ba2; }
-  .calc-total {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%); /* Warna hijau uang */
+  .info-hk { font-size: 0.8em; color: #888; text-align: center; margin-top: 10px; font-style: italic; }
+  
+  .compare-container { display: flex; gap: 10px; margin-bottom: 15px; }
+  .compare-box {
+    flex: 1; padding: 15px 10px; border-radius: 12px; text-align: center;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .compare-box.diberikan { background: #f1f5f9; border: 2px solid #cbd5e1; }
+  .compare-box.seharusnya { background: #ecfdf5; border: 2px solid #10b981; }
+  .compare-box .label { font-size: 0.75em; margin-bottom: 5px; font-weight: 600; }
+  .compare-box.diberikan .label { color: #64748b; }
+  .compare-box.seharusnya .label { color: #059669; }
+  .compare-box .value { font-size: 1.1em; font-weight: 800; color: #334155; }
+  .compare-box.seharusnya .value { color: #059669; font-size: 1.2em; }
+
+  .selisih-box {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white; padding: 15px; border-radius: 12px;
     display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.2);
   }
-  .calc-total span { font-size: 0.9em; opacity: 0.9; }
-  .calc-total strong { font-size: 1.3em; font-weight: 800; }
-  .info-hk { font-size: 0.8em; color: #888; text-align: center; margin-top: 10px; font-style: italic; }
+  .selisih-box span { font-size: 0.9em; opacity: 0.9; font-weight: 500; }
+  .selisih-box strong { font-size: 1.3em; font-weight: 800; }
+
+  .total-box {
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+    color: white; padding: 20px; border-radius: 12px;
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 4px 15px rgba(91, 33, 182, 0.3);
+    margin-top: 15px;
+  }
+  .total-box span { font-size: 1em; font-weight: 600; }
+  .total-box strong { font-size: 1.5em; font-weight: 800; }
+
+  .rate-info {
+    background: #fef3c7; border: 1px solid #fbbf24; border-radius: 8px;
+    padding: 10px; margin-bottom: 15px; font-size: 0.8em; color: #92400e;
+  }
+  .rate-info strong { color: #78350f; }
 </style>
 </head>
 <body>
@@ -91,28 +121,78 @@
   <div class="section-title">🗓️ 4 Minggu ke Depan</div>
   <div id="week-list" class="card-box"></div>
 
-  <!-- KALKULATOR HARIAN KONTAN (HK) -->
-  <div class="section-title">💰 Kalkulator Harian Kontan (HK)</div>
+  <!-- KALKULATOR HK & LEMBUR -->
+  <div class="section-title">💰 Kalkulator Hak Pekerja (Bulan Ini)</div>
   <div class="card-box calc-card">
+    
+    <div class="rate-info">
+      <strong>📋 Info Rate:</strong><br>
+      HK Normal: Rp 170.000 | Upah Sejam: Rp 21.250<br>
+      Lembur Pemerintah: Jam 1-2 = Rp 31.875/jam, Jam 3+ = Rp 42.500/jam<br>
+      Lembur Perusahaan: Rp 21.000/3 jam (Rp 7.000/jam)
+    </div>
+
     <div class="calc-row">
       <span>Bulan:</span> <strong id="stat-bulan">...</strong>
     </div>
     <div class="calc-row">
-      <span>Jumlah Hari Minggu di Bulan Ini:</span> <strong id="stat-minggu">...</strong>
-    </div>
-    <div class="calc-row">
-      <span>Rate HK per Hari:</span> <strong id="stat-rate">Rp 170.000</strong>
+      <span>Jumlah Hari Minggu:</span> <strong id="stat-minggu">...</strong>
     </div>
     <div class="calc-divider"></div>
+    
+    <!-- Input Kontanan -->
     <div class="calc-input-group">
-      <label>Jumlah Hari Anda Masuk (Lembur):</label>
-      <input type="number" id="input-hari" value="0" min="0">
+      <label>🏖️ Hari Kontanan (Kerja di Minggu):</label>
+      <input type="number" id="input-kontanan" value="0" min="0">
     </div>
-    <div class="calc-total">
-      <span>Total Estimasi HK:</span>
-      <strong id="total-uang">Rp 0</strong>
+
+    <!-- Perbandingan Kontanan -->
+    <div class="compare-container">
+      <div class="compare-box diberikan">
+        <div class="label">DIBERIKAN (HK x 1)</div>
+        <div class="value" id="kontanan-diberikan">Rp 0</div>
+      </div>
+      <div class="compare-box seharusnya">
+        <div class="label">SEHARUSNYA (HK x 2)</div>
+        <div class="value" id="kontanan-seharusnya">Rp 0</div>
+      </div>
     </div>
-    <div class="info-hk">*Masukkan jumlah hari Anda bekerja di hari libur bulan ini untuk melihat estimasi total HK.</div>
+    <div class="selisih-box">
+      <span>📉 Selisih Kontanan:</span>
+      <strong id="selisih-kontanan">Rp 0</strong>
+    </div>
+
+    <div class="calc-divider"></div>
+
+    <!-- Input Lembur -->
+    <div class="calc-input-group">
+      <label> Jam Lembur Biasa (Total Jam):</label>
+      <input type="number" id="input-lembur" value="0" min="0">
+    </div>
+
+    <!-- Perbandingan Lembur -->
+    <div class="compare-container">
+      <div class="compare-box diberikan">
+        <div class="label">DIBERIKAN (Rp 7.000/jam)</div>
+        <div class="value" id="lembur-diberikan">Rp 0</div>
+      </div>
+      <div class="compare-box seharusnya">
+        <div class="label">SEHARUSNYA (Pemerintah)</div>
+        <div class="value" id="lembur-seharusnya">Rp 0</div>
+      </div>
+    </div>
+    <div class="selisih-box">
+      <span>📉 Selisih Lembur:</span>
+      <strong id="selisih-lembur">Rp 0</strong>
+    </div>
+
+    <!-- TOTAL SELISIH -->
+    <div class="total-box">
+      <span>💸 TOTAL HAK YANG HILANG:</span>
+      <strong id="total-selisih">Rp 0</strong>
+    </div>
+
+    <div class="info-hk">*Perhitungan berdasarkan UU Cipta Kerja & PP 35/2021</div>
   </div>
 </div>
 
@@ -127,7 +207,6 @@
     const data = SHIFT_DATA;
     if (!data || !data.today) return;
 
-    // Render Hari Ini
     const card = document.getElementById('today-card');
     const cls = data.today.status === 'SHIFT PAGI' ? 'pagi' 
               : data.today.status === 'SHIFT SIANG' ? 'siang' : 'libur';
@@ -139,7 +218,6 @@
       data.today.status === 'LIBUR' ? 'Nikmati hari liburmu!' : data.today.time;
     document.getElementById('updated').textContent = `Diperbarui: ${data.last_updated}`;
 
-    // Render 7 Hari
     document.getElementById('day-list').innerHTML = data.next_7_days.map(d => {
       const c = d.status === 'SHIFT PAGI' ? 'status-pagi' 
               : d.status === 'SHIFT SIANG' ? 'status-siang' : 'status-libur';
@@ -147,29 +225,56 @@
       return `<div class="day-item"><div class="day-info"><span class="day-emoji">${d.emoji}</span><div><div class="day-name">${d.day_name}</div><div class="day-date">${d.short_date}</div></div></div><span class="day-status ${c}">${label}</span></div>`;
     }).join('');
 
-    // Render 4 Minggu
     document.getElementById('week-list').innerHTML = data.next_4_weeks.map(w => {
       const c = w.status === 'SHIFT PAGI' ? 'status-pagi' : 'status-siang';
       return `<div class="week-item"><span class="week-range">📆 ${w.week_label}</span><span class="day-status ${c}">${w.status}</span></div>`;
     }).join('');
 
-    // Render Kalkulator HK
     const stats = data.monthly_stats;
     document.getElementById('stat-bulan').textContent = stats.month_name;
     document.getElementById('stat-minggu').textContent = stats.total_minggu + ' hari';
-    document.getElementById('stat-rate').textContent = formatRupiah(stats.rate_hk);
     
-    const inputHari = document.getElementById('input-hari');
-    inputHari.value = 0; // Default 0, user yang isi sendiri sesuai realita
-    inputHari.max = stats.total_minggu; // Maksimal tidak boleh lebih dari jumlah hari Minggu
+    const inputKontanan = document.getElementById('input-kontanan');
+    const inputLembur = document.getElementById('input-lembur');
+    inputKontanan.value = 0;
+    inputLembur.value = 0;
+    inputKontanan.max = stats.total_minggu;
     
-    function hitungHK() {
-      const hari = parseInt(inputHari.value) || 0;
-      const total = hari * stats.rate_hk;
-      document.getElementById('total-uang').textContent = formatRupiah(total);
+    function hitungSemua() {
+      // 1. Hitung Kontanan
+      const hariKontanan = parseInt(inputKontanan.value) || 0;
+      const kontananDiberikan = hariKontanan * stats.rate_hk;
+      const kontananSeharusnya = hariKontanan * stats.rate_kontanan;
+      const selisihKontanan = kontananSeharusnya - kontananDiberikan;
+
+      document.getElementById('kontanan-diberikan').textContent = formatRupiah(kontananDiberikan);
+      document.getElementById('kontanan-seharusnya').textContent = formatRupiah(kontananSeharusnya);
+      document.getElementById('selisih-kontanan').textContent = formatRupiah(selisihKontanan);
+
+      // 2. Hitung Lembur (Aturan Pemerintah: 2 jam pertama 1.5x, jam ke-3+ 2x)
+      const jamLembur = parseInt(inputLembur.value) || 0;
+      const lemburDiberikan = jamLembur * stats.rate_lembur_perusahaan;
+      
+      let lemburSeharusnya = 0;
+      if (jamLembur <= 2) {
+        lemburSeharusnya = jamLembur * stats.rate_lembur_jam1;
+      } else {
+        lemburSeharusnya = (2 * stats.rate_lembur_jam1) + ((jamLembur - 2) * stats.rate_lembur_jam2);
+      }
+      
+      const selisihLembur = lemburSeharusnya - lemburDiberikan;
+
+      document.getElementById('lembur-diberikan').textContent = formatRupiah(lemburDiberikan);
+      document.getElementById('lembur-seharusnya').textContent = formatRupiah(lemburSeharusnya);
+      document.getElementById('selisih-lembur').textContent = formatRupiah(selisihLembur);
+
+      // 3. Total Selisih
+      const totalSelisih = selisihKontanan + selisihLembur;
+      document.getElementById('total-selisih').textContent = formatRupiah(totalSelisih);
     }
     
-    inputHari.addEventListener('input', hitungHK);
+    inputKontanan.addEventListener('input', hitungSemua);
+    inputLembur.addEventListener('input', hitungSemua);
   }
 
   render();
