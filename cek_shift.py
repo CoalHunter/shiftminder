@@ -12,7 +12,7 @@ def hitung_shift(target_date):
     elif delta_weeks % 2 == 0:
         return {"status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}
     else:
-        return {"status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}
+        return {"status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}
 
 def generate_data():
     wib_tz = datetime.timezone(datetime.timedelta(hours=7))
@@ -57,8 +57,7 @@ def generate_data():
 
     year, month = today.year, today.month
     total_days_in_month = calendar.monthrange(year, month)[1]
-    
-    libur_days = sum(1 for d in range(1, total_days_in_month + 1)
+    libur_days = sum(1 for d in range(1, total_days_in_month + 1) 
                      if datetime.date(year, month, d).weekday() == 6)
 
     hk_normal = 170000
@@ -83,50 +82,30 @@ def generate_data():
         "monthly_stats": monthly_stats
     }
 
-def reset_data_json_if_needed(data):
-    """Reset data.json otomatis jika bulan sudah berganti."""
+def generate_data_json(month_key):
+    """Generate/Reset data.json untuk bulan ini."""
     data_file = "data.json"
-    current_month_key = data["monthly_stats"]["month_key"]
+    old_data = {}
     
     if os.path.exists(data_file):
         try:
             with open(data_file, "r", encoding="utf-8") as f:
-                existing = json.load(f)
-            # Jika bulan di file != bulan sekarang → reset
-            if existing.get("month_key") != current_month_key:
-                print(f"📅 Bulan berganti! Reset data.json dari {existing.get('month_key')} ke {current_month_key}")
-                save_data_json(current_month_key)
-                return
-        except:
-            pass
+                old_data = json.load(f)
+        except: pass
     
-    # Jika file belum ada, buat baru
-    if not os.path.exists(data_file):
-        print("📄 data.json belum ada, membuat baru...")
-        save_data_json(current_month_key)
-
-def save_data_json(month_key):
-    data_json = {
-        "month_key": month_key,
-        "kontanan_days": [],
-        "lembur_jam": 0
-    }
+    old_month_key = old_data.get("month_key", "")
+    
+    if old_month_key != month_key:
+        print(f"📅 Bulan berganti! Reset data.json dari {old_month_key} ke {month_key}")
+        new_data = {"month_key": month_key, "kontanan_days": [], "lembur_jam": 0}
+    else:
+        new_data = old_data
+        print(f"✅ Bulan sama ({month_key}), pertahankan data")
+    
     with open("data.json", "w", encoding="utf-8") as f:
-        json.dump(data_json, f, ensure_ascii=False, indent=2)
-    print("✅ data.json berhasil di-reset/dibuat")
+        json.dump(new_data, f, ensure_ascii=False, indent=2)
 
 def inject_to_html(data):
-    # Baca data.json untuk disuntikkan ke HTML
-    data_file = "data.json"
-    if os.path.exists(data_file):
-        with open(data_file, "r", encoding="utf-8") as f:
-            saved_data = json.load(f)
-    else:
-        saved_data = {"kontanan_days": [], "lembur_jam": 0}
-    
-    # Gabungkan data shift + data tersimpan
-    data["saved_data"] = saved_data
-    
     with open("template.html", "r", encoding="utf-8") as f:
         html = f.read()
     
@@ -138,6 +117,6 @@ def inject_to_html(data):
 
 if __name__ == "__main__":
     data = generate_data()
-    reset_data_json_if_needed(data)
+    generate_data_json(data["monthly_stats"]["month_key"])
     inject_to_html(data)
     print(f"✅ Berhasil! Hari ini: {data['today']['day_name']}, {data['today']['status']}")
