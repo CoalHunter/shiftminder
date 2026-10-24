@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jadwal Shift Kerja</title>
+<title>Jadwal Shift & HK</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -18,21 +18,10 @@
   .subtitle { color: rgba(255,255,255,0.85); text-align: center; margin-bottom: 25px; font-size: 0.9em; }
   
   .today-card {
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
+    background: white; border-radius: 20px; padding: 30px; text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 20px; position: relative; overflow: hidden;
   }
-  .today-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 6px;
-  }
+  .today-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; }
   .today-card.pagi::before { background: linear-gradient(90deg, #f6d365, #fda085); }
   .today-card.siang::before { background: linear-gradient(90deg, #4facfe, #00f2fe); }
   .today-card.libur::before { background: linear-gradient(90deg, #fa709a, #fee140); }
@@ -43,46 +32,44 @@
   .today-time { font-size: 1.2em; color: #555; font-weight: 500; }
   .updated { color: #aaa; font-size: 0.75em; margin-top: 15px; }
   
-  .section-title {
-    color: white;
-    font-size: 1.1em;
-    margin: 25px 0 12px;
-    font-weight: 600;
-  }
+  .section-title { color: white; font-size: 1.1em; margin: 25px 0 12px; font-weight: 600; }
   
-  .day-list { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-  .day-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 18px;
-    border-bottom: 1px solid #f0f0f0;
+  .card-box { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 15px; }
+  .day-item, .week-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 18px; border-bottom: 1px solid #f0f0f0;
   }
-  .day-item:last-child { border-bottom: none; }
+  .day-item:last-child, .week-item:last-child { border-bottom: none; }
   .day-info { display: flex; align-items: center; gap: 12px; }
   .day-emoji { font-size: 1.3em; }
   .day-name { font-weight: 600; }
   .day-date { color: #888; font-size: 0.85em; }
-  .day-status {
-    font-weight: 600;
-    font-size: 0.85em;
-    padding: 5px 12px;
-    border-radius: 20px;
-  }
+  .day-status { font-weight: 600; font-size: 0.85em; padding: 5px 12px; border-radius: 20px; }
   .status-pagi { background: #fff4e0; color: #e67e22; }
   .status-siang { background: #e0f4ff; color: #2980b9; }
   .status-libur { background: #ffe0ec; color: #c0392b; }
-  
-  .week-list { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 30px; }
-  .week-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 18px;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  .week-item:last-child { border-bottom: none; }
   .week-range { font-weight: 500; color: #555; }
+
+  /* --- Style Kalkulator HK --- */
+  .calc-card { padding: 20px; }
+  .calc-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95em; color: #555; }
+  .calc-row strong { color: #333; }
+  .calc-divider { height: 1px; background: #eee; margin: 15px 0; }
+  .calc-input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+  .calc-input-group label { font-weight: 600; color: #333; }
+  .calc-input-group input {
+    width: 80px; padding: 8px 12px; border: 2px solid #667eea; border-radius: 8px;
+    font-size: 1.1em; font-weight: bold; text-align: center; outline: none;
+  }
+  .calc-input-group input:focus { border-color: #764ba2; }
+  .calc-total {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%); /* Warna hijau uang */
+    color: white; padding: 15px; border-radius: 12px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .calc-total span { font-size: 0.9em; opacity: 0.9; }
+  .calc-total strong { font-size: 1.3em; font-weight: 800; }
+  .info-hk { font-size: 0.8em; color: #888; text-align: center; margin-top: 10px; font-style: italic; }
 </style>
 </head>
 <body>
@@ -99,27 +86,52 @@
   </div>
 
   <div class="section-title">📅 7 Hari ke Depan</div>
-  <div id="day-list" class="day-list"></div>
+  <div id="day-list" class="card-box"></div>
 
   <div class="section-title">🗓️ 4 Minggu ke Depan</div>
-  <div id="week-list" class="week-list"></div>
+  <div id="week-list" class="card-box"></div>
+
+  <!-- KALKULATOR HARIAN KONTAN (HK) -->
+  <div class="section-title">💰 Kalkulator Harian Kontan (HK)</div>
+  <div class="card-box calc-card">
+    <div class="calc-row">
+      <span>Bulan:</span> <strong id="stat-bulan">...</strong>
+    </div>
+    <div class="calc-row">
+      <span>Jumlah Hari Minggu di Bulan Ini:</span> <strong id="stat-minggu">...</strong>
+    </div>
+    <div class="calc-row">
+      <span>Rate HK per Hari:</span> <strong id="stat-rate">Rp 170.000</strong>
+    </div>
+    <div class="calc-divider"></div>
+    <div class="calc-input-group">
+      <label>Jumlah Hari Anda Masuk (Lembur):</label>
+      <input type="number" id="input-hari" value="0" min="0">
+    </div>
+    <div class="calc-total">
+      <span>Total Estimasi HK:</span>
+      <strong id="total-uang">Rp 0</strong>
+    </div>
+    <div class="info-hk">*Masukkan jumlah hari Anda bekerja di hari libur bulan ini untuk melihat estimasi total HK.</div>
+  </div>
 </div>
 
 <script>
   const SHIFT_DATA = __SHIFT_DATA_PLACEHOLDER__;
 
+  function formatRupiah(angka) {
+    return 'Rp ' + angka.toLocaleString('id-ID');
+  }
+
   function render() {
     const data = SHIFT_DATA;
-    if (!data || !data.today) {
-      console.error('Data tidak valid:', data);
-      return;
-    }
+    if (!data || !data.today) return;
 
+    // Render Hari Ini
     const card = document.getElementById('today-card');
     const cls = data.today.status === 'SHIFT PAGI' ? 'pagi' 
               : data.today.status === 'SHIFT SIANG' ? 'siang' : 'libur';
     card.classList.add(cls);
-    
     document.getElementById('today-emoji').textContent = data.today.emoji;
     document.getElementById('today-date').textContent = data.today.full_date;
     document.getElementById('today-status').textContent = data.today.status;
@@ -127,33 +139,37 @@
       data.today.status === 'LIBUR' ? 'Nikmati hari liburmu!' : data.today.time;
     document.getElementById('updated').textContent = `Diperbarui: ${data.last_updated}`;
 
-    const dayList = document.getElementById('day-list');
-    dayList.innerHTML = data.next_7_days.map(d => {
+    // Render 7 Hari
+    document.getElementById('day-list').innerHTML = data.next_7_days.map(d => {
       const c = d.status === 'SHIFT PAGI' ? 'status-pagi' 
               : d.status === 'SHIFT SIANG' ? 'status-siang' : 'status-libur';
       const label = d.status === 'LIBUR' ? 'LIBUR' : d.status;
-      return `
-        <div class="day-item">
-          <div class="day-info">
-            <span class="day-emoji">${d.emoji}</span>
-            <div>
-              <div class="day-name">${d.day_name}</div>
-              <div class="day-date">${d.short_date}</div>
-            </div>
-          </div>
-          <span class="day-status ${c}">${label}</span>
-        </div>`;
+      return `<div class="day-item"><div class="day-info"><span class="day-emoji">${d.emoji}</span><div><div class="day-name">${d.day_name}</div><div class="day-date">${d.short_date}</div></div></div><span class="day-status ${c}">${label}</span></div>`;
     }).join('');
 
-    const weekList = document.getElementById('week-list');
-    weekList.innerHTML = data.next_4_weeks.map(w => {
+    // Render 4 Minggu
+    document.getElementById('week-list').innerHTML = data.next_4_weeks.map(w => {
       const c = w.status === 'SHIFT PAGI' ? 'status-pagi' : 'status-siang';
-      return `
-        <div class="week-item">
-          <span class="week-range">📆 ${w.week_label}</span>
-          <span class="day-status ${c}">${w.status}</span>
-        </div>`;
+      return `<div class="week-item"><span class="week-range">📆 ${w.week_label}</span><span class="day-status ${c}">${w.status}</span></div>`;
     }).join('');
+
+    // Render Kalkulator HK
+    const stats = data.monthly_stats;
+    document.getElementById('stat-bulan').textContent = stats.month_name;
+    document.getElementById('stat-minggu').textContent = stats.total_minggu + ' hari';
+    document.getElementById('stat-rate').textContent = formatRupiah(stats.rate_hk);
+    
+    const inputHari = document.getElementById('input-hari');
+    inputHari.value = 0; // Default 0, user yang isi sendiri sesuai realita
+    inputHari.max = stats.total_minggu; // Maksimal tidak boleh lebih dari jumlah hari Minggu
+    
+    function hitungHK() {
+      const hari = parseInt(inputHari.value) || 0;
+      const total = hari * stats.rate_hk;
+      document.getElementById('total-uang').textContent = formatRupiah(total);
+    }
+    
+    inputHari.addEventListener('input', hitungHK);
   }
 
   render();
