@@ -8,7 +8,7 @@ def hitung_shift(target_date):
     delta_weeks = (target_date - anchor_monday).days // 7
     
     if target_date.weekday() == 6:
-        return {"status": "LIBUR", "time": "-", "emoji": "🏖️"}
+        return {"status": "LIBUR", "time": "-", "emoji": "️"}
     elif delta_weeks % 2 == 0:
         return {"status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}
     else:
@@ -83,7 +83,6 @@ def generate_data():
     }
 
 def generate_data_json(month_key):
-    """Generate/Reset data.json untuk bulan ini."""
     data_file = "data.json"
     old_data = {}
     
