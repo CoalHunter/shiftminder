@@ -3,26 +3,25 @@ import json
 import calendar
 
 def hitung_shift(target_date):
-    anchor_monday = datetime.date(2026, 10, 19)  # SENIN Shift Pagi pertama
+    anchor_monday = datetime.date(2026, 10, 19)
     delta_weeks = (target_date - anchor_monday).days // 7
     
-    if target_date.weekday() == 6:  # Minggu
-        return {"status": "LIBUR", "time": "-", "emoji": "🏖️"}
+    if target_date.weekday() == 6:
+        return {"status": "LIBUR", "time": "-", "emoji": "️"}
     elif delta_weeks % 2 == 0:
         return {"status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}
     else:
         return {"status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}
 
 def generate_data():
-    now_wib_tz = datetime.timezone(datetime.timedelta(hours=7))
-    now_wib = datetime.datetime.now(now_wib_tz)
+    wib_tz = datetime.timezone(datetime.timedelta(hours=7))
+    now_wib = datetime.datetime.now(wib_tz)
     today = now_wib.date()
     
     hari_indo = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
     bulan_indo = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
                   'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
     
-    # --- Data Hari Ini ---
     shift_today = hitung_shift(today)
     today_data = {
         "day_name": hari_indo[today.weekday()],
@@ -30,7 +29,6 @@ def generate_data():
         **shift_today
     }
     
-    # --- 7 Hari ke Depan ---
     next_7_days = []
     for i in range(1, 8):
         d = today + datetime.timedelta(days=i)
@@ -41,7 +39,6 @@ def generate_data():
             **shift
         })
     
-    # --- 4 Minggu ke Depan ---
     next_4_weeks = []
     days_until_monday = (7 - today.weekday()) % 7
     if days_until_monday == 0 and today.weekday() != 0:
@@ -57,21 +54,27 @@ def generate_data():
             **shift
         })
 
-    # --- Statistik Bulan Ini (Untuk Kalkulator HK) ---
     year, month = today.year, today.month
     total_days_in_month = calendar.monthrange(year, month)[1]
     
-    # Hitung berapa banyak hari Minggu (hari libur potensial untuk HK) di bulan ini
     libur_days = 0
     for d in range(1, total_days_in_month + 1):
         date_obj = datetime.date(year, month, d)
-        if date_obj.weekday() == 6: # Minggu
+        if date_obj.weekday() == 6:
             libur_days += 1
 
+    # Perhitungan Upah Sejam & Lembur Pemerintah
+    hk_normal = 170000
+    upah_sejam = hk_normal / 8  # Rp 21.250/jam
+    
     monthly_stats = {
         "month_name": f"{bulan_indo[month-1]} {year}",
-        "total_minggu": libur_days, # Jumlah hari Minggu di bulan ini
-        "rate_hk": 170000 # Nilai Harian Kontan
+        "total_minggu": libur_days, 
+        "rate_hk": hk_normal,
+        "rate_kontanan": hk_normal * 2,  # 340.000
+        "rate_lembur_jam1": round(upah_sejam * 1.5),  # 31.875 (2 jam pertama)
+        "rate_lembur_jam2": round(upah_sejam * 2),    # 42.500 (jam ke-3 dst)
+        "rate_lembur_perusahaan": 7000  # 21.000 / 3 jam = 7.000/jam
     }
     
     return {
@@ -94,4 +97,4 @@ if __name__ == "__main__":
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
     
-    print(f"✅ Done! Hari ini: {data['today']['day_name']}, {data['today']['status']}")
+    print(f"✅ Berhasil! Hari ini: {data['today']['day_name']}, {data['today']['status']}")
