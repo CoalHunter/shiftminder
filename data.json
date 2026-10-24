@@ -3,5 +3,6 @@
   "kontanan_days": [
     25
   ],
-  "lembur_jam": 0
+  "lembur_jam": 0,
+  "lembur_records": []
 }
