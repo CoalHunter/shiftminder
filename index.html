@@ -106,26 +106,32 @@
 </div>
 
 <script>
-  const SHIFT_DATA = /*__SHIFT_DATA_START*/{}/*__SHIFT_DATA_END*/;
+  const SHIFT_DATA = {"last_updated": "24-10-2026 19:54:33", "today": {"day_name": "Sabtu", "full_date": "Sabtu, 24 Oktober 2026", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, "next_7_days": [{"day_name": "Minggu", "short_date": "25 Okt", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, {"day_name": "Senin", "short_date": "26 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Selasa", "short_date": "27 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Rabu", "short_date": "28 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Kamis", "short_date": "29 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Jumat", "short_date": "30 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Sabtu", "short_date": "31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}], "next_4_weeks": [{"week_label": "26 Okt - 31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"week_label": "2 Nov - 7 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "9 Nov - 14 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"week_label": "16 Nov - 21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}]};
 
   function render() {
     const data = SHIFT_DATA;
-    if (!data || !data.today) return;
+    if (!data || !data.today) {
+      console.error('Data tidak valid:', data);
+      return;
+    }
 
-    // Hari ini
     const card = document.getElementById('today-card');
-    card.classList.add(data.today.status === 'SHIFT PAGI' ? 'pagi' : data.today.status === 'SHIFT SIANG' ? 'siang' : 'libur');
+    const cls = data.today.status === 'SHIFT PAGI' ? 'pagi' 
+              : data.today.status === 'SHIFT SIANG' ? 'siang' : 'libur';
+    card.classList.add(cls);
+    
     document.getElementById('today-emoji').textContent = data.today.emoji;
     document.getElementById('today-date').textContent = data.today.full_date;
     document.getElementById('today-status').textContent = data.today.status;
-    document.getElementById('today-time').textContent = data.today.status === 'LIBUR' ? 'Nikmati hari liburmu!' : data.today.time;
+    document.getElementById('today-time').textContent = 
+      data.today.status === 'LIBUR' ? 'Nikmati hari liburmu!' : data.today.time;
     document.getElementById('updated').textContent = `Diperbarui: ${data.last_updated}`;
 
-    // 7 hari ke depan
     const dayList = document.getElementById('day-list');
     dayList.innerHTML = data.next_7_days.map(d => {
-      const cls = d.status === 'SHIFT PAGI' ? 'status-pagi' : d.status === 'SHIFT SIANG' ? 'status-siang' : 'status-libur';
-      const label = d.status === 'LIBUR' ? 'LIBUR' : `${d.status} · ${d.time}`;
+      const c = d.status === 'SHIFT PAGI' ? 'status-pagi' 
+              : d.status === 'SHIFT SIANG' ? 'status-siang' : 'status-libur';
+      const label = d.status === 'LIBUR' ? 'LIBUR' : d.status;
       return `
         <div class="day-item">
           <div class="day-info">
@@ -135,18 +141,17 @@
               <div class="day-date">${d.short_date}</div>
             </div>
           </div>
-          <span class="day-status ${cls}">${label}</span>
+          <span class="day-status ${c}">${label}</span>
         </div>`;
     }).join('');
 
-    // 4 minggu ke depan
     const weekList = document.getElementById('week-list');
     weekList.innerHTML = data.next_4_weeks.map(w => {
-      const cls = w.status === 'SHIFT PAGI' ? 'status-pagi' : 'status-siang';
+      const c = w.status === 'SHIFT PAGI' ? 'status-pagi' : 'status-siang';
       return `
         <div class="week-item">
           <span class="week-range">📆 ${w.week_label}</span>
-          <span class="day-status ${cls}">${w.status}</span>
+          <span class="day-status ${c}">${w.status}</span>
         </div>`;
     }).join('');
   }
