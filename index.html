@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jadwal Shift & HK</title>
+
+<!-- META TAG ANTI-CACHE (Mencegah browser menyimpan file lama) -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -15,7 +21,22 @@
   }
   .container { max-width: 600px; margin: 0 auto; }
   h1 { color: white; text-align: center; margin-bottom: 8px; font-size: 1.8em; }
-  .subtitle { color: rgba(255,255,255,0.85); text-align: center; margin-bottom: 25px; font-size: 0.9em; }
+  .subtitle { color: rgba(255,255,255,0.85); text-align: center; margin-bottom: 15px; font-size: 0.9em; }
+  
+  /* Tombol Refresh Cache */
+  .btn-refresh-container { text-align: center; margin-bottom: 20px; }
+  .btn-refresh {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+  }
+  .btn-refresh:active { background: rgba(255, 255, 255, 0.4); transform: scale(0.95); }
   
   .today-card {
     background: white; border-radius: 20px; padding: 30px; text-align: center;
@@ -50,32 +71,67 @@
   .status-libur { background: #ffe0ec; color: #c0392b; }
   .week-range { font-weight: 500; color: #555; }
 
-  /* --- Style Kalkulator HK --- */
   .calc-card { padding: 20px; }
   .calc-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95em; color: #555; }
   .calc-row strong { color: #333; }
   .calc-divider { height: 1px; background: #eee; margin: 15px 0; }
   .calc-input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-  .calc-input-group label { font-weight: 600; color: #333; }
+  .calc-input-group label { font-weight: 600; color: #333; font-size: 0.9em; }
   .calc-input-group input {
     width: 80px; padding: 8px 12px; border: 2px solid #667eea; border-radius: 8px;
     font-size: 1.1em; font-weight: bold; text-align: center; outline: none;
   }
   .calc-input-group input:focus { border-color: #764ba2; }
-  .calc-total {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%); /* Warna hijau uang */
+  .info-hk { font-size: 0.8em; color: #888; text-align: center; margin-top: 10px; font-style: italic; }
+  
+  .compare-container { display: flex; gap: 10px; margin-bottom: 15px; }
+  .compare-box {
+    flex: 1; padding: 15px 10px; border-radius: 12px; text-align: center;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .compare-box.diberikan { background: #f1f5f9; border: 2px solid #cbd5e1; }
+  .compare-box.seharusnya { background: #ecfdf5; border: 2px solid #10b981; }
+  .compare-box .label { font-size: 0.75em; margin-bottom: 5px; font-weight: 600; }
+  .compare-box.diberikan .label { color: #64748b; }
+  .compare-box.seharusnya .label { color: #059669; }
+  .compare-box .value { font-size: 1.1em; font-weight: 800; color: #334155; }
+  .compare-box.seharusnya .value { color: #059669; font-size: 1.2em; }
+
+  .selisih-box {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white; padding: 15px; border-radius: 12px;
     display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.2);
   }
-  .calc-total span { font-size: 0.9em; opacity: 0.9; }
-  .calc-total strong { font-size: 1.3em; font-weight: 800; }
-  .info-hk { font-size: 0.8em; color: #888; text-align: center; margin-top: 10px; font-style: italic; }
+  .selisih-box span { font-size: 0.9em; opacity: 0.9; font-weight: 500; }
+  .selisih-box strong { font-size: 1.3em; font-weight: 800; }
+
+  .total-box {
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+    color: white; padding: 20px; border-radius: 12px;
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 4px 15px rgba(91, 33, 182, 0.3);
+    margin-top: 15px;
+  }
+  .total-box span { font-size: 1em; font-weight: 600; }
+  .total-box strong { font-size: 1.5em; font-weight: 800; }
+
+  .rate-info {
+    background: #fef3c7; border: 1px solid #fbbf24; border-radius: 8px;
+    padding: 10px; margin-bottom: 15px; font-size: 0.8em; color: #92400e;
+  }
+  .rate-info strong { color: #78350f; }
 </style>
 </head>
 <body>
 <div class="container">
   <h1>⏰ Jadwal Shift Kerja</h1>
   <p class="subtitle">Pagi (07:00-14:00) · Siang (14:00-21:00) · Minggu Libur</p>
+
+  <!-- TOMBOL PAKSA REFRESH -->
+  <div class="btn-refresh-container">
+    <button onclick="forceRefresh()" class="btn-refresh">🔄 Paksa Refresh (Hapus Cache)</button>
+  </div>
 
   <div id="today-card" class="today-card">
     <div class="today-emoji" id="today-emoji">...</div>
@@ -91,33 +147,86 @@
   <div class="section-title">🗓️ 4 Minggu ke Depan</div>
   <div id="week-list" class="card-box"></div>
 
-  <!-- KALKULATOR HARIAN KONTAN (HK) -->
-  <div class="section-title">💰 Kalkulator Harian Kontan (HK)</div>
+  <!-- KALKULATOR HK & LEMBUR -->
+  <div class="section-title">💰 Kalkulator Hak Pekerja (Bulan Ini)</div>
   <div class="card-box calc-card">
+    
+    <div class="rate-info">
+      <strong>📋 Info Rate:</strong><br>
+      HK Normal: Rp 170.000 | Upah Sejam: Rp 21.250<br>
+      Lembur Pemerintah: Jam 1-2 = Rp 31.875/jam, Jam 3+ = Rp 42.500/jam<br>
+      Lembur Perusahaan: Rp 21.000/3 jam (Rp 7.000/jam)
+    </div>
+
     <div class="calc-row">
       <span>Bulan:</span> <strong id="stat-bulan">...</strong>
     </div>
     <div class="calc-row">
-      <span>Jumlah Hari Minggu di Bulan Ini:</span> <strong id="stat-minggu">...</strong>
-    </div>
-    <div class="calc-row">
-      <span>Rate HK per Hari:</span> <strong id="stat-rate">Rp 170.000</strong>
+      <span>Jumlah Hari Minggu:</span> <strong id="stat-minggu">...</strong>
     </div>
     <div class="calc-divider"></div>
+    
     <div class="calc-input-group">
-      <label>Jumlah Hari Anda Masuk (Lembur):</label>
-      <input type="number" id="input-hari" value="0" min="0">
+      <label>🏖️ Hari Kontanan (Kerja di Minggu):</label>
+      <input type="number" id="input-kontanan" value="0" min="0">
     </div>
-    <div class="calc-total">
-      <span>Total Estimasi HK:</span>
-      <strong id="total-uang">Rp 0</strong>
+
+    <div class="compare-container">
+      <div class="compare-box diberikan">
+        <div class="label">DIBERIKAN (HK x 1)</div>
+        <div class="value" id="kontanan-diberikan">Rp 0</div>
+      </div>
+      <div class="compare-box seharusnya">
+        <div class="label">SEHARUSNYA (HK x 2)</div>
+        <div class="value" id="kontanan-seharusnya">Rp 0</div>
+      </div>
     </div>
-    <div class="info-hk">*Masukkan jumlah hari Anda bekerja di hari libur bulan ini untuk melihat estimasi total HK.</div>
+    <div class="selisih-box">
+      <span>📉 Selisih Kontanan:</span>
+      <strong id="selisih-kontanan">Rp 0</strong>
+    </div>
+
+    <div class="calc-divider"></div>
+
+    <div class="calc-input-group">
+      <label>⏱️ Jam Lembur Biasa (Total Jam):</label>
+      <input type="number" id="input-lembur" value="0" min="0">
+    </div>
+
+    <div class="compare-container">
+      <div class="compare-box diberikan">
+        <div class="label">DIBERIKAN (Rp 7.000/jam)</div>
+        <div class="value" id="lembur-diberikan">Rp 0</div>
+      </div>
+      <div class="compare-box seharusnya">
+        <div class="label">SEHARUSNYA (Pemerintah)</div>
+        <div class="value" id="lembur-seharusnya">Rp 0</div>
+      </div>
+    </div>
+    <div class="selisih-box">
+      <span> Selisih Lembur:</span>
+      <strong id="selisih-lembur">Rp 0</strong>
+    </div>
+
+    <div class="total-box">
+      <span>💸 TOTAL HAK YANG HILANG:</span>
+      <strong id="total-selisih">Rp 0</strong>
+    </div>
+
+    <div class="info-hk">*Perhitungan berdasarkan UU Cipta Kerja & PP 35/2021</div>
   </div>
 </div>
 
 <script>
-  const SHIFT_DATA = {"last_updated": "25-10-2026 03:19:12", "today": {"day_name": "Minggu", "full_date": "Minggu, 25 Oktober 2026", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, "next_7_days": [{"day_name": "Senin", "short_date": "26 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Selasa", "short_date": "27 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Rabu", "short_date": "28 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Kamis", "short_date": "29 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Jumat", "short_date": "30 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Sabtu", "short_date": "31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Minggu", "short_date": "1 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}], "next_4_weeks": [{"week_label": "26 Okt - 31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"week_label": "2 Nov - 7 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "9 Nov - 14 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"week_label": "16 Nov - 21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "monthly_stats": {"month_name": "Oktober 2026", "total_minggu": 4, "rate_hk": 170000}};
+  const SHIFT_DATA = {"last_updated": "25-10-2026 03:28:28", "today": {"day_name": "Minggu", "full_date": "Minggu, 25 Oktober 2026", "status": "LIBUR", "time": "-", "emoji": "️"}, "next_7_days": [{"day_name": "Senin", "short_date": "26 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Selasa", "short_date": "27 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Rabu", "short_date": "28 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Kamis", "short_date": "29 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Jumat", "short_date": "30 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Sabtu", "short_date": "31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"day_name": "Minggu", "short_date": "1 Nov", "status": "LIBUR", "time": "-", "emoji": "️"}], "next_4_weeks": [{"week_label": "26 Okt - 31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"week_label": "2 Nov - 7 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "9 Nov - 14 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": "🌇"}, {"week_label": "16 Nov - 21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "monthly_stats": {"month_name": "Oktober 2026", "total_minggu": 4, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}};
+
+  // FUNGSI PAKSA REFRESH (CACHE BUSTING)
+  function forceRefresh() {
+    // Menambahkan parameter waktu unik di belakang URL untuk memaksa browser mengambil file baru
+    const url = new URL(window.location.href);
+    url.searchParams.set('v', Date.now());
+    window.location.href = url.toString();
+  }
 
   function formatRupiah(angka) {
     return 'Rp ' + angka.toLocaleString('id-ID');
@@ -127,7 +236,6 @@
     const data = SHIFT_DATA;
     if (!data || !data.today) return;
 
-    // Render Hari Ini
     const card = document.getElementById('today-card');
     const cls = data.today.status === 'SHIFT PAGI' ? 'pagi' 
               : data.today.status === 'SHIFT SIANG' ? 'siang' : 'libur';
@@ -139,7 +247,6 @@
       data.today.status === 'LIBUR' ? 'Nikmati hari liburmu!' : data.today.time;
     document.getElementById('updated').textContent = `Diperbarui: ${data.last_updated}`;
 
-    // Render 7 Hari
     document.getElementById('day-list').innerHTML = data.next_7_days.map(d => {
       const c = d.status === 'SHIFT PAGI' ? 'status-pagi' 
               : d.status === 'SHIFT SIANG' ? 'status-siang' : 'status-libur';
@@ -147,29 +254,53 @@
       return `<div class="day-item"><div class="day-info"><span class="day-emoji">${d.emoji}</span><div><div class="day-name">${d.day_name}</div><div class="day-date">${d.short_date}</div></div></div><span class="day-status ${c}">${label}</span></div>`;
     }).join('');
 
-    // Render 4 Minggu
     document.getElementById('week-list').innerHTML = data.next_4_weeks.map(w => {
       const c = w.status === 'SHIFT PAGI' ? 'status-pagi' : 'status-siang';
       return `<div class="week-item"><span class="week-range">📆 ${w.week_label}</span><span class="day-status ${c}">${w.status}</span></div>`;
     }).join('');
 
-    // Render Kalkulator HK
     const stats = data.monthly_stats;
     document.getElementById('stat-bulan').textContent = stats.month_name;
     document.getElementById('stat-minggu').textContent = stats.total_minggu + ' hari';
-    document.getElementById('stat-rate').textContent = formatRupiah(stats.rate_hk);
     
-    const inputHari = document.getElementById('input-hari');
-    inputHari.value = 0; // Default 0, user yang isi sendiri sesuai realita
-    inputHari.max = stats.total_minggu; // Maksimal tidak boleh lebih dari jumlah hari Minggu
+    const inputKontanan = document.getElementById('input-kontanan');
+    const inputLembur = document.getElementById('input-lembur');
+    inputKontanan.value = 0;
+    inputLembur.value = 0;
+    inputKontanan.max = stats.total_minggu;
     
-    function hitungHK() {
-      const hari = parseInt(inputHari.value) || 0;
-      const total = hari * stats.rate_hk;
-      document.getElementById('total-uang').textContent = formatRupiah(total);
+    function hitungSemua() {
+      const hariKontanan = parseInt(inputKontanan.value) || 0;
+      const kontananDiberikan = hariKontanan * stats.rate_hk;
+      const kontananSeharusnya = hariKontanan * stats.rate_kontanan;
+      const selisihKontanan = kontananSeharusnya - kontananDiberikan;
+
+      document.getElementById('kontanan-diberikan').textContent = formatRupiah(kontananDiberikan);
+      document.getElementById('kontanan-seharusnya').textContent = formatRupiah(kontananSeharusnya);
+      document.getElementById('selisih-kontanan').textContent = formatRupiah(selisihKontanan);
+
+      const jamLembur = parseInt(inputLembur.value) || 0;
+      const lemburDiberikan = jamLembur * stats.rate_lembur_perusahaan;
+      
+      let lemburSeharusnya = 0;
+      if (jamLembur <= 2) {
+        lemburSeharusnya = jamLembur * stats.rate_lembur_jam1;
+      } else {
+        lemburSeharusnya = (2 * stats.rate_lembur_jam1) + ((jamLembur - 2) * stats.rate_lembur_jam2);
+      }
+      
+      const selisihLembur = lemburSeharusnya - lemburDiberikan;
+
+      document.getElementById('lembur-diberikan').textContent = formatRupiah(lemburDiberikan);
+      document.getElementById('lembur-seharusnya').textContent = formatRupiah(lemburSeharusnya);
+      document.getElementById('selisih-lembur').textContent = formatRupiah(selisihLembur);
+
+      const totalSelisih = selisihKontanan + selisihLembur;
+      document.getElementById('total-selisih').textContent = formatRupiah(totalSelisih);
     }
     
-    inputHari.addEventListener('input', hitungHK);
+    inputKontanan.addEventListener('input', hitungSemua);
+    inputLembur.addEventListener('input', hitungSemua);
   }
 
   render();
