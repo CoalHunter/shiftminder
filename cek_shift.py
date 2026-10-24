@@ -8,7 +8,7 @@ def hitung_shift(target_date):
     delta_weeks = (target_date - anchor_monday).days // 7
     
     if target_date.weekday() == 6:
-        return {"status": "LIBUR", "time": "-", "emoji": "️"}
+        return {"status": "LIBUR", "time": "-", "emoji": "🏖️"}
     elif delta_weeks % 2 == 0:
         return {"status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}
     else:
@@ -96,7 +96,11 @@ def generate_data_json(month_key):
     
     if old_month_key != month_key:
         print(f"📅 Bulan berganti! Reset data.json dari {old_month_key} ke {month_key}")
-        new_data = {"month_key": month_key, "kontanan_days": [], "lembur_jam": 0}
+        new_data = {
+            "month_key": month_key,
+            "kontanan_days": [],
+            "lembur_records": []
+        }
     else:
         new_data = old_data
         print(f"✅ Bulan sama ({month_key}), pertahankan data")
