@@ -26,7 +26,7 @@
   .today-date { color: #888; font-size: 0.75em; }
   .today-status { font-size: 1.3em; font-weight: 800; margin: 2px 0; }
   .today-time { font-size: 0.85em; color: #555; }
-  .today-jam { font-size: 2em; font-weight: 800; color: #667eea; margin: 8px 0 4px; font-family: 'Courier New', monospace; }
+  .today-jam { font-size: 2em; font-weight: 800; color: #667eea; margin: 8px 0 4px; font-family: 'Courier New', monospace; letter-spacing: 2px; }
   .updated { color: #aaa; font-size: 0.6em; margin-top: 4px; }
   .action-btn { color: white; border: none; padding: 10px; border-radius: 10px; font-size: 0.85em; font-weight: 700; cursor: pointer; margin-bottom: 6px; box-shadow: 0 3px 8px rgba(0,0,0,0.2); flex-shrink: 0; display: none; width: 100%; }
   .action-btn:active { transform: scale(0.98); }
@@ -74,15 +74,20 @@
   .rate-info { background: #fef3c7; border: 1px solid #fbbf24; border-radius: 6px; padding: 6px; margin-bottom: 6px; font-size: 0.65em; color: #92400e; line-height: 1.3; }
   .rate-info strong { color: #78350f; }
   .catatan-list { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; }
-  .catatan-item { background: #fef3c7; border-radius: 8px; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; }
-  .catatan-info { flex: 1; }
+  .catatan-item { background: #fef3c7; border-radius: 8px; padding: 8px 10px; }
+  .catatan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
   .catatan-tanggal { font-weight: 700; font-size: 0.85em; color: #92400e; }
-  .catatan-label { font-size: 0.7em; color: #78350f; margin-top: 2px; }
   .catatan-actions { display: flex; gap: 6px; }
   .catatan-btn { background: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.8em; cursor: pointer; font-weight: 600; }
   .catatan-btn.edit { color: #3b82f6; }
   .catatan-btn.hapus { color: #dc2626; }
   .catatan-btn:active { opacity: 0.7; }
+  .catatan-detail { background: white; border-radius: 6px; padding: 6px 8px; margin-top: 4px; font-size: 0.7em; }
+  .detail-row { display: flex; justify-content: space-between; margin-bottom: 3px; color: #555; }
+  .detail-row:last-child { margin-bottom: 0; }
+  .detail-row.total { border-top: 1px solid #e5e7eb; padding-top: 3px; margin-top: 3px; font-weight: 700; color: #333; }
+  .detail-label { flex: 1; }
+  .detail-value { font-weight: 600; color: #333; }
   .no-catatan { font-size: 0.7em; color: #888; font-style: italic; text-align: center; padding: 8px; }
   .action-buttons { display: flex; gap: 6px; margin-top: 6px; }
   .btn-aksi { flex: 1; padding: 8px; border: none; border-radius: 8px; font-size: 0.75em; font-weight: 700; cursor: pointer; color: white; }
@@ -107,6 +112,8 @@
   .modal-btn.ya { background: #10b981; color: white; }
   .modal-btn.tidak { background: #e5e7eb; color: #374151; }
   .modal-btn:active { opacity: 0.8; }
+  .perhitungan-info { background: #f0f9ff; border: 1px solid #7dd3fc; border-radius: 8px; padding: 8px; margin: 10px 0; font-size: 0.75em; color: #0c4a6e; text-align: left; }
+  .perhitungan-info strong { color: #075985; }
 </style>
 </head>
 <body>
@@ -115,7 +122,7 @@
     <h1>⏰ Jadwal Shift Kerja</h1>
     <p class="subtitle">Pagi (07-14) · Siang (14-21) · Minggu Libur</p>
   </div>
-  <button onclick="forceRefresh()" class="btn-refresh"> Paksa Refresh</button>
+  <button onclick="forceRefresh()" class="btn-refresh">🔄 Paksa Refresh</button>
   <div id="today-card" class="today-card">
     <div class="today-emoji" id="today-emoji">...</div>
     <div class="today-date" id="today-date">Memuat...</div>
@@ -129,7 +136,7 @@
     <span class="action-sub">Tap untuk mencatat hari libur kerja</span>
   </button>
   <button id="btn-lembur" class="action-btn btn-lembur" onclick="tanyaLembur()">
-    ⏱️ Apakah Hari Ini Lembur?
+    ️ Apakah Hari Ini Lembur?
     <span class="action-sub">Tap untuk mencatat jam lembur</span>
   </button>
   <div class="scroll-area">
@@ -143,22 +150,22 @@
       <div class="calc-row"><span>Bulan:</span> <strong id="stat-bulan">...</strong></div>
       <div class="calc-row"><span>Hari Minggu:</span> <strong id="stat-minggu">...</strong></div>
       <div class="calc-row"><span>📝 Kontanan Tercatat:</span> <strong id="stat-kontanan">0 hari</strong></div>
-      <div class="calc-row"><span>️ Total Jam Lembur:</span> <strong id="stat-lembur">0 jam</strong></div>
+      <div class="calc-row"><span>⏱️ Total Jam Lembur:</span> <strong id="stat-lembur">0 jam</strong></div>
       <div class="calc-divider"></div>
-      <div class="calc-row" style="margin-bottom: 4px;"><span style="font-weight: 600; font-size: 0.75em;">📌 Catatan Bulan Ini:</span></div>
+      <div class="calc-row" style="margin-bottom: 4px;"><span style="font-weight: 600; font-size: 0.75em;"> Catatan Bulan Ini:</span></div>
       <div id="catatan-list" class="catatan-list"></div>
       <div class="calc-divider"></div>
       <div class="compare-container">
         <div class="compare-box diberikan"><div class="label">DIBERIKAN</div><div class="value" id="kontanan-diberikan">Rp 0</div></div>
         <div class="compare-box seharusnya"><div class="label">SEHARUSNYA</div><div class="value" id="kontanan-seharusnya">Rp 0</div></div>
       </div>
-      <div class="selisih-box"><span>📉 Selisih Kontanan:</span><strong id="selisih-kontanan">Rp 0</strong></div>
+      <div class="selisih-box"><span> Selisih Kontanan:</span><strong id="selisih-kontanan">Rp 0</strong></div>
       <div class="calc-divider"></div>
       <div class="compare-container">
         <div class="compare-box diberikan"><div class="label">LEMBUR DIBERIKAN</div><div class="value" id="lembur-diberikan">Rp 0</div></div>
         <div class="compare-box seharusnya"><div class="label">LEMBUR SEHARUSNYA</div><div class="value" id="lembur-seharusnya">Rp 0</div></div>
       </div>
-      <div class="selisih-box"><span> Selisih Lembur:</span><strong id="selisih-lembur">Rp 0</strong></div>
+      <div class="selisih-box"><span>📉 Selisih Lembur:</span><strong id="selisih-lembur">Rp 0</strong></div>
       <div class="total-box"><span>💸 TOTAL UPAH HILANG:</span><strong id="total-selisih">Rp 0</strong></div>
       <div class="action-buttons">
         <button class="btn-aksi btn-export" onclick="exportExcel()">📊 Export Excel</button>
@@ -173,6 +180,12 @@
   <div class="modal-box">
     <h3>🏖️ Konfirmasi Kontanan</h3>
     <p id="modal-tanggal-kontanan">Apakah Anda bekerja hari ini?</p>
+    <div class="perhitungan-info">
+      <strong>Perhitungan Kontanan (Hari Libur):</strong><br>
+      • HK Normal: Rp 170.000<br>
+      • Kontanan (HK × 2): Rp 340.000<br>
+      • Selisih yang hilang: Rp 170.000
+    </div>
     <div class="modal-buttons">
       <button class="modal-btn tidak" onclick="tutupModal('modal-kontanan')">Tidak</button>
       <button class="modal-btn ya" onclick="catatKontanan()">Ya, Catat!</button>
@@ -184,6 +197,12 @@
     <h3>️ Catat Jam Lembur</h3>
     <p id="modal-tanggal-lembur">Berapa jam Anda lembur hari ini?</p>
     <div class="jam-options" id="jam-options"></div>
+    <div class="perhitungan-info">
+      <strong>Perhitungan Lembur (UU Cipta Kerja):</strong><br>
+      • 2 jam pertama: 1.5× upah sejam = Rp 31.875/jam<br>
+      • Jam ke-3 dst: 2× upah sejam = Rp 42.500/jam<br>
+      • Perusahaan: Rp 7.000/jam (flat)
+    </div>
     <div class="modal-buttons">
       <button class="modal-btn tidak" onclick="tutupModal('modal-lembur')">Batal</button>
       <button class="modal-btn ya" onclick="simpanLemburManual()">Simpan</button>
@@ -193,7 +212,7 @@
 <div id="modal-edit" class="modal-overlay">
   <div class="modal-box">
     <h3>✏️ Edit Catatan</h3>
-    <p id="modal-edit-info">Edit jam lembur:</p>
+    <p id="modal-edit-info">Edit catatan:</p>
     <div class="jam-options" id="jam-options-edit"></div>
     <div style="margin-bottom: 10px;">
       <label style="font-size: 0.85em; color: #666;">
@@ -227,6 +246,13 @@
   let editTanggal = null;
   let lastDateChecked = null;
 
+  function getWibNow() {
+    const now = new Date();
+    return new Date(now.getTime() + (7 * 60 * 60 * 1000));
+  }
+  function getWibDate() { return getWibNow().getUTCDate(); }
+  function getWibDay() { return getWibNow().getUTCDay(); }
+
   function getToken() { return localStorage.getItem(TOKEN_KEY); }
   function setupToken() {
     document.getElementById('input-token').value = getToken() || '';
@@ -245,15 +271,17 @@
 
   async function getDataFromRepo() {
     const token = getToken();
-    if (!token) { showStatus('⚠️ Klik "Setup Token" dulu!', 'error'); return null; }
+    if (!token) { console.warn('⚠️ Token belum disetup'); return null; }
     try {
       const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE_PATH}`, {
-        headers: { 'Accept': 'application/vnd.github.v3+json', 'Authorization': `Bearer ${token}` }
+        headers: { 'Accept': 'application/vnd.github.v3+json', 'Authorization': `Bearer ${token}`, 'Cache-Control': 'no-cache' }
       });
-      if (!res.ok) throw new Error('File tidak ditemukan');
+      if (!res.ok) { console.error('❌ HTTP Error:', res.status); return null; }
       const data = await res.json();
-      return { content: JSON.parse(atob(data.content)), sha: data.sha };
-    } catch (e) { console.error('Gagal baca data.json:', e); return null; }
+      const content = JSON.parse(atob(data.content));
+      console.log('✅ Data dari GitHub:', content);
+      return { content, sha: data.sha };
+    } catch (e) { console.error('❌ Gagal baca data.json:', e); return null; }
   }
 
   async function updateDataInRepo(newData, sha) {
@@ -266,21 +294,23 @@
       body: JSON.stringify({ message: `Update data - ${new Date().toISOString()}`, content, sha })
     });
     if (!res.ok) { const err = await res.json(); throw new Error(err.message || 'Gagal update'); }
+    console.log('✅ Data tersimpan ke GitHub:', newData);
     return true;
   }
 
   async function loadDataFromGitHub() {
     const token = getToken();
-    if (!token) return;
+    if (!token) { console.log('ℹ️ Token belum disetup, pakai data dari Python'); return; }
     try {
       const repoData = await getDataFromRepo();
-      if (repoData) {
-        SHIFT_DATA.saved_data = repoData.content;
-        console.log('✅ Data berhasil dimuat dari GitHub:', repoData.content);
+      if (repoData && repoData.content) {
+        const data = repoData.content;
+        if (!data.kontanan_days) data.kontanan_days = [];
+        if (!data.lembur_records) data.lembur_records = [];
+        SHIFT_DATA.saved_data = data;
+        console.log('✅ SHIFT_DATA.saved_data diupdate:', data);
       }
-    } catch (e) {
-      console.error('Gagal load data dari GitHub:', e);
-    }
+    } catch (e) { console.error('❌ Error load data:', e); }
   }
 
   function showStatus(msg, type) {
@@ -290,40 +320,32 @@
     setTimeout(() => { el.textContent = ''; el.className = 'sync-status'; }, 4000);
   }
 
-  // ===== JAM REAL-TIME =====
   function updateJam() {
-    const now = new Date();
-    // WIB = UTC+7
-    const wibTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
-    const hours = String(wibTime.getUTCHours()).padStart(2, '0');
-    const minutes = String(wibTime.getUTCMinutes()).padStart(2, '0');
-    const seconds = String(wibTime.getUTCSeconds()).padStart(2, '0');
+    const wib = getWibNow();
+    const hours = String(wib.getUTCHours()).padStart(2, '0');
+    const minutes = String(wib.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(wib.getUTCSeconds()).padStart(2, '0');
     document.getElementById('today-jam').textContent = `${hours}:${minutes}:${seconds}`;
-    
-    // Cek pergantian hari (jam 00:00 WIB)
-    const currentDate = wibTime.getUTCDate();
+    const currentDate = wib.getUTCDate();
     if (lastDateChecked !== null && currentDate !== lastDateChecked) {
-      console.log(' Hari berganti! Auto-refresh...');
+      console.log('🌙 Hari berganti! Auto-refresh...');
       forceRefresh();
     }
     lastDateChecked = currentDate;
   }
 
   function tanyaKontanan() {
-    if (!getToken()) { showStatus('️ Klik "Setup Token" dulu!', 'error'); setupToken(); return; }
-    const now = new Date();
-    const wibTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+    if (!getToken()) { showStatus('⚠️ Klik "Setup Token" dulu!', 'error'); setupToken(); return; }
+    const wib = getWibNow();
     const hariIndo = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
     const bulanIndo = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    document.getElementById('modal-tanggal-kontanan').textContent = `Apakah Anda bekerja hari ini?\n(${hariIndo[wibTime.getUTCDay()]}, ${wibTime.getUTCDate()} ${bulanIndo[wibTime.getUTCMonth()]} ${wibTime.getUTCFullYear()})`;
+    document.getElementById('modal-tanggal-kontanan').textContent = `Apakah Anda bekerja hari ini?\n(${hariIndo[wib.getUTCDay()]}, ${wib.getUTCDate()} ${bulanIndo[wib.getUTCMonth()]} ${wib.getUTCFullYear()})`;
     document.getElementById('modal-kontanan').classList.add('active');
   }
 
   async function catatKontanan() {
-    const now = new Date();
-    const wibTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
-    const tanggalHariIni = wibTime.getUTCDate();
-    showStatus(' Menyimpan ke GitHub...', '');
+    const tanggalHariIni = getWibDate();
+    showStatus('⏳ Menyimpan ke GitHub...', '');
     const repoData = await getDataFromRepo();
     if (!repoData) { showStatus('❌ Gagal baca data', 'error'); tutupModal('modal-kontanan'); return; }
     const data = repoData.content;
@@ -344,11 +366,10 @@
 
   function tanyaLembur() {
     if (!getToken()) { showStatus('⚠️ Klik "Setup Token" dulu!', 'error'); setupToken(); return; }
-    const now = new Date();
-    const wibTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+    const wib = getWibNow();
     const hariIndo = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
     const bulanIndo = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    document.getElementById('modal-tanggal-lembur').textContent = `Berapa jam Anda lembur hari ini?\n(${hariIndo[wibTime.getUTCDay()]}, ${wibTime.getUTCDate()} ${bulanIndo[wibTime.getUTCMonth()]})`;
+    document.getElementById('modal-tanggal-lembur').textContent = `Berapa jam Anda lembur hari ini?\n(${hariIndo[wib.getUTCDay()]}, ${wib.getUTCDate()} ${bulanIndo[wib.getUTCMonth()]})`;
     selectedJam = 0;
     renderJamOptions('jam-options', 0);
     document.getElementById('modal-lembur').classList.add('active');
@@ -361,31 +382,23 @@
       const btn = document.createElement('button');
       btn.className = 'jam-btn' + (i === selected ? ' selected' : '');
       btn.textContent = i + ' jam';
-      btn.onclick = () => {
-        selectedJam = i;
-        renderJamOptions(containerId, i);
-      };
+      btn.onclick = () => { selectedJam = i; renderJamOptions(containerId, i); };
       container.appendChild(btn);
     }
   }
 
   async function simpanLemburManual() {
     if (selectedJam === 0) { showStatus('⚠️ Pilih jumlah jam dulu!', 'error'); return; }
-    const now = new Date();
-    const wibTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
-    const tanggalHariIni = wibTime.getUTCDate();
+    const tanggalHariIni = getWibDate();
     showStatus('⏳ Menyimpan ke GitHub...', '');
     const repoData = await getDataFromRepo();
-    if (!repoData) { showStatus(' Gagal baca data', 'error'); tutupModal('modal-lembur'); return; }
+    if (!repoData) { showStatus('❌ Gagal baca data', 'error'); tutupModal('modal-lembur'); return; }
     const data = repoData.content;
     if (!data.kontanan_days) data.kontanan_days = [];
     if (!data.lembur_records) data.lembur_records = [];
     const existingIdx = data.lembur_records.findIndex(r => r.date === tanggalHariIni);
-    if (existingIdx >= 0) {
-      data.lembur_records[existingIdx].jam = selectedJam;
-    } else {
-      data.lembur_records.push({ date: tanggalHariIni, jam: selectedJam });
-    }
+    if (existingIdx >= 0) { data.lembur_records[existingIdx].jam = selectedJam; }
+    else { data.lembur_records.push({ date: tanggalHariIni, jam: selectedJam }); }
     data.lembur_records.sort((a,b) => a.date - b.date);
     try {
       await updateDataInRepo(data, repoData.sha);
@@ -412,7 +425,7 @@
 
   async function simpanEdit() {
     if (editTanggal === null) return;
-    showStatus('⏳ Menyimpan perubahan...', '');
+    showStatus(' Menyimpan perubahan...', '');
     const repoData = await getDataFromRepo();
     if (!repoData) { showStatus('❌ Gagal baca data', 'error'); tutupModal('modal-edit'); return; }
     const data = repoData.content;
@@ -422,19 +435,12 @@
     if (isKontanan && !data.kontanan_days.includes(editTanggal)) {
       data.kontanan_days.push(editTanggal);
       data.kontanan_days.sort((a,b) => a-b);
-    } else if (!isKontanan) {
-      data.kontanan_days = data.kontanan_days.filter(d => d !== editTanggal);
-    }
+    } else if (!isKontanan) { data.kontanan_days = data.kontanan_days.filter(d => d !== editTanggal); }
     if (selectedJam > 0) {
       const existingIdx = data.lembur_records.findIndex(r => r.date === editTanggal);
-      if (existingIdx >= 0) {
-        data.lembur_records[existingIdx].jam = selectedJam;
-      } else {
-        data.lembur_records.push({ date: editTanggal, jam: selectedJam });
-      }
-    } else {
-      data.lembur_records = data.lembur_records.filter(r => r.date !== editTanggal);
-    }
+      if (existingIdx >= 0) { data.lembur_records[existingIdx].jam = selectedJam; }
+      else { data.lembur_records.push({ date: editTanggal, jam: selectedJam }); }
+    } else { data.lembur_records = data.lembur_records.filter(r => r.date !== editTanggal); }
     data.lembur_records.sort((a,b) => a.date - b.date);
     try {
       await updateDataInRepo(data, repoData.sha);
@@ -447,7 +453,7 @@
 
   async function hapusCatatan(tanggal) {
     if (!confirm(`Hapus catatan tanggal ${tanggal}?`)) return;
-    showStatus(' Menghapus...', '');
+    showStatus('⏳ Menghapus...', '');
     const repoData = await getDataFromRepo();
     if (!repoData) return;
     const data = repoData.content;
@@ -460,7 +466,7 @@
       SHIFT_DATA.saved_data = data;
       showStatus('✅ Dihapus!', 'success');
       render();
-    } catch (e) { showStatus('❌ Gagal: ' + e.message, 'error'); }
+    } catch (e) { showStatus(' Gagal: ' + e.message, 'error'); }
   }
 
   function exportExcel() {
@@ -468,7 +474,7 @@
     const stats = data.monthly_stats;
     const saved = data.saved_data || { kontanan_days: [], lembur_records: [] };
     const hariKontanan = saved.kontanan_days.length;
-    const totalJamLembur = saved.lembur_records.reduce((sum, r) => sum + r.jam, 0);
+    const totalJamLembur = saved.lembur_records.reduce((sum, r) => sum + (r.jam || 0), 0);
     const kontananDiberikan = hariKontanan * stats.rate_hk;
     const kontananSeharusnya = hariKontanan * stats.rate_kontanan;
     const selisihKontanan = kontananSeharusnya - kontananDiberikan;
@@ -495,6 +501,41 @@
   function forceRefresh() { const url = new URL(window.location.href); url.searchParams.set('v', Date.now()); window.location.href = url.toString(); }
   function formatRupiah(angka) { return 'Rp ' + angka.toLocaleString('id-ID'); }
 
+  // ===== HITUNG DETAIL PERHITUNGAN =====
+  function hitungDetailKontanan() {
+    const stats = SHIFT_DATA.monthly_stats;
+    return {
+      diberikan: stats.rate_hk,
+      seharusnya: stats.rate_kontanan,
+      selisih: stats.rate_kontanan - stats.rate_hk
+    };
+  }
+
+  function hitungDetailLembur(jam) {
+    const stats = SHIFT_DATA.monthly_stats;
+    const diberikan = jam * stats.rate_lembur_perusahaan;
+    let seharusnya = 0;
+    let breakdown = [];
+    
+    if (jam <= 2) {
+      seharusnya = jam * stats.rate_lembur_jam1;
+      breakdown.push(`${jam} jam × Rp ${formatRupiah(stats.rate_lembur_jam1)} = Rp ${formatRupiah(seharusnya)}`);
+    } else {
+      const jam2Pertama = 2 * stats.rate_lembur_jam1;
+      const jamSisanya = (jam - 2) * stats.rate_lembur_jam2;
+      seharusnya = jam2Pertama + jamSisanya;
+      breakdown.push(`2 jam × Rp ${formatRupiah(stats.rate_lembur_jam1)} = Rp ${formatRupiah(jam2Pertama)}`);
+      breakdown.push(`${jam-2} jam × Rp ${formatRupiah(stats.rate_lembur_jam2)} = Rp ${formatRupiah(jamSisanya)}`);
+    }
+    
+    return {
+      diberikan,
+      seharusnya,
+      selisih: seharusnya - diberikan,
+      breakdown
+    };
+  }
+
   function render() {
     const data = SHIFT_DATA;
     if (!data || !data.today) return;
@@ -506,23 +547,23 @@
     document.getElementById('today-status').textContent = data.today.status;
     document.getElementById('today-time').textContent = data.today.status === 'LIBUR' ? 'Nikmati hari liburmu!' : data.today.time;
     document.getElementById('updated').textContent = `Data diupdate: ${data.last_updated}`;
-
-    // Update jam real-time
     updateJam();
 
-    const now = new Date();
-    const wibTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
     const saved = data.saved_data || { kontanan_days: [], lembur_records: [] };
     if (!saved.kontanan_days) saved.kontanan_days = [];
     if (!saved.lembur_records) saved.lembur_records = [];
 
+    console.log('🎨 Render dengan data:', saved);
+
     const btnKontanan = document.getElementById('btn-kontanan');
     const btnLembur = document.getElementById('btn-lembur');
+    const wibDate = getWibDate();
+    const wibDay = getWibDay();
     
-    if (wibTime.getUTCDay() === 0) {
+    if (wibDay === 0) {
       btnKontanan.style.display = 'block';
       btnLembur.style.display = 'none';
-      if (saved.kontanan_days.includes(wibTime.getUTCDate())) {
+      if (saved.kontanan_days.includes(wibDate)) {
         btnKontanan.classList.add('sudah-catat');
         btnKontanan.innerHTML = '✅ Sudah Dicatat Hari Ini<span class="action-sub">Tap untuk konfirmasi ulang</span>';
       } else {
@@ -532,7 +573,7 @@
     } else {
       btnKontanan.style.display = 'none';
       btnLembur.style.display = 'block';
-      const lemburToday = saved.lembur_records.find(r => r.date === wibTime.getUTCDate());
+      const lemburToday = saved.lembur_records.find(r => r.date === wibDate);
       if (lemburToday) {
         btnLembur.classList.add('sudah-catat');
         btnLembur.innerHTML = `✅ Sudah Dicatat: ${lemburToday.jam} Jam<span class="action-sub">Tap untuk ubah jam lembur</span>`;
@@ -555,7 +596,7 @@
 
     const stats = data.monthly_stats;
     const hariKontanan = saved.kontanan_days.length;
-    const totalJamLembur = saved.lembur_records.reduce((sum, r) => sum + r.jam, 0);
+    const totalJamLembur = saved.lembur_records.reduce((sum, r) => sum + (r.jam || 0), 0);
 
     document.getElementById('stat-bulan').textContent = stats.month_name;
     document.getElementById('stat-minggu').textContent = stats.total_minggu + ' hari';
@@ -581,10 +622,41 @@
       const bulanSingkat = stats.month_name.split(' ')[0].substring(0,3);
       listContainer.innerHTML = allRecords.map(rec => {
         let label = '';
-        if (rec.is_kontanan && rec.jam > 0) label = `KONTANAN + LEMBUR ${rec.jam} JAM`;
-        else if (rec.is_kontanan) label = 'KONTANAN';
-        else label = `LEMBUR ${rec.jam} JAM`;
-        return `<div class="catatan-item"><div class="catatan-info"><div class="catatan-tanggal">${rec.date} ${bulanSingkat}</div><div class="catatan-label">${label}</div></div><div class="catatan-actions"><button class="catatan-btn edit" onclick="editCatatan(${rec.date})">✏️</button><button class="catatan-btn hapus" onclick="hapusCatatan(${rec.date})">✕</button></div></div>`;
+        let detailHtml = '';
+        
+        if (rec.is_kontanan && rec.jam > 0) {
+          label = `KONTANAN + LEMBUR ${rec.jam} JAM`;
+          const detailK = hitungDetailKontanan();
+          const detailL = hitungDetailLembur(rec.jam);
+          detailHtml = `
+            <div class="catatan-detail">
+              <div class="detail-row"><span class="detail-label">Kontanan (HK×2):</span><span class="detail-value">Rp ${formatRupiah(detailK.seharusnya)}</span></div>
+              <div class="detail-row"><span class="detail-label">Lembur ${rec.jam} jam:</span><span class="detail-value">Rp ${formatRupiah(detailL.seharusnya)}</span></div>
+              ${detailL.breakdown.map(b => `<div class="detail-row" style="font-size:0.9em;color:#888;"><span class="detail-label">  ${b}</span></div>`).join('')}
+              <div class="detail-row total"><span class="detail-label">Total Seharusnya:</span><span class="detail-value">Rp ${formatRupiah(detailK.seharusnya + detailL.seharusnya)}</span></div>
+            </div>`;
+        } else if (rec.is_kontanan) {
+          label = 'KONTANAN';
+          const detail = hitungDetailKontanan();
+          detailHtml = `
+            <div class="catatan-detail">
+              <div class="detail-row"><span class="detail-label">Diberikan (HK×1):</span><span class="detail-value">Rp ${formatRupiah(detail.diberikan)}</span></div>
+              <div class="detail-row"><span class="detail-label">Seharusnya (HK×2):</span><span class="detail-value">Rp ${formatRupiah(detail.seharusnya)}</span></div>
+              <div class="detail-row total"><span class="detail-label">Selisih:</span><span class="detail-value" style="color:#dc2626;">Rp ${formatRupiah(detail.selisih)}</span></div>
+            </div>`;
+        } else {
+          label = `LEMBUR ${rec.jam} JAM`;
+          const detail = hitungDetailLembur(rec.jam);
+          detailHtml = `
+            <div class="catatan-detail">
+              <div class="detail-row"><span class="detail-label">Diberikan:</span><span class="detail-value">Rp ${formatRupiah(detail.diberikan)}</span></div>
+              ${detail.breakdown.map(b => `<div class="detail-row" style="font-size:0.9em;color:#888;"><span class="detail-label">  ${b}</span></div>`).join('')}
+              <div class="detail-row"><span class="detail-label">Seharusnya:</span><span class="detail-value">Rp ${formatRupiah(detail.seharusnya)}</span></div>
+              <div class="detail-row total"><span class="detail-label">Selisih:</span><span class="detail-value" style="color:#dc2626;">Rp ${formatRupiah(detail.selisih)}</span></div>
+            </div>`;
+        }
+        
+        return `<div class="catatan-item"><div class="catatan-header"><div class="catatan-tanggal">${rec.date} ${bulanSingkat}</div><div class="catatan-actions"><button class="catatan-btn edit" onclick="editCatatan(${rec.date})">️</button><button class="catatan-btn hapus" onclick="hapusCatatan(${rec.date})">✕</button></div></div><div style="font-size:0.75em;color:#78350f;margin-bottom:4px;">${label}</div>${detailHtml}</div>`;
       }).join('');
     }
 
@@ -607,9 +679,9 @@
   }
 
   async function init() {
+    console.log('🚀 ShiftMinder init...');
     await loadDataFromGitHub();
     render();
-    // Update jam setiap detik
     setInterval(updateJam, 1000);
   }
   init();
