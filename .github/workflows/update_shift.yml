@@ -2,18 +2,16 @@ name: Update Jadwal Shift
 
 on:
   schedule:
-    - cron: '0 23 * * *'   # Jam 06:00 WIB setiap hari
+    - cron: '0 17 * * 6'   # Sabtu 17:00 UTC = Minggu 00:00 WIB
   workflow_dispatch:
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    env:
-      TZ: Asia/Jakarta      # ← TAMBAH INI!
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5.6.0
         with:
           python-version: '3.11'
 
@@ -24,6 +22,6 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add index.html
-          git diff --staged --quiet || git commit -m "Update jadwal shift"
+          git add index.html data.json
+          git diff --staged --quiet || git commit -m "Weekly update: $(TZ=Asia/Jakarta date '+%d-%m-%Y %H:%M WIB')"
           git push
