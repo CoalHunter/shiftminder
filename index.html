@@ -26,6 +26,7 @@
   .today-date { color: #888; font-size: 0.75em; }
   .today-status { font-size: 1.3em; font-weight: 800; margin: 2px 0; }
   .today-time { font-size: 0.85em; color: #555; }
+  .today-jam { font-size: 2em; font-weight: 800; color: #667eea; margin: 8px 0 4px; font-family: 'Courier New', monospace; }
   .updated { color: #aaa; font-size: 0.6em; margin-top: 4px; }
   .action-btn { color: white; border: none; padding: 10px; border-radius: 10px; font-size: 0.85em; font-weight: 700; cursor: pointer; margin-bottom: 6px; box-shadow: 0 3px 8px rgba(0,0,0,0.2); flex-shrink: 0; display: none; width: 100%; }
   .action-btn:active { transform: scale(0.98); }
@@ -114,10 +115,11 @@
     <h1>⏰ Jadwal Shift Kerja</h1>
     <p class="subtitle">Pagi (07-14) · Siang (14-21) · Minggu Libur</p>
   </div>
-  <button onclick="forceRefresh()" class="btn-refresh">🔄 Paksa Refresh</button>
+  <button onclick="forceRefresh()" class="btn-refresh"> Paksa Refresh</button>
   <div id="today-card" class="today-card">
     <div class="today-emoji" id="today-emoji">...</div>
     <div class="today-date" id="today-date">Memuat...</div>
+    <div class="today-jam" id="today-jam">--:--:--</div>
     <div class="today-status" id="today-status">...</div>
     <div class="today-time" id="today-time">...</div>
     <div class="updated" id="updated">...</div>
@@ -137,26 +139,26 @@
     <div id="week-list" class="card-box"></div>
     <div class="section-title">💰 Kalkulator Upah Pekerja</div>
     <div class="card-box calc-card">
-      <div class="rate-info"><strong> Rate:</strong> HK Rp170rb | Sejam Rp21.250 | Lembur Gov: 1-2jam=Rp31.875, 3+=Rp42.500 | Lembur PT: Rp7.000/jam</div>
+      <div class="rate-info"><strong>📋 Rate:</strong> HK Rp170rb | Sejam Rp21.250 | Lembur Gov: 1-2jam=Rp31.875, 3+=Rp42.500 | Lembur PT: Rp7.000/jam</div>
       <div class="calc-row"><span>Bulan:</span> <strong id="stat-bulan">...</strong></div>
       <div class="calc-row"><span>Hari Minggu:</span> <strong id="stat-minggu">...</strong></div>
       <div class="calc-row"><span>📝 Kontanan Tercatat:</span> <strong id="stat-kontanan">0 hari</strong></div>
-      <div class="calc-row"><span>⏱️ Total Jam Lembur:</span> <strong id="stat-lembur">0 jam</strong></div>
+      <div class="calc-row"><span>️ Total Jam Lembur:</span> <strong id="stat-lembur">0 jam</strong></div>
       <div class="calc-divider"></div>
-      <div class="calc-row" style="margin-bottom: 4px;"><span style="font-weight: 600; font-size: 0.75em;"> Catatan Bulan Ini:</span></div>
+      <div class="calc-row" style="margin-bottom: 4px;"><span style="font-weight: 600; font-size: 0.75em;">📌 Catatan Bulan Ini:</span></div>
       <div id="catatan-list" class="catatan-list"></div>
       <div class="calc-divider"></div>
       <div class="compare-container">
         <div class="compare-box diberikan"><div class="label">DIBERIKAN</div><div class="value" id="kontanan-diberikan">Rp 0</div></div>
         <div class="compare-box seharusnya"><div class="label">SEHARUSNYA</div><div class="value" id="kontanan-seharusnya">Rp 0</div></div>
       </div>
-      <div class="selisih-box"><span> Selisih Kontanan:</span><strong id="selisih-kontanan">Rp 0</strong></div>
+      <div class="selisih-box"><span>📉 Selisih Kontanan:</span><strong id="selisih-kontanan">Rp 0</strong></div>
       <div class="calc-divider"></div>
       <div class="compare-container">
         <div class="compare-box diberikan"><div class="label">LEMBUR DIBERIKAN</div><div class="value" id="lembur-diberikan">Rp 0</div></div>
         <div class="compare-box seharusnya"><div class="label">LEMBUR SEHARUSNYA</div><div class="value" id="lembur-seharusnya">Rp 0</div></div>
       </div>
-      <div class="selisih-box"><span>📉 Selisih Lembur:</span><strong id="selisih-lembur">Rp 0</strong></div>
+      <div class="selisih-box"><span> Selisih Lembur:</span><strong id="selisih-lembur">Rp 0</strong></div>
       <div class="total-box"><span>💸 TOTAL UPAH HILANG:</span><strong id="total-selisih">Rp 0</strong></div>
       <div class="action-buttons">
         <button class="btn-aksi btn-export" onclick="exportExcel()">📊 Export Excel</button>
@@ -179,7 +181,7 @@
 </div>
 <div id="modal-lembur" class="modal-overlay">
   <div class="modal-box">
-    <h3>⏱️ Catat Jam Lembur</h3>
+    <h3>️ Catat Jam Lembur</h3>
     <p id="modal-tanggal-lembur">Berapa jam Anda lembur hari ini?</p>
     <div class="jam-options" id="jam-options"></div>
     <div class="modal-buttons">
@@ -216,13 +218,14 @@
   </div>
 </div>
 <script>
-  const SHIFT_DATA = {"last_updated": "27-10-2026 05:09:18", "today": {"day_name": "Selasa", "full_date": "Selasa, 27 Oktober 2026", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, "next_7_days": [{"day_name": "Rabu", "short_date": "28 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Kamis", "short_date": "29 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Jumat", "short_date": "30 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Sabtu", "short_date": "31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Minggu", "short_date": "1 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, {"day_name": "Senin", "short_date": "2 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Selasa", "short_date": "3 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "next_4_weeks": [{"week_label": "2 Nov - 7 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "9 Nov - 14 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "16 Nov - 21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "23 Nov - 28 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}], "monthly_stats": {"month_name": "Oktober 2026", "month_key": "2026-10", "total_minggu": 4, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}};
+  const SHIFT_DATA = {"last_updated": "27-10-2026 05:17:46", "today": {"day_name": "Selasa", "full_date": "Selasa, 27 Oktober 2026", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, "next_7_days": [{"day_name": "Rabu", "short_date": "28 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Kamis", "short_date": "29 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Jumat", "short_date": "30 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Sabtu", "short_date": "31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Minggu", "short_date": "1 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, {"day_name": "Senin", "short_date": "2 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Selasa", "short_date": "3 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "next_4_weeks": [{"week_label": "2 Nov - 7 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "9 Nov - 14 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "16 Nov - 21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "23 Nov - 28 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}], "monthly_stats": {"month_name": "Oktober 2026", "month_key": "2026-10", "total_minggu": 4, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}};
   const TOKEN_KEY = 'shiftminder_gh_token';
   const REPO_OWNER = 'coalhunter';
   const REPO_NAME = 'shiftminder';
   const DATA_FILE_PATH = 'data.json';
   let selectedJam = 0;
   let editTanggal = null;
+  let lastDateChecked = null;
 
   function getToken() { return localStorage.getItem(TOKEN_KEY); }
   function setupToken() {
@@ -234,14 +237,15 @@
     const token = document.getElementById('input-token').value.trim();
     if (token) {
       localStorage.setItem(TOKEN_KEY, token);
-      showStatus('✅ Token tersimpan!', 'success');
+      showStatus('✅ Token tersimpan! Memuat data...', 'success');
+      loadDataFromGitHub().then(() => render());
     }
     tutupModal('modal-token');
   }
 
   async function getDataFromRepo() {
     const token = getToken();
-    if (!token) { showStatus('️ Klik "Setup Token" dulu!', 'error'); return null; }
+    if (!token) { showStatus('⚠️ Klik "Setup Token" dulu!', 'error'); return null; }
     try {
       const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE_PATH}`, {
         headers: { 'Accept': 'application/vnd.github.v3+json', 'Authorization': `Bearer ${token}` }
@@ -254,7 +258,7 @@
 
   async function updateDataInRepo(newData, sha) {
     const token = getToken();
-    if (!token) { showStatus('️ Token belum disetup!', 'error'); return false; }
+    if (!token) { showStatus('⚠️ Token belum disetup!', 'error'); return false; }
     const content = btoa(JSON.stringify(newData, null, 2));
     const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE_PATH}`, {
       method: 'PUT',
@@ -265,6 +269,20 @@
     return true;
   }
 
+  async function loadDataFromGitHub() {
+    const token = getToken();
+    if (!token) return;
+    try {
+      const repoData = await getDataFromRepo();
+      if (repoData) {
+        SHIFT_DATA.saved_data = repoData.content;
+        console.log('✅ Data berhasil dimuat dari GitHub:', repoData.content);
+      }
+    } catch (e) {
+      console.error('Gagal load data dari GitHub:', e);
+    }
+  }
+
   function showStatus(msg, type) {
     const el = document.getElementById('sync-status');
     el.textContent = msg;
@@ -272,19 +290,40 @@
     setTimeout(() => { el.textContent = ''; el.className = 'sync-status'; }, 4000);
   }
 
+  // ===== JAM REAL-TIME =====
+  function updateJam() {
+    const now = new Date();
+    // WIB = UTC+7
+    const wibTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+    const hours = String(wibTime.getUTCHours()).padStart(2, '0');
+    const minutes = String(wibTime.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(wibTime.getUTCSeconds()).padStart(2, '0');
+    document.getElementById('today-jam').textContent = `${hours}:${minutes}:${seconds}`;
+    
+    // Cek pergantian hari (jam 00:00 WIB)
+    const currentDate = wibTime.getUTCDate();
+    if (lastDateChecked !== null && currentDate !== lastDateChecked) {
+      console.log(' Hari berganti! Auto-refresh...');
+      forceRefresh();
+    }
+    lastDateChecked = currentDate;
+  }
+
   function tanyaKontanan() {
-    if (!getToken()) { showStatus('⚠️ Klik "Setup Token" dulu!', 'error'); setupToken(); return; }
-    const today = new Date();
+    if (!getToken()) { showStatus('️ Klik "Setup Token" dulu!', 'error'); setupToken(); return; }
+    const now = new Date();
+    const wibTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
     const hariIndo = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
     const bulanIndo = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    document.getElementById('modal-tanggal-kontanan').textContent = `Apakah Anda bekerja hari ini?\n(${hariIndo[today.getDay()]}, ${today.getDate()} ${bulanIndo[today.getMonth()]} ${today.getFullYear()})`;
+    document.getElementById('modal-tanggal-kontanan').textContent = `Apakah Anda bekerja hari ini?\n(${hariIndo[wibTime.getUTCDay()]}, ${wibTime.getUTCDate()} ${bulanIndo[wibTime.getUTCMonth()]} ${wibTime.getUTCFullYear()})`;
     document.getElementById('modal-kontanan').classList.add('active');
   }
 
   async function catatKontanan() {
-    const today = new Date();
-    const tanggalHariIni = today.getDate();
-    showStatus('⏳ Menyimpan ke GitHub...', '');
+    const now = new Date();
+    const wibTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+    const tanggalHariIni = wibTime.getUTCDate();
+    showStatus(' Menyimpan ke GitHub...', '');
     const repoData = await getDataFromRepo();
     if (!repoData) { showStatus('❌ Gagal baca data', 'error'); tutupModal('modal-kontanan'); return; }
     const data = repoData.content;
@@ -305,10 +344,11 @@
 
   function tanyaLembur() {
     if (!getToken()) { showStatus('⚠️ Klik "Setup Token" dulu!', 'error'); setupToken(); return; }
-    const today = new Date();
+    const now = new Date();
+    const wibTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
     const hariIndo = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
     const bulanIndo = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    document.getElementById('modal-tanggal-lembur').textContent = `Berapa jam Anda lembur hari ini?\n(${hariIndo[today.getDay()]}, ${today.getDate()} ${bulanIndo[today.getMonth()]})`;
+    document.getElementById('modal-tanggal-lembur').textContent = `Berapa jam Anda lembur hari ini?\n(${hariIndo[wibTime.getUTCDay()]}, ${wibTime.getUTCDate()} ${bulanIndo[wibTime.getUTCMonth()]})`;
     selectedJam = 0;
     renderJamOptions('jam-options', 0);
     document.getElementById('modal-lembur').classList.add('active');
@@ -331,11 +371,12 @@
 
   async function simpanLemburManual() {
     if (selectedJam === 0) { showStatus('⚠️ Pilih jumlah jam dulu!', 'error'); return; }
-    const today = new Date();
-    const tanggalHariIni = today.getDate();
+    const now = new Date();
+    const wibTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+    const tanggalHariIni = wibTime.getUTCDate();
     showStatus('⏳ Menyimpan ke GitHub...', '');
     const repoData = await getDataFromRepo();
-    if (!repoData) { showStatus('❌ Gagal baca data', 'error'); tutupModal('modal-lembur'); return; }
+    if (!repoData) { showStatus(' Gagal baca data', 'error'); tutupModal('modal-lembur'); return; }
     const data = repoData.content;
     if (!data.kontanan_days) data.kontanan_days = [];
     if (!data.lembur_records) data.lembur_records = [];
@@ -400,13 +441,13 @@
       SHIFT_DATA.saved_data = data;
       showStatus('✅ Perubahan disimpan!', 'success');
       render();
-    } catch (e) { showStatus(' Gagal: ' + e.message, 'error'); }
+    } catch (e) { showStatus('❌ Gagal: ' + e.message, 'error'); }
     tutupModal('modal-edit');
   }
 
   async function hapusCatatan(tanggal) {
     if (!confirm(`Hapus catatan tanggal ${tanggal}?`)) return;
-    showStatus('⏳ Menghapus...', '');
+    showStatus(' Menghapus...', '');
     const repoData = await getDataFromRepo();
     if (!repoData) return;
     const data = repoData.content;
@@ -464,9 +505,13 @@
     document.getElementById('today-date').textContent = data.today.full_date;
     document.getElementById('today-status').textContent = data.today.status;
     document.getElementById('today-time').textContent = data.today.status === 'LIBUR' ? 'Nikmati hari liburmu!' : data.today.time;
-    document.getElementById('updated').textContent = `Update: ${data.last_updated}`;
+    document.getElementById('updated').textContent = `Data diupdate: ${data.last_updated}`;
 
-    const today = new Date();
+    // Update jam real-time
+    updateJam();
+
+    const now = new Date();
+    const wibTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
     const saved = data.saved_data || { kontanan_days: [], lembur_records: [] };
     if (!saved.kontanan_days) saved.kontanan_days = [];
     if (!saved.lembur_records) saved.lembur_records = [];
@@ -474,20 +519,20 @@
     const btnKontanan = document.getElementById('btn-kontanan');
     const btnLembur = document.getElementById('btn-lembur');
     
-    if (today.getDay() === 0) {
+    if (wibTime.getUTCDay() === 0) {
       btnKontanan.style.display = 'block';
       btnLembur.style.display = 'none';
-      if (saved.kontanan_days.includes(today.getDate())) {
+      if (saved.kontanan_days.includes(wibTime.getUTCDate())) {
         btnKontanan.classList.add('sudah-catat');
         btnKontanan.innerHTML = '✅ Sudah Dicatat Hari Ini<span class="action-sub">Tap untuk konfirmasi ulang</span>';
       } else {
         btnKontanan.classList.remove('sudah-catat');
-        btnKontanan.innerHTML = '️ Ada Kontanan Hari Ini?<span class="action-sub">Tap untuk mencatat hari libur kerja</span>';
+        btnKontanan.innerHTML = '🏖️ Ada Kontanan Hari Ini?<span class="action-sub">Tap untuk mencatat hari libur kerja</span>';
       }
     } else {
       btnKontanan.style.display = 'none';
       btnLembur.style.display = 'block';
-      const lemburToday = saved.lembur_records.find(r => r.date === today.getDate());
+      const lemburToday = saved.lembur_records.find(r => r.date === wibTime.getUTCDate());
       if (lemburToday) {
         btnLembur.classList.add('sudah-catat');
         btnLembur.innerHTML = `✅ Sudah Dicatat: ${lemburToday.jam} Jam<span class="action-sub">Tap untuk ubah jam lembur</span>`;
@@ -505,7 +550,7 @@
 
     document.getElementById('week-list').innerHTML = data.next_4_weeks.map(w => {
       const c = w.status === 'SHIFT PAGI' ? 'status-pagi' : 'status-siang';
-      return `<div class="week-item"><span class="week-range"> ${w.week_label}</span><span class="day-status ${c}">${w.status}</span></div>`;
+      return `<div class="week-item"><span class="week-range">📆 ${w.week_label}</span><span class="day-status ${c}">${w.status}</span></div>`;
     }).join('');
 
     const stats = data.monthly_stats;
@@ -560,7 +605,14 @@
     document.getElementById('selisih-lembur').textContent = formatRupiah(selisihLembur);
     document.getElementById('total-selisih').textContent = formatRupiah(selisihKontanan + selisihLembur);
   }
-  render();
+
+  async function init() {
+    await loadDataFromGitHub();
+    render();
+    // Update jam setiap detik
+    setInterval(updateJam, 1000);
+  }
+  init();
 </script>
 </body>
 </html>
