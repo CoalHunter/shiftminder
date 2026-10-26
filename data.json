@@ -4,5 +4,10 @@
     25
   ],
   "lembur_jam": 0,
-  "lembur_records": []
+  "lembur_records": [
+    {
+      "date": 26,
+      "jam": 1
+    }
+  ]
 }
