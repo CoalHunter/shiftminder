@@ -127,7 +127,7 @@
     <span class="action-sub">Tap untuk mencatat hari libur kerja</span>
   </button>
   <button id="btn-lembur" class="action-btn btn-lembur" onclick="tanyaLembur()">
-    ️ Apakah Hari Ini Lembur?
+    ⏱️ Apakah Hari Ini Lembur?
     <span class="action-sub">Tap untuk mencatat jam lembur</span>
   </button>
   <div class="scroll-area">
@@ -137,7 +137,7 @@
     <div id="week-list" class="card-box"></div>
     <div class="section-title">💰 Kalkulator Upah Pekerja</div>
     <div class="card-box calc-card">
-      <div class="rate-info"><strong>📋 Rate:</strong> HK Rp170rb | Sejam Rp21.250 | Lembur Gov: 1-2jam=Rp31.875, 3+=Rp42.500 | Lembur PT: Rp7.000/jam</div>
+      <div class="rate-info"><strong> Rate:</strong> HK Rp170rb | Sejam Rp21.250 | Lembur Gov: 1-2jam=Rp31.875, 3+=Rp42.500 | Lembur PT: Rp7.000/jam</div>
       <div class="calc-row"><span>Bulan:</span> <strong id="stat-bulan">...</strong></div>
       <div class="calc-row"><span>Hari Minggu:</span> <strong id="stat-minggu">...</strong></div>
       <div class="calc-row"><span>📝 Kontanan Tercatat:</span> <strong id="stat-kontanan">0 hari</strong></div>
@@ -216,7 +216,7 @@
   </div>
 </div>
 <script>
-  const SHIFT_DATA = __SHIFT_DATA_PLACEHOLDER__;
+  const SHIFT_DATA = {"last_updated": "26-10-2026 10:11:01", "today": {"day_name": "Senin", "full_date": "Senin, 26 Oktober 2026", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, "next_7_days": [{"day_name": "Selasa", "short_date": "27 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Rabu", "short_date": "28 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Kamis", "short_date": "29 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Jumat", "short_date": "30 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Sabtu", "short_date": "31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Minggu", "short_date": "1 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, {"day_name": "Senin", "short_date": "2 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "next_4_weeks": [{"week_label": "26 Okt - 31 Okt", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "2 Nov - 7 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "9 Nov - 14 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "16 Nov - 21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "monthly_stats": {"month_name": "Oktober 2026", "month_key": "2026-10", "total_minggu": 4, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}};
   const TOKEN_KEY = 'shiftminder_gh_token';
   const REPO_OWNER = 'coalhunter';
   const REPO_NAME = 'shiftminder';
@@ -234,15 +234,14 @@
     const token = document.getElementById('input-token').value.trim();
     if (token) {
       localStorage.setItem(TOKEN_KEY, token);
-      showStatus('✅ Token tersimpan! Memuat data...', 'success');
-      loadDataFromGitHub().then(() => render());
+      showStatus('✅ Token tersimpan!', 'success');
     }
     tutupModal('modal-token');
   }
 
   async function getDataFromRepo() {
     const token = getToken();
-    if (!token) { showStatus('⚠️ Klik "Setup Token" dulu!', 'error'); return null; }
+    if (!token) { showStatus('️ Klik "Setup Token" dulu!', 'error'); return null; }
     try {
       const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE_PATH}`, {
         headers: { 'Accept': 'application/vnd.github.v3+json', 'Authorization': `Bearer ${token}` }
@@ -264,21 +263,6 @@
     });
     if (!res.ok) { const err = await res.json(); throw new Error(err.message || 'Gagal update'); }
     return true;
-  }
-
-  // FIX: Load data terbaru dari GitHub saat halaman di-load
-  async function loadDataFromGitHub() {
-    const token = getToken();
-    if (!token) return;
-    try {
-      const repoData = await getDataFromRepo();
-      if (repoData) {
-        SHIFT_DATA.saved_data = repoData.content;
-        console.log('✅ Data berhasil dimuat dari GitHub:', repoData.content);
-      }
-    } catch (e) {
-      console.error('Gagal load data dari GitHub:', e);
-    }
   }
 
   function showStatus(msg, type) {
@@ -416,13 +400,13 @@
       SHIFT_DATA.saved_data = data;
       showStatus('✅ Perubahan disimpan!', 'success');
       render();
-    } catch (e) { showStatus('❌ Gagal: ' + e.message, 'error'); }
+    } catch (e) { showStatus(' Gagal: ' + e.message, 'error'); }
     tutupModal('modal-edit');
   }
 
   async function hapusCatatan(tanggal) {
     if (!confirm(`Hapus catatan tanggal ${tanggal}?`)) return;
-    showStatus(' Menghapus...', '');
+    showStatus('⏳ Menghapus...', '');
     const repoData = await getDataFromRepo();
     if (!repoData) return;
     const data = repoData.content;
@@ -521,7 +505,7 @@
 
     document.getElementById('week-list').innerHTML = data.next_4_weeks.map(w => {
       const c = w.status === 'SHIFT PAGI' ? 'status-pagi' : 'status-siang';
-      return `<div class="week-item"><span class="week-range">📆 ${w.week_label}</span><span class="day-status ${c}">${w.status}</span></div>`;
+      return `<div class="week-item"><span class="week-range"> ${w.week_label}</span><span class="day-status ${c}">${w.status}</span></div>`;
     }).join('');
 
     const stats = data.monthly_stats;
@@ -576,13 +560,7 @@
     document.getElementById('selisih-lembur').textContent = formatRupiah(selisihLembur);
     document.getElementById('total-selisih').textContent = formatRupiah(selisihKontanan + selisihLembur);
   }
-
-  // FIX: Load data dari GitHub saat halaman di-load, lalu render
-  async function init() {
-    await loadDataFromGitHub();
-    render();
-  }
-  init();
+  render();
 </script>
 </body>
- </html>
+</html>
