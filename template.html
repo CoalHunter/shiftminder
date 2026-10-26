@@ -127,7 +127,7 @@
     <span class="action-sub">Tap untuk mencatat hari libur kerja</span>
   </button>
   <button id="btn-lembur" class="action-btn btn-lembur" onclick="tanyaLembur()">
-    ⏱️ Apakah Hari Ini Lembur?
+    ️ Apakah Hari Ini Lembur?
     <span class="action-sub">Tap untuk mencatat jam lembur</span>
   </button>
   <div class="scroll-area">
@@ -137,7 +137,7 @@
     <div id="week-list" class="card-box"></div>
     <div class="section-title">💰 Kalkulator Upah Pekerja</div>
     <div class="card-box calc-card">
-      <div class="rate-info"><strong> Rate:</strong> HK Rp170rb | Sejam Rp21.250 | Lembur Gov: 1-2jam=Rp31.875, 3+=Rp42.500 | Lembur PT: Rp7.000/jam</div>
+      <div class="rate-info"><strong>📋 Rate:</strong> HK Rp170rb | Sejam Rp21.250 | Lembur Gov: 1-2jam=Rp31.875, 3+=Rp42.500 | Lembur PT: Rp7.000/jam</div>
       <div class="calc-row"><span>Bulan:</span> <strong id="stat-bulan">...</strong></div>
       <div class="calc-row"><span>Hari Minggu:</span> <strong id="stat-minggu">...</strong></div>
       <div class="calc-row"><span>📝 Kontanan Tercatat:</span> <strong id="stat-kontanan">0 hari</strong></div>
@@ -234,14 +234,15 @@
     const token = document.getElementById('input-token').value.trim();
     if (token) {
       localStorage.setItem(TOKEN_KEY, token);
-      showStatus('✅ Token tersimpan!', 'success');
+      showStatus('✅ Token tersimpan! Memuat data...', 'success');
+      loadDataFromGitHub().then(() => render());
     }
     tutupModal('modal-token');
   }
 
   async function getDataFromRepo() {
     const token = getToken();
-    if (!token) { showStatus('️ Klik "Setup Token" dulu!', 'error'); return null; }
+    if (!token) { showStatus('⚠️ Klik "Setup Token" dulu!', 'error'); return null; }
     try {
       const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE_PATH}`, {
         headers: { 'Accept': 'application/vnd.github.v3+json', 'Authorization': `Bearer ${token}` }
@@ -263,6 +264,21 @@
     });
     if (!res.ok) { const err = await res.json(); throw new Error(err.message || 'Gagal update'); }
     return true;
+  }
+
+  // FIX: Load data terbaru dari GitHub saat halaman di-load
+  async function loadDataFromGitHub() {
+    const token = getToken();
+    if (!token) return;
+    try {
+      const repoData = await getDataFromRepo();
+      if (repoData) {
+        SHIFT_DATA.saved_data = repoData.content;
+        console.log('✅ Data berhasil dimuat dari GitHub:', repoData.content);
+      }
+    } catch (e) {
+      console.error('Gagal load data dari GitHub:', e);
+    }
   }
 
   function showStatus(msg, type) {
@@ -400,13 +416,13 @@
       SHIFT_DATA.saved_data = data;
       showStatus('✅ Perubahan disimpan!', 'success');
       render();
-    } catch (e) { showStatus(' Gagal: ' + e.message, 'error'); }
+    } catch (e) { showStatus('❌ Gagal: ' + e.message, 'error'); }
     tutupModal('modal-edit');
   }
 
   async function hapusCatatan(tanggal) {
     if (!confirm(`Hapus catatan tanggal ${tanggal}?`)) return;
-    showStatus('⏳ Menghapus...', '');
+    showStatus(' Menghapus...', '');
     const repoData = await getDataFromRepo();
     if (!repoData) return;
     const data = repoData.content;
@@ -505,7 +521,7 @@
 
     document.getElementById('week-list').innerHTML = data.next_4_weeks.map(w => {
       const c = w.status === 'SHIFT PAGI' ? 'status-pagi' : 'status-siang';
-      return `<div class="week-item"><span class="week-range"> ${w.week_label}</span><span class="day-status ${c}">${w.status}</span></div>`;
+      return `<div class="week-item"><span class="week-range">📆 ${w.week_label}</span><span class="day-status ${c}">${w.status}</span></div>`;
     }).join('');
 
     const stats = data.monthly_stats;
@@ -560,7 +576,13 @@
     document.getElementById('selisih-lembur').textContent = formatRupiah(selisihLembur);
     document.getElementById('total-selisih').textContent = formatRupiah(selisihKontanan + selisihLembur);
   }
-  render();
+
+  // FIX: Load data dari GitHub saat halaman di-load, lalu render
+  async function init() {
+    await loadDataFromGitHub();
+    render();
+  }
+  init();
 </script>
 </body>
 </html>
