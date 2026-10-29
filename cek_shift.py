@@ -85,10 +85,8 @@ def generate_data():
 def inject_to_html(data):
     with open("template.html", "r", encoding="utf-8") as f:
         html = f.read()
-    
     json_str = json.dumps(data, ensure_ascii=False)
     html = html.replace("__SHIFT_DATA_PLACEHOLDER__", json_str)
-    
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
 
