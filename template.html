@@ -10,160 +10,209 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #333; -webkit-tap-highlight-color: transparent; }
-  body { display: flex; flex-direction: column; padding: 8px; }
+  body { display: flex; flex-direction: column; padding: 6px; }
   .container { flex: 1; display: flex; flex-direction: column; max-width: 600px; margin: 0 auto; width: 100%; overflow: hidden; }
-  .header { text-align: center; margin-bottom: 4px; flex-shrink: 0; }
-  .header h1 { color: white; font-size: 1.2em; margin-bottom: 2px; }
-  .header .subtitle { color: rgba(255,255,255,0.85); font-size: 0.65em; }
-  .btn-refresh { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 3px 8px; border-radius: 10px; font-size: 0.6em; cursor: pointer; margin: 0 auto 4px; display: block; }
-  .btn-refresh:active { background: rgba(255,255,255,0.4); }
-  .today-card { background: white; border-radius: 10px; padding: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 4px; position: relative; flex-shrink: 0; }
-  .today-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 10px 10px 0 0; }
+  
+  /* HEADER */
+  .header { text-align: center; margin-bottom: 3px; flex-shrink: 0; }
+  .header h1 { color: white; font-size: 1.1em; margin-bottom: 1px; }
+  .header .subtitle { color: rgba(255,255,255,0.85); font-size: 0.6em; }
+  .btn-refresh { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 2px 8px; border-radius: 10px; font-size: 0.55em; cursor: pointer; margin: 0 auto 3px; display: block; }
+  
+  /* TODAY CARD */
+  .today-card { background: white; border-radius: 8px; padding: 8px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 3px; position: relative; flex-shrink: 0; }
+  .today-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 8px 8px 0 0; }
   .today-card.pagi::before { background: linear-gradient(90deg, #f6d365, #fda085); }
   .today-card.siang::before { background: linear-gradient(90deg, #4facfe, #00f2fe); }
   .today-card.libur::before { background: linear-gradient(90deg, #fa709a, #fee140); }
-  .today-emoji { font-size: 1.5em; margin-bottom: 2px; }
-  .today-date { color: #888; font-size: 0.7em; }
-  .today-status { font-size: 1.2em; font-weight: 800; margin: 2px 0; }
-  .today-time { font-size: 0.8em; color: #555; }
-  .today-jam { font-size: 1.8em; font-weight: 800; color: #667eea; margin: 6px 0 2px; font-family: 'Courier New', monospace; letter-spacing: 2px; }
-  .updated { color: #aaa; font-size: 0.55em; margin-top: 2px; }
-  .action-btn { color: white; border: none; padding: 8px; border-radius: 8px; font-size: 0.8em; font-weight: 700; cursor: pointer; margin-bottom: 4px; box-shadow: 0 3px 8px rgba(0,0,0,0.2); flex-shrink: 0; display: none; width: 100%; }
+  .today-emoji { font-size: 1.3em; margin-bottom: 1px; }
+  .today-date { color: #888; font-size: 0.65em; }
+  .today-status { font-size: 1.1em; font-weight: 800; margin: 1px 0; }
+  .today-time { font-size: 0.75em; color: #555; }
+  .today-jam { font-size: 1.6em; font-weight: 800; color: #667eea; margin: 4px 0 2px; font-family: 'Courier New', monospace; letter-spacing: 2px; }
+  .updated { color: #aaa; font-size: 0.5em; margin-top: 1px; }
+  
+  /* ACTION BUTTON */
+  .action-btn { color: white; border: none; padding: 7px; border-radius: 8px; font-size: 0.75em; font-weight: 700; cursor: pointer; margin-bottom: 3px; box-shadow: 0 3px 8px rgba(0,0,0,0.2); flex-shrink: 0; display: none; width: 100%; }
   .action-btn:active { transform: scale(0.98); }
   .btn-kontanan { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
   .btn-kontanan.sudah-catat { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
   .btn-lembur { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
   .btn-lembur.sudah-catat { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-  .action-sub { font-size: 0.65em; font-weight: 400; opacity: 0.9; display: block; margin-top: 2px; }
-  .section-title { color: white; font-size: 0.75em; margin: 3px 0; font-weight: 600; flex-shrink: 0; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; padding: 0 2px; }
+  .action-sub { font-size: 0.6em; font-weight: 400; opacity: 0.9; display: block; margin-top: 1px; }
+  
+  /* SCROLL AREA */
+  .section-title { color: white; font-size: 0.7em; margin: 2px 0; font-weight: 600; flex-shrink: 0; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; padding: 0 2px; }
   .section-title:active { opacity: 0.8; }
   .scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; min-height: 0; }
   .scroll-area::-webkit-scrollbar { width: 3px; }
   .scroll-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
-  .card-box { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.1); margin-bottom: 4px; }
-  .day-item, .week-item { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; border-bottom: 1px solid #f0f0f0; }
+  .card-box { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.1); margin-bottom: 3px; }
+  
+  /* DAY/WEEK ITEMS */
+  .day-item, .week-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 10px; border-bottom: 1px solid #f0f0f0; }
   .day-item:last-child, .week-item:last-child { border-bottom: none; }
-  .day-info { display: flex; align-items: center; gap: 6px; }
-  .day-emoji { font-size: 0.9em; }
-  .day-name { font-weight: 600; font-size: 0.75em; }
-  .day-date { color: #888; font-size: 0.65em; }
-  .day-status { font-weight: 600; font-size: 0.65em; padding: 2px 6px; border-radius: 10px; }
+  .day-info { display: flex; align-items: center; gap: 5px; }
+  .day-emoji { font-size: 0.85em; }
+  .day-name { font-weight: 600; font-size: 0.7em; }
+  .day-date { color: #888; font-size: 0.6em; }
+  .day-status { font-weight: 600; font-size: 0.6em; padding: 2px 5px; border-radius: 10px; }
   .status-pagi { background: #fff4e0; color: #e67e22; }
   .status-siang { background: #e0f4ff; color: #2980b9; }
   .status-libur { background: #ffe0ec; color: #c0392b; }
-  .week-range { font-weight: 500; color: #555; font-size: 0.7em; }
-  .calc-card { padding: 5px; }
-  .calc-row { display: flex; justify-content: space-between; margin-bottom: 2px; font-size: 0.65em; color: #555; }
+  .week-range { font-weight: 500; color: #555; font-size: 0.65em; }
+  
+  /* CALC CARD - SANGAT COMPACT */
+  .calc-card { padding: 4px; }
+  .calc-row { display: flex; justify-content: space-between; margin-bottom: 1px; font-size: 0.6em; color: #555; }
   .calc-row strong { color: #333; }
-  .calc-divider { height: 1px; background: #eee; margin: 3px 0; }
-  .info-hk { font-size: 0.55em; color: #888; text-align: center; font-style: italic; }
-  .compare-container { display: flex; gap: 4px; margin-bottom: 3px; }
-  .compare-box { flex: 1; padding: 4px 2px; border-radius: 6px; text-align: center; }
+  .calc-divider { height: 1px; background: #eee; margin: 2px 0; }
+  .info-hk { font-size: 0.5em; color: #888; text-align: center; font-style: italic; }
+  .compare-container { display: flex; gap: 3px; margin-bottom: 2px; }
+  .compare-box { flex: 1; padding: 3px 2px; border-radius: 5px; text-align: center; }
   .compare-box.diberikan { background: #f1f5f9; border: 1px solid #cbd5e1; }
   .compare-box.seharusnya { background: #ecfdf5; border: 1px solid #10b981; }
-  .compare-box .label { font-size: 0.55em; margin-bottom: 1px; font-weight: 600; }
+  .compare-box .label { font-size: 0.5em; margin-bottom: 1px; font-weight: 600; }
   .compare-box.diberikan .label { color: #64748b; }
   .compare-box.seharusnya .label { color: #059669; }
-  .compare-box .value { font-size: 0.75em; font-weight: 800; color: #334155; }
+  .compare-box .value { font-size: 0.7em; font-weight: 800; color: #334155; }
   .compare-box.seharusnya .value { color: #059669; }
-  .selisih-box { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 6px 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
-  .selisih-box span { font-size: 0.65em; opacity: 0.9; }
-  .selisih-box strong { font-size: 0.85em; font-weight: 800; }
-  .rate-info { background: #fef3c7; border: 1px solid #fbbf24; border-radius: 5px; padding: 4px 6px; margin-bottom: 4px; font-size: 0.6em; color: #92400e; line-height: 1.2; }
+  .selisih-box { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 4px 6px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+  .selisih-box span { font-size: 0.6em; opacity: 0.9; }
+  .selisih-box strong { font-size: 0.8em; font-weight: 800; }
+  .rate-info { background: #fef3c7; border: 1px solid #fbbf24; border-radius: 4px; padding: 3px 5px; margin-bottom: 3px; font-size: 0.55em; color: #92400e; line-height: 1.1; }
   .rate-info strong { color: #78350f; }
-  .btn-toggle-data { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; padding: 7px; border-radius: 8px; font-size: 0.75em; font-weight: 700; cursor: pointer; margin: 4px 0; width: 100%; box-shadow: 0 3px 8px rgba(124,58,237,0.3); }
+  
+  /* TOGGLE & DATA */
+  .btn-toggle-data { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; padding: 5px; border-radius: 6px; font-size: 0.7em; font-weight: 700; cursor: pointer; margin: 3px 0; width: 100%; box-shadow: 0 3px 8px rgba(124,58,237,0.3); }
   .btn-toggle-data:active { opacity: 0.8; }
-  .data-section { display: none; margin-top: 4px; }
+  .data-section { display: none; margin-top: 3px; }
   .data-section.active { display: block; }
-  .catatan-list { display: flex; flex-direction: column; gap: 4px; margin: 4px 0; }
-  .catatan-item { background: #fef3c7; border-radius: 6px; padding: 6px 8px; }
-  .catatan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-  .catatan-tanggal { font-weight: 700; font-size: 0.8em; color: #92400e; }
-  .catatan-actions { display: flex; gap: 4px; }
-  .catatan-btn { background: white; border: none; border-radius: 5px; padding: 3px 6px; font-size: 0.75em; cursor: pointer; font-weight: 600; }
+  .catatan-list { display: flex; flex-direction: column; gap: 3px; margin: 3px 0; }
+  .catatan-item { background: #fef3c7; border-radius: 5px; padding: 5px 7px; }
+  .catatan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+  .catatan-tanggal { font-weight: 700; font-size: 0.75em; color: #92400e; }
+  .catatan-actions { display: flex; gap: 3px; }
+  .catatan-btn { background: white; border: none; border-radius: 4px; padding: 2px 5px; font-size: 0.7em; cursor: pointer; font-weight: 600; }
   .catatan-btn.edit { color: #3b82f6; }
   .catatan-btn.hapus { color: #dc2626; }
-  .catatan-btn:active { opacity: 0.7; }
-  .catatan-detail { background: white; border-radius: 5px; padding: 4px 6px; margin-top: 3px; font-size: 0.65em; }
-  .detail-row { display: flex; justify-content: space-between; margin-bottom: 2px; color: #555; }
+  .catatan-detail { background: white; border-radius: 4px; padding: 3px 5px; margin-top: 2px; font-size: 0.6em; }
+  .detail-row { display: flex; justify-content: space-between; margin-bottom: 1px; color: #555; }
   .detail-row:last-child { margin-bottom: 0; }
   .detail-row.total { border-top: 1px solid #e5e7eb; padding-top: 2px; margin-top: 2px; font-weight: 700; color: #333; }
   .detail-label { flex: 1; }
   .detail-value { font-weight: 600; color: #333; }
-  .no-catatan { font-size: 0.65em; color: #888; font-style: italic; text-align: center; padding: 6px; }
-  .btn-tambah { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 6px; border-radius: 6px; font-size: 0.7em; font-weight: 700; cursor: pointer; margin-top: 4px; width: 100%; }
-  .btn-tambah:active { opacity: 0.8; }
-  .action-buttons { display: flex; gap: 4px; margin-top: 4px; }
-  .btn-aksi { flex: 1; padding: 6px; border: none; border-radius: 6px; font-size: 0.7em; font-weight: 700; cursor: pointer; color: white; }
+  .no-catatan { font-size: 0.6em; color: #888; font-style: italic; text-align: center; padding: 4px; }
+  .btn-tambah { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 5px; border-radius: 5px; font-size: 0.65em; font-weight: 700; cursor: pointer; margin-top: 3px; width: 100%; }
+  .action-buttons { display: flex; gap: 3px; margin-top: 3px; }
+  .btn-aksi { flex: 1; padding: 5px; border: none; border-radius: 5px; font-size: 0.65em; font-weight: 700; cursor: pointer; color: white; }
   .btn-aksi:active { opacity: 0.8; }
   .btn-export { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
   .btn-archive { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
-  .sync-status { font-size: 0.6em; text-align: center; margin-top: 3px; color: #888; font-style: italic; min-height: 10px; }
+  .sync-status { font-size: 0.55em; text-align: center; margin-top: 2px; color: #888; font-style: italic; min-height: 8px; }
   .sync-status.success { color: #059669; }
   .sync-status.error { color: #dc2626; }
   .sync-status.warning { color: #f59e0b; }
   .sync-status.loading { color: #3b82f6; }
+  
+  /* MODAL */
   .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 15px; }
   .modal-overlay.active { display: flex; }
-  .modal-box { background: white; border-radius: 12px; padding: 15px; max-width: 320px; width: 100%; text-align: center; max-height: 85vh; overflow-y: auto; }
-  .modal-box h3 { margin-bottom: 8px; color: #333; font-size: 1em; }
-  .modal-box p { color: #666; font-size: 0.85em; margin-bottom: 10px; white-space: pre-line; }
-  .modal-box input[type="date"], .modal-box select { width: 100%; padding: 6px; border: 2px solid #667eea; border-radius: 6px; font-size: 0.8em; margin-bottom: 8px; }
-  .jam-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 10px; }
-  .jam-btn { background: #f3f4f6; border: 2px solid #e5e7eb; border-radius: 6px; padding: 8px; font-size: 0.85em; font-weight: 600; cursor: pointer; }
+  .modal-box { background: white; border-radius: 10px; padding: 12px; max-width: 300px; width: 100%; text-align: center; max-height: 85vh; overflow-y: auto; }
+  .modal-box h3 { margin-bottom: 6px; color: #333; font-size: 0.95em; }
+  .modal-box p { color: #666; font-size: 0.8em; margin-bottom: 8px; white-space: pre-line; }
+  .modal-box input[type="date"], .modal-box select { width: 100%; padding: 5px; border: 2px solid #667eea; border-radius: 5px; font-size: 0.75em; margin-bottom: 6px; }
+  .jam-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 8px; }
+  .jam-btn { background: #f3f4f6; border: 2px solid #e5e7eb; border-radius: 5px; padding: 6px; font-size: 0.8em; font-weight: 600; cursor: pointer; }
   .jam-btn:active { background: #667eea; color: white; border-color: #667eea; }
   .jam-btn.selected { background: #667eea; color: white; border-color: #667eea; }
-  .modal-buttons { display: flex; gap: 8px; }
-  .modal-btn { flex: 1; padding: 8px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.85em; }
+  .modal-buttons { display: flex; gap: 6px; }
+  .modal-btn { flex: 1; padding: 7px; border: none; border-radius: 5px; font-weight: 700; cursor: pointer; font-size: 0.8em; }
   .modal-btn.ya { background: #10b981; color: white; }
   .modal-btn.tidak { background: #e5e7eb; color: #374151; }
   .modal-btn:active { opacity: 0.8; }
-  .checkbox-group { margin: 8px 0; text-align: left; padding: 6px; background: #f9fafb; border-radius: 6px; }
-  .checkbox-group label { font-size: 0.8em; color: #374151; display: flex; align-items: center; gap: 4px; }
-  .perhitungan-info { background: #f0f9ff; border: 1px solid #7dd3fc; border-radius: 6px; padding: 6px; margin: 8px 0; font-size: 0.7em; color: #0c4a6e; text-align: left; }
+  .checkbox-group { margin: 6px 0; text-align: left; padding: 5px; background: #f9fafb; border-radius: 5px; }
+  .checkbox-group label { font-size: 0.75em; color: #374151; display: flex; align-items: center; gap: 3px; }
+  .perhitungan-info { background: #f0f9ff; border: 1px solid #7dd3fc; border-radius: 5px; padding: 5px; margin: 6px 0; font-size: 0.65em; color: #0c4a6e; text-align: left; }
   .perhitungan-info strong { color: #075985; }
-  .archive-banner { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); color: white; padding: 6px 10px; border-radius: 6px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8em; font-weight: 600; flex-shrink: 0; }
-  .archive-banner .back-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 3px 8px; border-radius: 5px; font-size: 0.75em; cursor: pointer; }
-  .total-akhir-section { margin-top: 4px; }
-  .total-akhir-label { font-size: 0.7em; color: #666; text-align: center; margin-bottom: 4px; font-weight: 600; }
-  .total-akhir-boxes { display: flex; gap: 4px; margin-bottom: 4px; }
-  .total-box-final { flex: 1; padding: 8px 4px; border-radius: 8px; text-align: center; }
+  
+  /* ARCHIVE BANNER */
+  .archive-banner { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); color: white; padding: 5px 8px; border-radius: 5px; margin-bottom: 3px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75em; font-weight: 600; flex-shrink: 0; }
+  .archive-banner .back-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7em; cursor: pointer; }
+  
+  /* TOTAL AKHIR */
+  .total-akhir-section { margin-top: 3px; }
+  .total-akhir-label { font-size: 0.65em; color: #666; text-align: center; margin-bottom: 3px; font-weight: 600; }
+  .total-akhir-boxes { display: flex; gap: 3px; margin-bottom: 3px; }
+  .total-box-final { flex: 1; padding: 6px 3px; border-radius: 6px; text-align: center; }
   .total-box-final.diberikan { background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%); color: white; }
   .total-box-final.seharusnya { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
-  .total-box-final .ta-label { font-size: 0.6em; opacity: 0.9; margin-bottom: 2px; font-weight: 600; }
-  .total-box-final .ta-value { font-size: 1em; font-weight: 800; }
-  .total-kurang-box { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; padding: 10px 8px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(220,38,38,0.3); }
-  .total-kurang-box span { font-size: 0.75em; font-weight: 600; }
-  .total-kurang-box strong { font-size: 1.1em; font-weight: 800; }
+  .total-box-final .ta-label { font-size: 0.55em; opacity: 0.9; margin-bottom: 1px; font-weight: 600; }
+  .total-box-final .ta-value { font-size: 0.9em; font-weight: 800; }
+  .total-kurang-box { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; padding: 8px 6px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(220,38,38,0.3); }
+  .total-kurang-box span { font-size: 0.7em; font-weight: 600; }
+  .total-kurang-box strong { font-size: 1em; font-weight: 800; }
+  
+  /* COLLAPSIBLE */
   .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
   .collapsible-content.expanded { max-height: 800px; }
-  .collapse-icon { font-size: 0.75em; transition: transform 0.3s; }
+  .collapse-icon { font-size: 0.7em; transition: transform 0.3s; }
   .collapse-icon.rotated { transform: rotate(180deg); }
   
-  /* Responsive adjustments */
-  @media (max-width: 360px) {
-    .header h1 { font-size: 1.1em; }
-    .today-jam { font-size: 1.6em; }
-    .today-status { font-size: 1.1em; }
-    .compare-box .value { font-size: 0.7em; }
-    .total-box-final .ta-value { font-size: 0.9em; }
+  /* ===== MOBILE MODE (< 768px) ===== */
+  @media (max-width: 767px) {
+    body { padding: 5px; }
+    .header h1 { font-size: 1em; }
+    .header .subtitle { font-size: 0.55em; }
+    .today-jam { font-size: 1.4em; }
+    .today-status { font-size: 1em; }
+    .today-card { padding: 6px; }
+    .action-btn { padding: 6px; font-size: 0.7em; }
+    .calc-card { padding: 3px; }
+    .rate-info { font-size: 0.5em; padding: 2px 4px; }
+    .calc-row { font-size: 0.55em; }
+    .compare-box .value { font-size: 0.65em; }
+    .selisih-box { padding: 3px 5px; }
+    .selisih-box span { font-size: 0.55em; }
+    .selisih-box strong { font-size: 0.75em; }
+    .total-box-final .ta-value { font-size: 0.85em; }
+    .total-kurang-box { padding: 6px 5px; }
+    .total-kurang-box span { font-size: 0.65em; }
+    .total-kurang-box strong { font-size: 0.9em; }
+    .btn-toggle-data { padding: 4px; font-size: 0.65em; }
+    .btn-aksi { padding: 4px; font-size: 0.6em; }
   }
   
+  /* ===== DESKTOP MODE (>= 768px) ===== */
   @media (min-width: 768px) {
-    body { padding: 12px; }
-    .header h1 { font-size: 1.4em; }
-    .today-jam { font-size: 2.2em; }
-    .today-status { font-size: 1.4em; }
-    .calc-card { padding: 8px; }
-    .compare-box .value { font-size: 0.9em; }
-    .total-box-final .ta-value { font-size: 1.2em; }
+    body { padding: 10px; }
+    .container { max-width: 700px; }
+    .header h1 { font-size: 1.3em; }
+    .header .subtitle { font-size: 0.7em; }
+    .today-jam { font-size: 2em; }
+    .today-status { font-size: 1.3em; }
+    .today-card { padding: 10px; }
+    .action-btn { padding: 8px; font-size: 0.85em; }
+    .calc-card { padding: 6px; }
+    .rate-info { font-size: 0.6em; padding: 4px 6px; }
+    .calc-row { font-size: 0.65em; }
+    .compare-box .value { font-size: 0.8em; }
+    .selisih-box { padding: 5px 8px; }
+    .selisih-box span { font-size: 0.65em; }
+    .selisih-box strong { font-size: 0.9em; }
+    .total-box-final .ta-value { font-size: 1.1em; }
+    .total-kurang-box { padding: 10px 8px; }
+    .total-kurang-box span { font-size: 0.8em; }
+    .total-kurang-box strong { font-size: 1.2em; }
+    .btn-toggle-data { padding: 6px; font-size: 0.75em; }
+    .btn-aksi { padding: 6px; font-size: 0.7em; }
   }
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
-    <h1>⏰ Jadwal Shift Kerja</h1>
+    <h1> Jadwal Shift Kerja</h1>
     <p class="subtitle">Pagi (07-14) · Siang (14-21) · Minggu Libur</p>
   </div>
   <button onclick="forceRefresh()" class="btn-refresh">🔄 Paksa Refresh</button>
@@ -185,7 +234,7 @@
   </button>
   <div class="scroll-area">
     <div class="section-title" onclick="toggleCollapse('7hari')">
-      <span>📅 7 Hari ke Depan</span><span class="collapse-icon" id="icon-7hari">▼</span>
+      <span> 7 Hari ke Depan</span><span class="collapse-icon" id="icon-7hari">▼</span>
     </div>
     <div id="collapse-7hari" class="collapsible-content">
       <div id="day-list" class="card-box"></div>
@@ -201,7 +250,7 @@
       <div class="rate-info"><strong>📋 Rate:</strong> HK Rp170rb | Sejam Rp21.250 | Lembur Gov: 1-2jam=Rp31.875, 3+=Rp42.500 | Lembur PT: Rp7.000/jam</div>
       <div class="calc-row"><span>Bulan:</span> <strong id="stat-bulan">...</strong></div>
       <div class="calc-row"><span>Hari Minggu:</span> <strong id="stat-minggu">...</strong></div>
-      <div class="calc-row"><span> Kontanan Tercatat:</span> <strong id="stat-kontanan">0 hari</strong></div>
+      <div class="calc-row"><span>📝 Kontanan Tercatat:</span> <strong id="stat-kontanan">0 hari</strong></div>
       <div class="calc-row"><span>⏱️ Total Jam Lembur:</span> <strong id="stat-lembur">0 jam</strong></div>
       <div class="calc-divider"></div>
       <div class="compare-container">
@@ -214,7 +263,7 @@
         <div class="compare-box diberikan"><div class="label">LEMBUR DIBERIKAN</div><div class="value" id="lembur-diberikan">Rp 0</div></div>
         <div class="compare-box seharusnya"><div class="label">LEMBUR SEHARUSNYA</div><div class="value" id="lembur-seharusnya">Rp 0</div></div>
       </div>
-      <div class="selisih-box"><span>📉 Selisih Lembur:</span><strong id="selisih-lembur">Rp 0</strong></div>
+      <div class="selisih-box"><span> Selisih Lembur:</span><strong id="selisih-lembur">Rp 0</strong></div>
       <div class="calc-divider"></div>
       <div class="total-akhir-section">
         <div class="total-akhir-label">📊 NILAI AKHIR (KONTANAN + LEMBUR)</div>
@@ -229,19 +278,19 @@
           </div>
         </div>
         <div class="total-kurang-box">
-          <span>💸 UPAH YANG KURANG:</span>
+          <span> UPAH YANG KURANG:</span>
           <strong id="total-kurang">Rp 0</strong>
         </div>
       </div>
-      <button id="btn-toggle-data" class="btn-toggle-data" onclick="toggleData()">📊 Tampilkan Data</button>
+      <button id="btn-toggle-data" class="btn-toggle-data" onclick="toggleData()"> Tampilkan Data</button>
       <div id="data-section" class="data-section">
         <div class="calc-divider"></div>
-        <div class="calc-row" style="margin-bottom: 3px;"><span style="font-weight: 600; font-size: 0.7em;">📌 Catatan Bulan Ini:</span></div>
+        <div class="calc-row" style="margin-bottom: 2px;"><span style="font-weight: 600; font-size: 0.65em;">📌 Catatan Bulan Ini:</span></div>
         <div id="catatan-list" class="catatan-list"></div>
-        <button class="btn-tambah" onclick="tanyaTambahManual()">➕ Tambah Manual</button>
+        <button class="btn-tambah" onclick="tanyaTambahManual()"> Tambah Manual</button>
       </div>
       <div class="action-buttons">
-        <button class="btn-aksi btn-export" onclick="exportExcel()"> Export Excel</button>
+        <button class="btn-aksi btn-export" onclick="exportExcel()">📊 Export Excel</button>
         <button class="btn-aksi btn-archive" onclick="bukaArchiveViewer()">📁 Lihat Arsip</button>
       </div>
       <div id="sync-status" class="sync-status"></div>
@@ -252,7 +301,7 @@
 
 <div id="modal-kontanan" class="modal-overlay">
   <div class="modal-box">
-    <h3>️ Konfirmasi Kontanan</h3>
+    <h3>🏖️ Konfirmasi Kontanan</h3>
     <p id="modal-tanggal-kontanan">Apakah Anda bekerja hari ini?</p>
     <div class="perhitungan-info">
       <strong>Perhitungan Kontanan (Hari Libur):</strong><br>
@@ -293,7 +342,7 @@
     <div class="checkbox-group">
       <label><input type="checkbox" id="checkbox-kontanan-manual"> Status Kontanan (Hari Libur)</label>
     </div>
-    <p style="font-size: 0.8em; margin-bottom: 6px;">Jam Lembur (0 jika tidak lembur):</p>
+    <p style="font-size: 0.75em; margin-bottom: 5px;">Jam Lembur (0 jika tidak lembur):</p>
     <div class="jam-options" id="jam-options-manual"></div>
     <div class="modal-buttons">
       <button class="modal-btn tidak" onclick="tutupModal('modal-tambah')">Batal</button>
@@ -309,7 +358,7 @@
     <div class="checkbox-group">
       <label><input type="checkbox" id="edit-kontanan"> Status Kontanan</label>
     </div>
-    <p style="font-size: 0.8em; margin-bottom: 6px;">Jam Lembur:</p>
+    <p style="font-size: 0.75em; margin-bottom: 5px;">Jam Lembur:</p>
     <div class="jam-options" id="jam-options-edit"></div>
     <div class="modal-buttons">
       <button class="modal-btn tidak" onclick="tutupModal('modal-edit')">Batal</button>
@@ -334,12 +383,12 @@
     <h3>📁 Lihat Data Arsip</h3>
     <p>Pilih bulan untuk melihat data:</p>
     <select id="select-archive-month"></select>
-    <div id="archive-preview" style="margin: 8px 0;"></div>
+    <div id="archive-preview" style="margin: 6px 0;"></div>
     <div class="modal-buttons">
       <button class="modal-btn tidak" onclick="tutupModal('modal-archive')">Tutup</button>
       <button class="modal-btn ya" onclick="viewArchiveData()">👁️ Lihat</button>
     </div>
-    <div class="modal-buttons" style="margin-top: 6px;">
+    <div class="modal-buttons" style="margin-top: 5px;">
       <button class="modal-btn ya" style="background: #dc2626;" onclick="deleteArchiveData()">🗑️ Hapus Arsip</button>
     </div>
   </div>
@@ -426,7 +475,7 @@
       renderCatatan();
     } else {
       section.classList.remove('active');
-      btn.textContent = '📊 Tampilkan Data';
+      btn.textContent = ' Tampilkan Data';
     }
   }
 
@@ -506,7 +555,7 @@
   }
 
   async function simpanLemburManual() {
-    if (selectedJam === 0) { showStatus('️ Pilih jam dulu!', 'error'); return; }
+    if (selectedJam === 0) { showStatus('⚠️ Pilih jam dulu!', 'error'); return; }
     const tanggalHariIni = getWibDate();
     showStatus('⏳ Menyimpan ke Sheets...', 'loading');
     const currentData = await getDataFromSheets();
@@ -587,7 +636,7 @@
 
   async function simpanEdit() {
     if (editTanggal === null) return;
-    showStatus('⏳ Menyimpan...', 'loading');
+    showStatus(' Menyimpan...', 'loading');
     const currentData = await getDataFromSheets();
     if (!currentData) { tutupModal('modal-edit'); return; }
     if (!currentData.kontanan_days) currentData.kontanan_days = [];
@@ -643,7 +692,7 @@
   }
 
   async function bukaArchiveViewer() {
-    showStatus(' Memuat daftar arsip...', 'loading');
+    showStatus('⏳ Memuat daftar arsip...', 'loading');
     try {
       const res = await fetch(APPS_SCRIPT_URL + '?action=list_archive');
       if (!res.ok) { showStatus('❌ Gagal muat arsip', 'error'); return; }
@@ -684,7 +733,7 @@
       if (!res.ok) { showStatus('❌ Gagal muat data', 'error'); return; }
       const data = await res.json();
       
-      if (data.error) { showStatus('❌ ' + data.error, 'error'); return; }
+      if (data.error) { showStatus(' ' + data.error, 'error'); return; }
       
       archiveData = data;
       isViewingArchive = true;
@@ -704,7 +753,7 @@
     
     const banner = document.createElement('div');
     banner.className = 'archive-banner';
-    banner.innerHTML = '<span> Arsip: ' + archiveData.month_key + '</span><button class="back-btn" onclick="kembaliKeBulanIni()">← Kembali</button>';
+    banner.innerHTML = '<span>📁 Arsip: ' + archiveData.month_key + '</span><button class="back-btn" onclick="kembaliKeBulanIni()">← Kembali</button>';
     
     const container = document.querySelector('.container');
     container.insertBefore(banner, document.getElementById('today-card'));
@@ -907,7 +956,7 @@
             '<div class="detail-row total"><span class="detail-label">Selisih:</span><span class="detail-value" style="color:#dc2626;">Rp ' + formatRupiah(detail.selisih) + '</span></div>' +
             '</div>';
         }
-        html += '<div class="catatan-item"><div class="catatan-header"><div class="catatan-tanggal">' + rec.date + ' ' + bulanSingkat + '</div><div class="catatan-actions"><button class="catatan-btn edit" onclick="editCatatan(' + rec.date + ')">✏️</button><button class="catatan-btn hapus" onclick="tanyaHapus(' + rec.date + ')">✕</button></div></div><div style="font-size:0.7em;color:#78350f;margin-bottom:3px;font-weight:600;">' + label + '</div>' + detailHtml + '</div>';
+        html += '<div class="catatan-item"><div class="catatan-header"><div class="catatan-tanggal">' + rec.date + ' ' + bulanSingkat + '</div><div class="catatan-actions"><button class="catatan-btn edit" onclick="editCatatan(' + rec.date + ')">✏️</button><button class="catatan-btn hapus" onclick="tanyaHapus(' + rec.date + ')">✕</button></div></div><div style="font-size:0.65em;color:#78350f;margin-bottom:2px;font-weight:600;">' + label + '</div>' + detailHtml + '</div>';
       });
       listContainer.innerHTML = html;
     }
@@ -942,7 +991,7 @@
         btn.innerHTML = '✅ Sudah Dicatat Hari Ini<span class="action-sub">Tap untuk konfirmasi ulang</span>';
       } else {
         btn.classList.remove('sudah-catat');
-        btn.innerHTML = '🏖️ Ada Kontanan Hari Ini?<span class="action-sub">Tap untuk mencatat</span>';
+        btn.innerHTML = '️ Ada Kontanan Hari Ini?<span class="action-sub">Tap untuk mencatat</span>';
       }
     } else {
       document.getElementById('btn-kontanan').style.display = 'none';
@@ -954,7 +1003,7 @@
         btn.innerHTML = '✅ Sudah Dicatat: ' + lemburToday.jam + ' Jam<span class="action-sub">Tap untuk ubah</span>';
       } else {
         btn.classList.remove('sudah-catat');
-        btn.innerHTML = '️ Apakah Hari Ini Lembur?<span class="action-sub">Tap untuk mencatat</span>';
+        btn.innerHTML = '⏱️ Apakah Hari Ini Lembur?<span class="action-sub">Tap untuk mencatat</span>';
       }
     }
 
