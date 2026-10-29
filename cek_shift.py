@@ -1,7 +1,6 @@
 import datetime
 import json
 import calendar
-import os
 
 def hitung_shift(target_date):
     anchor_monday = datetime.date(2026, 10, 19)
@@ -79,57 +78,11 @@ def generate_data():
         "today": today_data,
         "next_7_days": next_7_days,
         "next_4_weeks": next_4_weeks,
-        "monthly_stats": monthly_stats
+        "monthly_stats": monthly_stats,
+        "saved_data": {"kontanan_days": [], "lembur_records": []}
     }
 
-def ensure_data_json(month_key):
-    """Pastikan data.json ada dengan struktur benar. JANGAN reset jika bulan sama."""
-    data_file = "data.json"
-    
-    if os.path.exists(data_file):
-        try:
-            with open(data_file, "r", encoding="utf-8") as f:
-                old_data = json.load(f)
-            
-            # Cek struktur, tambahkan field yang hilang
-            if "kontanan_days" not in old_data:
-                old_data["kontanan_days"] = []
-            if "lembur_records" not in old_data:
-                old_data["lembur_records"] = []
-            if "month_key" not in old_data:
-                old_data["month_key"] = month_key
-            
-            # Jika bulan berganti, reset data
-            if old_data.get("month_key") != month_key:
-                print(f"📅 Bulan berganti! Reset dari {old_data.get('month_key')} ke {month_key}")
-                old_data = {
-                    "month_key": month_key,
-                    "kontanan_days": [],
-                    "lembur_records": []
-                }
-            else:
-                print(f"✅ Bulan sama ({month_key}), pertahankan {len(old_data.get('kontanan_days', []))} kontanan, {len(old_data.get('lembur_records', []))} lembur")
-            
-            with open(data_file, "w", encoding="utf-8") as f:
-                json.dump(old_data, f, ensure_ascii=False, indent=2)
-            return old_data
-        except Exception as e:
-            print(f"⚠️ Error baca data.json: {e}")
-    
-    # File belum ada, buat baru
-    print("📄 data.json belum ada, membuat baru...")
-    new_data = {
-        "month_key": month_key,
-        "kontanan_days": [],
-        "lembur_records": []
-    }
-    with open(data_file, "w", encoding="utf-8") as f:
-        json.dump(new_data, f, ensure_ascii=False, indent=2)
-    return new_data
-
-def inject_to_html(data, saved_data):
-    data["saved_data"] = saved_data
-    
+def inject_to_html(data):
     with open("template.html", "r", encoding="utf-8") as f:
         html = f.read()
     
@@ -141,7 +94,5 @@ def inject_to_html(data, saved_data):
 
 if __name__ == "__main__":
     data = generate_data()
-    saved_data = ensure_data_json(data["monthly_stats"]["month_key"])
-    inject_to_html(data, saved_data)
-    print(f"✅ Berhasil! Hari: {data['today']['day_name']}, Status: {data['today']['status']}")
-    print(f"📊 Data: {len(saved_data.get('kontanan_days', []))} kontanan, {len(saved_data.get('lembur_records', []))} lembur")
+    inject_to_html(data)
+    print(f"✅ Berhasil! Hari: {data['today']['day_name']}, Bulan: {data['monthly_stats']['month_key']}")
