@@ -7,7 +7,7 @@ def hitung_shift(target_date):
     delta_weeks = (target_date - anchor_monday).days // 7
     
     if target_date.weekday() == 6:
-        return {"status": "LIBUR", "time": "-", "emoji": "️"}
+        return {"status": "LIBUR", "time": "-", "emoji": "🏖️"}
     elif delta_weeks % 2 == 0:
         return {"status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}
     else:
@@ -73,10 +73,6 @@ def generate_data():
         "rate_lembur_perusahaan": 7000
     }
     
-    # Cek apakah perlu migration (bulan berganti)
-    # Kita tidak bisa baca Sheets dari Python, jadi kita set flag migration_needed = true
-    # JavaScript yang akan handle logic archive
-    
     return {
         "last_updated": now_wib.strftime("%d-%m-%Y %H:%M:%S"),
         "today": today_data,
@@ -84,16 +80,14 @@ def generate_data():
         "next_4_weeks": next_4_weeks,
         "monthly_stats": monthly_stats,
         "saved_data": {"kontanan_days": [], "lembur_records": []},
-        "migration_needed": True  # Flag untuk JavaScript
+        "migration_needed": True
     }
 
 def inject_to_html(data):
     with open("template.html", "r", encoding="utf-8") as f:
         html = f.read()
-    
     json_str = json.dumps(data, ensure_ascii=False)
     html = html.replace("__SHIFT_DATA_PLACEHOLDER__", json_str)
-    
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
 
