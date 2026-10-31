@@ -12,14 +12,10 @@
   html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #333; -webkit-tap-highlight-color: transparent; }
   body { display: flex; flex-direction: column; padding: 6px; }
   .container { flex: 1; display: flex; flex-direction: column; max-width: 600px; margin: 0 auto; width: 100%; overflow: hidden; }
-  
-  /* HEADER */
   .header { text-align: center; margin-bottom: 3px; flex-shrink: 0; }
   .header h1 { color: white; font-size: 1.1em; margin-bottom: 1px; }
   .header .subtitle { color: rgba(255,255,255,0.85); font-size: 0.6em; }
   .btn-refresh { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 2px 8px; border-radius: 10px; font-size: 0.55em; cursor: pointer; margin: 0 auto 3px; display: block; }
-  
-  /* TODAY CARD */
   .today-card { background: white; border-radius: 8px; padding: 8px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 3px; position: relative; flex-shrink: 0; }
   .today-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 8px 8px 0 0; }
   .today-card.pagi::before { background: linear-gradient(90deg, #f6d365, #fda085); }
@@ -31,8 +27,6 @@
   .today-time { font-size: 0.75em; color: #555; }
   .today-jam { font-size: 1.6em; font-weight: 800; color: #667eea; margin: 4px 0 2px; font-family: 'Courier New', monospace; letter-spacing: 2px; }
   .updated { color: #aaa; font-size: 0.5em; margin-top: 1px; }
-  
-  /* ACTION BUTTON */
   .action-btn { color: white; border: none; padding: 7px; border-radius: 8px; font-size: 0.75em; font-weight: 700; cursor: pointer; margin-bottom: 3px; box-shadow: 0 3px 8px rgba(0,0,0,0.2); flex-shrink: 0; display: none; width: 100%; }
   .action-btn:active { transform: scale(0.98); }
   .btn-kontanan { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
@@ -40,16 +34,12 @@
   .btn-lembur { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
   .btn-lembur.sudah-catat { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
   .action-sub { font-size: 0.6em; font-weight: 400; opacity: 0.9; display: block; margin-top: 1px; }
-  
-  /* SCROLL AREA */
   .section-title { color: white; font-size: 0.7em; margin: 2px 0; font-weight: 600; flex-shrink: 0; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; padding: 0 2px; }
   .section-title:active { opacity: 0.8; }
   .scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; min-height: 0; }
   .scroll-area::-webkit-scrollbar { width: 3px; }
   .scroll-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
   .card-box { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.1); margin-bottom: 3px; }
-  
-  /* DAY/WEEK ITEMS */
   .day-item, .week-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 10px; border-bottom: 1px solid #f0f0f0; }
   .day-item:last-child, .week-item:last-child { border-bottom: none; }
   .day-info { display: flex; align-items: center; gap: 5px; }
@@ -61,8 +51,6 @@
   .status-siang { background: #e0f4ff; color: #2980b9; }
   .status-libur { background: #ffe0ec; color: #c0392b; }
   .week-range { font-weight: 500; color: #555; font-size: 0.65em; }
-  
-  /* CALC CARD - SANGAT COMPACT */
   .calc-card { padding: 4px; }
   .calc-row { display: flex; justify-content: space-between; margin-bottom: 1px; font-size: 0.6em; color: #555; }
   .calc-row strong { color: #333; }
@@ -82,8 +70,6 @@
   .selisih-box strong { font-size: 0.8em; font-weight: 800; }
   .rate-info { background: #fef3c7; border: 1px solid #fbbf24; border-radius: 4px; padding: 3px 5px; margin-bottom: 3px; font-size: 0.55em; color: #92400e; line-height: 1.1; }
   .rate-info strong { color: #78350f; }
-  
-  /* TOGGLE & DATA */
   .btn-toggle-data { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; padding: 5px; border-radius: 6px; font-size: 0.7em; font-weight: 700; cursor: pointer; margin: 3px 0; width: 100%; box-shadow: 0 3px 8px rgba(124,58,237,0.3); }
   .btn-toggle-data:active { opacity: 0.8; }
   .data-section { display: none; margin-top: 3px; }
@@ -114,8 +100,6 @@
   .sync-status.error { color: #dc2626; }
   .sync-status.warning { color: #f59e0b; }
   .sync-status.loading { color: #3b82f6; }
-  
-  /* MODAL */
   .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 15px; }
   .modal-overlay.active { display: flex; }
   .modal-box { background: white; border-radius: 10px; padding: 12px; max-width: 300px; width: 100%; text-align: center; max-height: 85vh; overflow-y: auto; }
@@ -135,12 +119,8 @@
   .checkbox-group label { font-size: 0.75em; color: #374151; display: flex; align-items: center; gap: 3px; }
   .perhitungan-info { background: #f0f9ff; border: 1px solid #7dd3fc; border-radius: 5px; padding: 5px; margin: 6px 0; font-size: 0.65em; color: #0c4a6e; text-align: left; }
   .perhitungan-info strong { color: #075985; }
-  
-  /* ARCHIVE BANNER */
   .archive-banner { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); color: white; padding: 5px 8px; border-radius: 5px; margin-bottom: 3px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75em; font-weight: 600; flex-shrink: 0; }
   .archive-banner .back-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7em; cursor: pointer; }
-  
-  /* TOTAL AKHIR */
   .total-akhir-section { margin-top: 3px; }
   .total-akhir-label { font-size: 0.65em; color: #666; text-align: center; margin-bottom: 3px; font-weight: 600; }
   .total-akhir-boxes { display: flex; gap: 3px; margin-bottom: 3px; }
@@ -152,14 +132,29 @@
   .total-kurang-box { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; padding: 8px 6px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(220,38,38,0.3); }
   .total-kurang-box span { font-size: 0.7em; font-weight: 600; }
   .total-kurang-box strong { font-size: 1em; font-weight: 800; }
-  
-  /* COLLAPSIBLE */
   .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
   .collapsible-content.expanded { max-height: 800px; }
   .collapse-icon { font-size: 0.7em; transition: transform 0.3s; }
   .collapse-icon.rotated { transform: rotate(180deg); }
   
-  /* ===== MOBILE MODE (< 768px) ===== */
+  /* MIGRATION BANNER */
+  .migration-banner {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white; padding: 8px 10px; border-radius: 8px;
+    margin-bottom: 4px; box-shadow: 0 4px 12px rgba(217,119,6,0.3);
+    flex-shrink: 0;
+  }
+  .migration-banner h4 { font-size: 0.85em; margin-bottom: 3px; }
+  .migration-banner p { font-size: 0.7em; opacity: 0.95; margin-bottom: 6px; }
+  .migration-actions { display: flex; gap: 4px; }
+  .migration-btn {
+    flex: 1; padding: 6px; border: none; border-radius: 6px;
+    font-size: 0.7em; font-weight: 700; cursor: pointer;
+  }
+  .migration-btn.archive { background: white; color: #d97706; }
+  .migration-btn.skip { background: rgba(255,255,255,0.25); color: white; border: 1px solid rgba(255,255,255,0.5); }
+  .migration-btn:active { opacity: 0.8; }
+  
   @media (max-width: 767px) {
     body { padding: 5px; }
     .header h1 { font-size: 1em; }
@@ -183,7 +178,6 @@
     .btn-aksi { padding: 4px; font-size: 0.6em; }
   }
   
-  /* ===== DESKTOP MODE (>= 768px) ===== */
   @media (min-width: 768px) {
     body { padding: 10px; }
     .container { max-width: 700px; }
@@ -216,6 +210,17 @@
     <p class="subtitle">Pagi (07-14) · Siang (14-21) · Minggu Libur</p>
   </div>
   <button onclick="forceRefresh()" class="btn-refresh">🔄 Paksa Refresh</button>
+  
+  <!-- MIGRATION BANNER (muncul jika bulan berganti) -->
+  <div id="migration-banner" class="migration-banner" style="display:none;">
+    <h4>📅 Bulan Berganti!</h4>
+    <p id="migration-text">Data bulan lalu perlu di-archive. Klik untuk simpan backup.</p>
+    <div class="migration-actions">
+      <button class="migration-btn archive" onclick="archiveAndReset()">💾 Archive & Reset</button>
+      <button class="migration-btn skip" onclick="skipMigration()">️ Nanti Saja</button>
+    </div>
+  </div>
+  
   <div id="today-card" class="today-card">
     <div class="today-emoji" id="today-emoji">...</div>
     <div class="today-date" id="today-date">Memuat...</div>
@@ -234,7 +239,7 @@
   </button>
   <div class="scroll-area">
     <div class="section-title" onclick="toggleCollapse('7hari')">
-      <span> 7 Hari ke Depan</span><span class="collapse-icon" id="icon-7hari">▼</span>
+      <span>📅 7 Hari ke Depan</span><span class="collapse-icon" id="icon-7hari">▼</span>
     </div>
     <div id="collapse-7hari" class="collapsible-content">
       <div id="day-list" class="card-box"></div>
@@ -263,7 +268,7 @@
         <div class="compare-box diberikan"><div class="label">LEMBUR DIBERIKAN</div><div class="value" id="lembur-diberikan">Rp 0</div></div>
         <div class="compare-box seharusnya"><div class="label">LEMBUR SEHARUSNYA</div><div class="value" id="lembur-seharusnya">Rp 0</div></div>
       </div>
-      <div class="selisih-box"><span> Selisih Lembur:</span><strong id="selisih-lembur">Rp 0</strong></div>
+      <div class="selisih-box"><span>📉 Selisih Lembur:</span><strong id="selisih-lembur">Rp 0</strong></div>
       <div class="calc-divider"></div>
       <div class="total-akhir-section">
         <div class="total-akhir-label">📊 NILAI AKHIR (KONTANAN + LEMBUR)</div>
@@ -278,16 +283,16 @@
           </div>
         </div>
         <div class="total-kurang-box">
-          <span> UPAH YANG KURANG:</span>
+          <span>💸 UPAH YANG KURANG:</span>
           <strong id="total-kurang">Rp 0</strong>
         </div>
       </div>
-      <button id="btn-toggle-data" class="btn-toggle-data" onclick="toggleData()"> Tampilkan Data</button>
+      <button id="btn-toggle-data" class="btn-toggle-data" onclick="toggleData()">📊 Tampilkan Data</button>
       <div id="data-section" class="data-section">
         <div class="calc-divider"></div>
         <div class="calc-row" style="margin-bottom: 2px;"><span style="font-weight: 600; font-size: 0.65em;">📌 Catatan Bulan Ini:</span></div>
         <div id="catatan-list" class="catatan-list"></div>
-        <button class="btn-tambah" onclick="tanyaTambahManual()"> Tambah Manual</button>
+        <button class="btn-tambah" onclick="tanyaTambahManual()">➕ Tambah Manual</button>
       </div>
       <div class="action-buttons">
         <button class="btn-aksi btn-export" onclick="exportExcel()">📊 Export Excel</button>
@@ -397,6 +402,7 @@
 <script>
   const SHIFT_DATA = __SHIFT_DATA_PLACEHOLDER__;
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLav4gRWtE21J0Ee0HPgL1xCqylz6x_oBU4ZyguU57fXN1EAvGB7N5OA4c6X6DHceqiw/exec';
+  const MIGRATION_STORAGE_KEY = 'shiftminder_last_migration_month';
   
   let selectedJam = 0;
   let selectedJamManual = 0;
@@ -407,6 +413,7 @@
   let isSaving = false;
   let archiveData = null;
   let isViewingArchive = false;
+  let currentSheetsData = null; // Simpan data Sheets untuk migration
 
   function getWibNow() {
     const now = new Date();
@@ -414,6 +421,16 @@
   }
   function getWibDate() { return getWibNow().getUTCDate(); }
   function getWibDay() { return getWibNow().getUTCDay(); }
+  function getCurrentMonthKey() {
+    const wib = getWibNow();
+    return wib.getUTCFullYear() + '-' + String(wib.getUTCMonth()+1).padStart(2,'0');
+  }
+  function getMonthNameFromKey(monthKey) {
+    const bulanIndo = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    const parts = monthKey.split('-');
+    const monthNum = parseInt(parts[1]);
+    return bulanIndo[monthNum - 1] + ' ' + parts[0];
+  }
 
   async function getDataFromSheets() {
     try {
@@ -475,7 +492,7 @@
       renderCatatan();
     } else {
       section.classList.remove('active');
-      btn.textContent = ' Tampilkan Data';
+      btn.textContent = '📊 Tampilkan Data';
     }
   }
 
@@ -494,6 +511,123 @@
   }
 
   function tutupModal(id) { document.getElementById(id).classList.remove('active'); }
+
+  // ===== MIGRATION LOGIC =====
+  function checkMigration() {
+    const pythonMonthKey = SHIFT_DATA.monthly_stats.month_key;
+    const currentMonthKey = getCurrentMonthKey();
+    const lastMigration = localStorage.getItem(MIGRATION_STORAGE_KEY);
+    
+    console.log('🔍 Migration check:', {
+      python: pythonMonthKey,
+      current: currentMonthKey,
+      lastMigration: lastMigration,
+      migrationNeeded: SHIFT_DATA.migration_needed
+    });
+    
+    // Jika bulan di Python berbeda dengan bulan sekarang, DAN belum migrasi bulan ini
+    if (currentMonthKey !== pythonMonthKey && lastMigration !== currentMonthKey) {
+      // Tampilkan banner migration
+      const banner = document.getElementById('migration-banner');
+      const text = document.getElementById('migration-text');
+      const namaBulanLalu = getMonthNameFromKey(pythonMonthKey);
+      const namaBulanSekarang = getMonthNameFromKey(currentMonthKey);
+      text.textContent = `Backup data ${namaBulanLalu} & mulai bulan ${namaBulanSekarang}`;
+      banner.style.display = 'block';
+      return true;
+    }
+    return false;
+  }
+
+  async function archiveAndReset() {
+    showStatus('⏳ Membackup data...', 'loading');
+    
+    // 1. Ambil data terbaru dari Sheets
+    const currentData = await getDataFromSheets();
+    if (!currentData) {
+      showStatus('❌ Gagal ambil data untuk backup', 'error');
+      return;
+    }
+    
+    currentSheetsData = currentData;
+    
+    // 2. Download JSON backup ke HP
+    const backupData = {
+      month_key: currentData.month_key || SHIFT_DATA.monthly_stats.month_key,
+      kontanan_days: currentData.kontanan_days || [],
+      lembur_records: currentData.lembur_records || [],
+      backup_date: new Date().toISOString()
+    };
+    
+    const jsonStr = JSON.stringify(backupData, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'shiftminder_backup_' + backupData.month_key + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    console.log('💾 Backup downloaded:', backupData);
+    
+    // 3. Tambah ke arsip via Apps Script
+    showStatus('⏳ Menyimpan ke arsip...', 'loading');
+    try {
+      const res = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ 
+          action: 'archive_month', 
+          month_key: backupData.month_key,
+          kontanan_days: backupData.kontanan_days,
+          lembur_records: backupData.lembur_records
+        })
+      });
+      
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const result = await res.json();
+      
+      if (result.success) {
+        // 4. Reset Sheets ke bulan baru
+        showStatus('⏳ Mereset Sheets...', 'loading');
+        const newMonthKey = getCurrentMonthKey();
+        const resetData = {
+          month_key: newMonthKey,
+          kontanan_days: [],
+          lembur_records: []
+        };
+        
+        const success = await updateDataToSheets(resetData);
+        if (success) {
+          localStorage.setItem(MIGRATION_STORAGE_KEY, newMonthKey);
+          SHIFT_DATA.saved_data = resetData;
+          SHIFT_DATA.monthly_stats.month_key = newMonthKey;
+          SHIFT_DATA.monthly_stats.month_name = getMonthNameFromKey(newMonthKey);
+          
+          showStatus('✅ Backup tersimpan & Sheets direset!', 'success');
+          document.getElementById('migration-banner').style.display = 'none';
+          render();
+          if (dataVisible) renderCatatan();
+        } else {
+          showStatus('⚠️ Backup terdownload tapi reset gagal', 'warning');
+        }
+      } else {
+        showStatus('⚠️ Backup terdownload tapi arsip gagal', 'warning');
+      }
+    } catch (e) {
+      console.error('❌ Archive error:', e);
+      showStatus('⚠️ Backup terdownload tapi arsip gagal: ' + e.message, 'warning');
+    }
+  }
+
+  function skipMigration() {
+    const currentMonthKey = getCurrentMonthKey();
+    localStorage.setItem(MIGRATION_STORAGE_KEY, currentMonthKey);
+    document.getElementById('migration-banner').style.display = 'none';
+    showStatus('⏭️ Migration dilewati', 'warning');
+  }
 
   function tanyaKontanan() {
     const wib = getWibNow();
@@ -636,7 +770,7 @@
 
   async function simpanEdit() {
     if (editTanggal === null) return;
-    showStatus(' Menyimpan...', 'loading');
+    showStatus('⏳ Menyimpan...', 'loading');
     const currentData = await getDataFromSheets();
     if (!currentData) { tutupModal('modal-edit'); return; }
     if (!currentData.kontanan_days) currentData.kontanan_days = [];
@@ -733,7 +867,7 @@
       if (!res.ok) { showStatus('❌ Gagal muat data', 'error'); return; }
       const data = await res.json();
       
-      if (data.error) { showStatus(' ' + data.error, 'error'); return; }
+      if (data.error) { showStatus('❌ ' + data.error, 'error'); return; }
       
       archiveData = data;
       isViewingArchive = true;
@@ -763,7 +897,9 @@
     const hariKontanan = saved.kontanan_days.length;
     const totalJamLembur = saved.lembur_records.reduce((sum, r) => sum + (r.jam || 0), 0);
     
-    document.getElementById('stat-bulan').textContent = archiveData.month_key;
+    // FIX: Gunakan nama bulan dari archive, bukan dari Python
+    const archiveMonthName = getMonthNameFromKey(archiveData.month_key);
+    document.getElementById('stat-bulan').textContent = archiveMonthName;
     document.getElementById('stat-kontanan').textContent = hariKontanan + ' hari';
     document.getElementById('stat-lembur').textContent = totalJamLembur + ' jam';
     
@@ -915,7 +1051,10 @@
     if (allRecords.length === 0) {
       listContainer.innerHTML = '<div class="no-catatan">Belum ada catatan bulan ini</div>';
     } else {
-      const bulanSingkat = stats.month_name.split(' ')[0].substring(0,3);
+      // FIX: Gunakan bulan dari Sheets (saved.month_key), bukan dari Python
+      const displayMonthKey = saved.month_key || stats.month_key;
+      const bulanSingkat = getMonthNameFromKey(displayMonthKey).split(' ')[0].substring(0,3);
+      
       let html = '';
       allRecords.forEach(function(rec) {
         let label = '';
@@ -991,7 +1130,7 @@
         btn.innerHTML = '✅ Sudah Dicatat Hari Ini<span class="action-sub">Tap untuk konfirmasi ulang</span>';
       } else {
         btn.classList.remove('sudah-catat');
-        btn.innerHTML = '️ Ada Kontanan Hari Ini?<span class="action-sub">Tap untuk mencatat</span>';
+        btn.innerHTML = '🏖️ Ada Kontanan Hari Ini?<span class="action-sub">Tap untuk mencatat</span>';
       }
     } else {
       document.getElementById('btn-kontanan').style.display = 'none';
@@ -1022,11 +1161,15 @@
     });
     document.getElementById('week-list').innerHTML = weekHtml;
 
+    // FIX: Gunakan nama bulan dari Sheets jika ada, bukan dari Python
+    const displayMonthKey = saved.month_key || data.monthly_stats.month_key;
+    const displayMonthName = getMonthNameFromKey(displayMonthKey);
+    
     const stats = data.monthly_stats;
     const hariKontanan = saved.kontanan_days.length;
     const totalJamLembur = saved.lembur_records.reduce((sum, r) => sum + (r.jam || 0), 0);
 
-    document.getElementById('stat-bulan').textContent = stats.month_name;
+    document.getElementById('stat-bulan').textContent = displayMonthName;
     document.getElementById('stat-minggu').textContent = stats.total_minggu + ' hari';
     document.getElementById('stat-kontanan').textContent = hariKontanan + ' hari';
     document.getElementById('stat-lembur').textContent = totalJamLembur + ' jam';
@@ -1060,9 +1203,16 @@
     const sheetsData = await getDataFromSheets();
     if (sheetsData) {
       SHIFT_DATA.saved_data = sheetsData;
+      currentSheetsData = sheetsData;
       console.log('✅ Data dari Sheets dimuat:', sheetsData);
     }
     render();
+    
+    // Cek migration setelah render
+    setTimeout(() => {
+      checkMigration();
+    }, 500);
+    
     setInterval(updateJam, 1000);
   }
   init();
