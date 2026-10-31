@@ -79,15 +79,16 @@ def generate_data():
         "next_7_days": next_7_days,
         "next_4_weeks": next_4_weeks,
         "monthly_stats": monthly_stats,
-        "saved_data": {"kontanan_days": [], "lembur_records": []},
-        "migration_needed": True
+        "saved_data": {"kontanan_days": [], "lembur_records": []}
     }
 
 def inject_to_html(data):
     with open("template.html", "r", encoding="utf-8") as f:
         html = f.read()
+    
     json_str = json.dumps(data, ensure_ascii=False)
     html = html.replace("__SHIFT_DATA_PLACEHOLDER__", json_str)
+    
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
 
