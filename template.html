@@ -184,7 +184,7 @@
 <body>
 <div class="container">
   <div class="header">
-    <h1>⏰ Jadwal Shift Kerja</h1>
+    <h1> Jadwal Shift Kerja</h1>
     <p class="subtitle">Pagi (07-14) · Siang (14-21) · Minggu Libur</p>
   </div>
   <button onclick="forceRefresh()" class="btn-refresh">🔄 Paksa Refresh</button>
@@ -201,7 +201,7 @@
     <span class="action-sub">Tap untuk mencatat hari libur kerja</span>
   </button>
   <button id="btn-lembur" class="action-btn btn-lembur" onclick="tanyaLembur()">
-    ⏱️ Apakah Hari Ini Lembur?
+    ️ Apakah Hari Ini Lembur?
     <span class="action-sub">Tap untuk mencatat jam lembur</span>
   </button>
   <div class="scroll-area">
@@ -219,10 +219,10 @@
     </div>
     <div class="section-title">💰 Catatan Lembur</div>
     <div class="card-box calc-card">
-      <div class="rate-info"><strong>📋 Rate:</strong> HK Rp170rb | Sejam Rp21.250 | Lembur Gov: 1-2jam=Rp31.875, 3+=Rp42.500 | Lembur PT: Rp7.000/jam</div>
+      <div class="rate-info"><strong> Rate:</strong> HK Rp170rb | Sejam Rp21.250 | Lembur Gov: 1-2jam=Rp31.875, 3+=Rp42.500 | Lembur PT: Rp7.000/jam</div>
       <div class="calc-row"><span>Bulan:</span> <strong id="stat-bulan">...</strong></div>
       <div class="calc-row"><span>Hari Minggu:</span> <strong id="stat-minggu">...</strong></div>
-      <div class="calc-row"><span>📝 Kontanan Tercatat:</span> <strong id="stat-kontanan">0 hari</strong></div>
+      <div class="calc-row"><span> Kontanan Tercatat:</span> <strong id="stat-kontanan">0 hari</strong></div>
       <div class="calc-row"><span>⏱️ Total Jam Lembur:</span> <strong id="stat-lembur">0 jam</strong></div>
       <div class="calc-divider"></div>
       <div class="compare-container">
@@ -325,7 +325,7 @@
 
 <div id="modal-edit" class="modal-overlay">
   <div class="modal-box">
-    <h3>✏️ Edit Catatan</h3>
+    <h3>️ Edit Catatan</h3>
     <p id="modal-edit-info">Edit catatan:</p>
     <div class="checkbox-group">
       <label><input type="checkbox" id="edit-kontanan"> Status Kontanan</label>
@@ -368,7 +368,7 @@
 
 <script>
   const SHIFT_DATA = __SHIFT_DATA_PLACEHOLDER__;
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLav4gRWtE21J0Ee0HPgL1xCqylz6x_oBU4ZyguU57fXN1EAvGB7N5OA4c6X6DHceqiw/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby9vS4sJwIy-3QMdEOY9ksHtFYpIDyExVaYZzyBuZSH7W5GLKnRC2ZRIKjQQ01e_PmeEg/exec';
   
   let selectedJam = 0;
   let selectedJamManual = 0;
@@ -875,7 +875,6 @@
     if (allRecords.length === 0) {
       listContainer.innerHTML = '<div class="no-catatan">Belum ada catatan bulan ini</div>';
     } else {
-      // FIX: Gunakan bulan dari data Sheets, bukan dari Python
       const displayMonthKey = saved.month_key || stats.month_key;
       const bulanSingkat = getMonthNameFromKey(displayMonthKey).split(' ')[0].substring(0,3);
       
@@ -989,7 +988,6 @@
     document.getElementById('week-list').innerHTML = weekHtml;
 
     const stats = data.monthly_stats;
-    // FIX: Gunakan nama bulan dari Sheets jika ada
     const displayMonthKey = saved.month_key || stats.month_key;
     const displayMonthName = getMonthNameFromKey(displayMonthKey);
     
