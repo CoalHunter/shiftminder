@@ -153,49 +153,10 @@
   .btn-export-archive { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.85em; font-weight: 700; cursor: pointer; margin-top: 6px; width: 100%; }
   .btn-export-archive:active { opacity: 0.8; }
   @media (max-width: 767px) {
-    body { padding: 5px; }
-    .header h1 { font-size: 1em; }
-    .header .subtitle { font-size: 0.55em; }
-    .today-jam { font-size: 1.4em; }
-    .today-status { font-size: 1em; }
-    .today-card { padding: 6px; }
-    .action-btn { padding: 6px; font-size: 0.7em; }
-    .calc-card { padding: 3px; }
-    .rate-info { font-size: 0.5em; padding: 2px 4px; }
-    .calc-row { font-size: 0.55em; }
-    .compare-box .value { font-size: 0.65em; }
-    .selisih-box { padding: 3px 5px; }
-    .selisih-box span { font-size: 0.55em; }
-    .selisih-box strong { font-size: 0.75em; }
-    .total-box-final .ta-value { font-size: 0.85em; }
-    .total-kurang-box { padding: 6px 5px; }
-    .total-kurang-box span { font-size: 0.65em; }
-    .total-kurang-box strong { font-size: 0.9em; }
-    .btn-toggle-data { padding: 4px; font-size: 0.65em; }
-    .btn-aksi { padding: 4px; font-size: 0.6em; }
+    body { padding: 5px; } .header h1 { font-size: 1em; } .header .subtitle { font-size: 0.55em; } .today-jam { font-size: 1.4em; } .today-status { font-size: 1em; } .today-card { padding: 6px; } .action-btn { padding: 6px; font-size: 0.7em; } .calc-card { padding: 3px; } .rate-info { font-size: 0.5em; padding: 2px 4px; } .calc-row { font-size: 0.55em; } .compare-box .value { font-size: 0.65em; } .selisih-box { padding: 3px 5px; } .selisih-box span { font-size: 0.55em; } .selisih-box strong { font-size: 0.75em; } .total-box-final .ta-value { font-size: 0.85em; } .total-kurang-box { padding: 6px 5px; } .total-kurang-box span { font-size: 0.65em; } .total-kurang-box strong { font-size: 0.9em; } .btn-toggle-data { padding: 4px; font-size: 0.65em; } .btn-aksi { padding: 4px; font-size: 0.6em; }
   }
   @media (min-width: 768px) {
-    body { padding: 10px; }
-    .container { max-width: 700px; }
-    .header h1 { font-size: 1.3em; }
-    .header .subtitle { font-size: 0.7em; }
-    .today-jam { font-size: 2em; }
-    .today-status { font-size: 1.3em; }
-    .today-card { padding: 10px; }
-    .action-btn { padding: 8px; font-size: 0.85em; }
-    .calc-card { padding: 6px; }
-    .rate-info { font-size: 0.6em; padding: 4px 6px; }
-    .calc-row { font-size: 0.65em; }
-    .compare-box .value { font-size: 0.8em; }
-    .selisih-box { padding: 5px 8px; }
-    .selisih-box span { font-size: 0.65em; }
-    .selisih-box strong { font-size: 0.9em; }
-    .total-box-final .ta-value { font-size: 1.1em; }
-    .total-kurang-box { padding: 10px 8px; }
-    .total-kurang-box span { font-size: 0.8em; }
-    .total-kurang-box strong { font-size: 1.2em; }
-    .btn-toggle-data { padding: 6px; font-size: 0.75em; }
-    .btn-aksi { padding: 6px; font-size: 0.7em; }
+    body { padding: 10px; } .container { max-width: 700px; } .header h1 { font-size: 1.3em; } .header .subtitle { font-size: 0.7em; } .today-jam { font-size: 2em; } .today-status { font-size: 1.3em; } .today-card { padding: 10px; } .action-btn { padding: 8px; font-size: 0.85em; } .calc-card { padding: 6px; } .rate-info { font-size: 0.6em; padding: 4px 6px; } .calc-row { font-size: 0.65em; } .compare-box .value { font-size: 0.8em; } .selisih-box { padding: 5px 8px; } .selisih-box span { font-size: 0.65em; } .selisih-box strong { font-size: 0.9em; } .total-box-final .ta-value { font-size: 1.1em; } .total-kurang-box { padding: 10px 8px; } .total-kurang-box span { font-size: 0.8em; } .total-kurang-box strong { font-size: 1.2em; } .btn-toggle-data { padding: 6px; font-size: 0.75em; } .btn-aksi { padding: 6px; font-size: 0.7em; }
   }
 </style>
 </head>
@@ -405,7 +366,7 @@
   </div>
 </div>
 
-<!-- MODAL 1: Kelola Arsip (3 tombol: Tutup, Lihat, Hapus Arsip) -->
+<!-- MODAL 1: Kelola Arsip -->
 <div id="modal-archive" class="modal-overlay">
   <div class="modal-box">
     <h3>📁 Kelola Arsip</h3>
@@ -421,7 +382,7 @@
   </div>
 </div>
 
-<!-- MODAL 2: Konfirmasi Hapus Arsip (2 pilihan) -->
+<!-- MODAL 2: Konfirmasi Hapus Arsip -->
 <div id="modal-hapus-arsip" class="modal-overlay">
   <div class="modal-box">
     <h3>🗑️ Hapus Arsip</h3>
@@ -464,7 +425,7 @@
 
 <script src="config.js"></script>
 <script>
-  const SHIFT_DATA = {"last_updated": "03-11-2026 20:00:30", "today": {"day_name": "Selasa", "full_date": "Selasa, 3 November 2026", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, "next_7_days": [{"day_name": "Rabu", "short_date": "4 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Kamis", "short_date": "5 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Jumat", "short_date": "6 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Sabtu", "short_date": "7 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Minggu", "short_date": "8 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, {"day_name": "Senin", "short_date": "9 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Selasa", "short_date": "10 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}], "next_4_weeks": [{"week_label": "9 Nov - 14 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "16 Nov - 21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "23 Nov - 28 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "30 Nov - 5 Des", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "monthly_stats": {"month_name": "November 2026", "month_key": "2026-11", "total_minggu": 5, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}, "saved_data": {"kontanan_days": [], "lembur_records": [], "long_shift_days": []}};
+  const SHIFT_DATA = {"last_updated": "03-11-2026 20:56:52", "today": {"day_name": "Selasa", "full_date": "Selasa, 3 November 2026", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, "next_7_days": [{"day_name": "Rabu", "short_date": "4 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Kamis", "short_date": "5 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Jumat", "short_date": "6 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Sabtu", "short_date": "7 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Minggu", "short_date": "8 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, {"day_name": "Senin", "short_date": "9 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Selasa", "short_date": "10 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}], "next_4_weeks": [{"week_label": "9 Nov - 14 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "16 Nov - 21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "23 Nov - 28 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "30 Nov - 5 Des", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "monthly_stats": {"month_name": "November 2026", "month_key": "2026-11", "total_minggu": 5, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}, "saved_data": {"kontanan_days": [], "lembur_records": [], "long_shift_days": []}};
   
   let selectedJam = 0;
   let selectedJamManual = 0;
@@ -840,8 +801,6 @@
     tutupModal('modal-hapus');
   }
 
-  // ===== FUNGSI ARSIP =====
-
   async function bukaArchiveViewer() {
     showStatus('Memuat daftar arsip...', 'loading');
     try {
@@ -972,14 +931,9 @@
     URL.revokeObjectURL(url);
   }
 
-  // ===== FUNGSI HAPUS ARSIP =====
-
   function bukaModalHapusArsip() {
     const monthKey = document.getElementById('select-archive-month').value;
-    if (!monthKey) { 
-      showStatus('Pilih bulan dulu', 'warning'); 
-      return; 
-    }
+    if (!monthKey) { showStatus('Pilih bulan dulu', 'warning'); return; }
     document.getElementById('hapus-arsip-info').textContent = 'Pilih jenis penghapusan untuk ' + getMonthNameFromKey(monthKey) + ':';
     document.getElementById('btn-hapus-bulan').textContent = '🗑️ Hapus ' + getMonthNameFromKey(monthKey);
     tutupModal('modal-archive');
@@ -1012,10 +966,7 @@
   async function bukaModalHapusTahun() {
     const select = document.getElementById('select-archive-month');
     const currentMonthKey = select.value;
-    if (!currentMonthKey) { 
-      showStatus('Pilih bulan dulu untuk menentukan tahun', 'warning'); 
-      return; 
-    }
+    if (!currentMonthKey) { showStatus('Pilih bulan dulu untuk menentukan tahun', 'warning'); return; }
     const currentYear = getYearFromKey(currentMonthKey);
     
     showStatus('Memuat daftar tahun...', 'loading');
