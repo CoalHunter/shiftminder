@@ -101,7 +101,7 @@
   .sync-status.loading { color: #3b82f6; }
   .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 15px; }
   .modal-overlay.active { display: flex; }
-  .modal-box { background: white; border-radius: 10px; padding: 12px; max-width: 300px; width: 100%; text-align: center; max-height: 85vh; overflow-y: auto; }
+  .modal-box { background: white; border-radius: 10px; padding: 12px; max-width: 320px; width: 100%; text-align: center; max-height: 85vh; overflow-y: auto; }
   .modal-box h3 { margin-bottom: 6px; color: #333; font-size: 0.95em; }
   .modal-box p { color: #666; font-size: 0.8em; margin-bottom: 8px; white-space: pre-line; }
   .modal-box input[type="date"], .modal-box select, .modal-box input[type="number"] { width: 100%; padding: 5px; border: 2px solid #667eea; border-radius: 5px; font-size: 0.75em; margin-bottom: 6px; }
@@ -113,13 +113,13 @@
   .modal-btn { flex: 1; padding: 7px; border: none; border-radius: 5px; font-weight: 700; cursor: pointer; font-size: 0.8em; }
   .modal-btn.ya { background: #10b981; color: white; }
   .modal-btn.tidak { background: #e5e7eb; color: #374151; }
+  .modal-btn.warn { background: #f59e0b; color: white; }
+  .modal-btn.danger { background: #dc2626; color: white; }
   .modal-btn:active { opacity: 0.8; }
   .checkbox-group { margin: 6px 0; text-align: left; padding: 5px; background: #f9fafb; border-radius: 5px; }
   .checkbox-group label { font-size: 0.75em; color: #374151; display: flex; align-items: center; gap: 3px; }
   .perhitungan-info { background: #f0f9ff; border: 1px solid #7dd3fc; border-radius: 5px; padding: 5px; margin: 6px 0; font-size: 0.65em; color: #0c4a6e; text-align: left; }
   .perhitungan-info strong { color: #075985; }
-  .archive-banner { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); color: white; padding: 5px 8px; border-radius: 5px; margin-bottom: 3px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75em; font-weight: 600; flex-shrink: 0; }
-  .archive-banner .back-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7em; cursor: pointer; }
   .total-akhir-section { margin-top: 3px; }
   .total-akhir-label { font-size: 0.65em; color: #666; text-align: center; margin-bottom: 3px; font-weight: 600; }
   .total-akhir-boxes { display: flex; gap: 3px; margin-bottom: 3px; }
@@ -141,6 +141,19 @@
   .jam-tambahan-input { display: flex; align-items: center; gap: 5px; margin: 8px 0; justify-content: center; }
   .jam-tambahan-input label { font-size: 0.75em; color: #555; }
   .jam-tambahan-input input { width: 60px; padding: 4px; border: 2px solid #8b5cf6; border-radius: 5px; font-size: 0.8em; text-align: center; }
+  .archive-summary { text-align: left; font-size: 0.8em; margin: 8px 0; }
+  .archive-summary .section-title-sm { font-weight: 700; margin: 8px 0 4px 0; color: #333; font-size: 0.95em; }
+  .archive-summary .row { display: flex; justify-content: space-between; margin-bottom: 2px; }
+  .archive-summary .row.selisih { color: #dc2626; font-weight: 600; }
+  .archive-summary .divider { border-top: 1px solid #eee; margin: 5px 0; }
+  .archive-summary .total-row { background: #f0f9ff; padding: 6px; border-radius: 5px; margin: 4px 0; display: flex; justify-content: space-between; font-weight: 700; }
+  .archive-summary .total-row.diberikan { background: #f1f5f9; }
+  .archive-summary .total-row.seharusnya { background: #ecfdf5; color: #059669; }
+  .archive-summary .kurang-row { background: #dc2626; color: white; padding: 8px; border-radius: 5px; margin: 6px 0; display: flex; justify-content: space-between; font-weight: 700; font-size: 1.05em; }
+  .btn-export-archive { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.85em; font-weight: 700; cursor: pointer; margin-top: 6px; width: 100%; }
+  .btn-export-archive:active { opacity: 0.8; }
+  .delete-section { margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; }
+  .delete-section-title { font-size: 0.75em; color: #666; margin-bottom: 5px; font-weight: 600; }
   @media (max-width: 767px) {
     body { padding: 5px; }
     .header h1 { font-size: 1em; }
@@ -306,12 +319,10 @@
   <div class="modal-box">
     <h3>⏱️ Catat Lembur</h3>
     <p id="modal-tanggal-lembur">Pilih jenis lembur:</p>
-    
     <button class="btn-long-shift" onclick="showLongShiftInput()">
       🔄 LONG SHIFT (Double Shift)
       <div style="font-size:0.7em;opacity:0.9;margin-top:2px;">Kerja 14 jam (07:00-21:00) = HK × 2</div>
     </button>
-    
     <div id="long-shift-extra" style="display:none;">
       <div class="jam-tambahan-input">
         <label>Lembur tambahan (lewat 21:00):</label>
@@ -323,7 +334,6 @@
         <button class="modal-btn ya" onclick="simpanLongShift()">Simpan Long Shift</button>
       </div>
     </div>
-    
     <div id="lembur-biasa-section">
       <div class="divider-text">── ATAU LEMBUR BIASA ──</div>
       <p style="font-size:0.75em;margin-bottom:5px;">Berapa jam lembur?</p>
@@ -394,12 +404,32 @@
 
 <div id="modal-archive" class="modal-overlay">
   <div class="modal-box">
-    <h3>📁 Lihat Data Arsip</h3>
+    <h3>📁 Kelola Arsip</h3>
     <p>Pilih bulan untuk melihat data:</p>
     <select id="select-archive-month"></select>
     <div class="modal-buttons">
       <button class="modal-btn tidak" onclick="tutupModal('modal-archive')">Tutup</button>
       <button class="modal-btn ya" onclick="viewArchiveData()">👁️ Lihat</button>
+    </div>
+    <div class="delete-section">
+      <div class="delete-section-title">🗑️ Hapus Arsip</div>
+      <div class="modal-buttons">
+        <button class="modal-btn danger" onclick="konfirmasiHapusBulan()">🗑️ Hapus Bulan Ini</button>
+        <button class="modal-btn warn" onclick="bukaHapusTahun()">🗑️ Hapus 1 Tahun</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-hapus-tahun" class="modal-overlay">
+  <div class="modal-box">
+    <h3>🗑️ Hapus Arsip 1 Tahun</h3>
+    <p>Pilih tahun yang ingin dihapus SEMUA arsipnya:</p>
+    <select id="select-archive-year"></select>
+    <p style="font-size:0.7em;color:#dc2626;margin:5px 0;">⚠️ Semua data bulan di tahun ini akan dihapus permanen!</p>
+    <div class="modal-buttons">
+      <button class="modal-btn tidak" onclick="tutupModal('modal-hapus-tahun')">Batal</button>
+      <button class="modal-btn danger" onclick="konfirmasiHapusTahun()">Ya, Hapus 1 Tahun!</button>
     </div>
   </div>
 </div>
@@ -407,8 +437,9 @@
 <div id="modal-archive-view" class="modal-overlay">
   <div class="modal-box" style="max-width: 350px;">
     <h3 id="archive-view-title">📁 Arsip</h3>
-    <div id="archive-view-content" style="text-align: left; font-size: 0.8em; margin: 10px 0;"></div>
-    <div class="modal-buttons">
+    <div id="archive-view-content" class="archive-summary"></div>
+    <button class="btn-export-archive" onclick="exportArchiveExcel()">📊 Export Excel</button>
+    <div class="modal-buttons" style="margin-top:6px;">
       <button class="modal-btn tidak" onclick="tutupModal('modal-archive-view')">✕ Tutup</button>
     </div>
   </div>
@@ -426,7 +457,6 @@
   let dataVisible = false;
   let isSaving = false;
   let archiveData = null;
-  let isViewingArchive = false;
 
   function getWibNow() { return new Date(new Date().getTime() + (7 * 60 * 60 * 1000)); }
   function getWibDate() { return getWibNow().getUTCDate(); }
@@ -440,6 +470,11 @@
     const m = parseInt(parts[1]);
     if (isNaN(m) || m < 1 || m > 12) return 'November 2026';
     return bulanIndo[m - 1] + ' ' + parts[0];
+  }
+
+  function getYearFromKey(monthKey) {
+    if (!monthKey) return '2026';
+    return monthKey.split('-')[0];
   }
 
   async function getDataFromSheets() {
@@ -856,35 +891,145 @@
     
     const fmt = function(n) { return 'Rp ' + n.toLocaleString('id-ID'); };
     
-    let html = '<div style="margin-bottom:10px;">';
-    html += '<div style="font-weight:700;margin-bottom:5px;">📊 Ringkasan ' + getMonthNameFromKey(archiveData.month_key) + '</div>';
-    html += '<div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span>Kontanan:</span><span>' + hariKontanan + ' hari</span></div>';
-    html += '<div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span>Lembur:</span><span>' + totalJamLembur + ' jam</span></div>';
-    html += '<div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span>Long Shift:</span><span>' + hariLong + ' hari</span></div>';
-    html += '</div>';
+    let html = '<div class="section-title-sm">📊 Ringkasan ' + getMonthNameFromKey(archiveData.month_key) + '</div>';
+    html += '<div class="row"><span>Kontanan:</span><span>' + hariKontanan + ' hari</span></div>';
+    html += '<div class="row"><span>Lembur:</span><span>' + totalJamLembur + ' jam</span></div>';
+    html += '<div class="row"><span>Long Shift:</span><span>' + hariLong + ' hari</span></div>';
     
-    html += '<div style="margin-bottom:10px;">';
-    html += '<div style="font-weight:700;margin-bottom:5px;">💰 Perhitungan</div>';
-    html += '<div style="display:flex;justify-content:space-between;margin-bottom:2px;"><span>Kontanan Diberikan:</span><span>' + fmt(kontananDiberikan) + '</span></div>';
-    html += '<div style="display:flex;justify-content:space-between;margin-bottom:2px;"><span>Kontanan Seharusnya:</span><span>' + fmt(kontananSeharusnya) + '</span></div>';
-    html += '<div style="display:flex;justify-content:space-between;margin-bottom:2px;color:#dc2626;"><span>Selisih:</span><span>' + fmt(kontananSeharusnya - kontananDiberikan) + '</span></div>';
-    html += '<div style="border-top:1px solid #eee;margin:5px 0;"></div>';
-    html += '<div style="display:flex;justify-content:space-between;margin-bottom:2px;"><span>Lembur Diberikan:</span><span>' + fmt(lemburDiberikan) + '</span></div>';
-    html += '<div style="display:flex;justify-content:space-between;margin-bottom:2px;"><span>Lembur Seharusnya:</span><span>' + fmt(lemburSeharusnya) + '</span></div>';
-    html += '<div style="display:flex;justify-content:space-between;margin-bottom:2px;color:#dc2626;"><span>Selisih:</span><span>' + fmt(lemburSeharusnya - lemburDiberikan) + '</span></div>';
-    html += '<div style="border-top:1px solid #eee;margin:5px 0;"></div>';
-    html += '<div style="display:flex;justify-content:space-between;margin-bottom:2px;"><span>Long Shift Diberikan:</span><span>' + fmt(longDiberikan) + '</span></div>';
-    html += '<div style="display:flex;justify-content:space-between;margin-bottom:2px;"><span>Long Shift Seharusnya:</span><span>' + fmt(longSeharusnya) + '</span></div>';
-    html += '<div style="display:flex;justify-content:space-between;margin-bottom:2px;color:#dc2626;"><span>Selisih:</span><span>' + fmt(longSeharusnya - longDiberikan) + '</span></div>';
-    html += '</div>';
+    html += '<div class="section-title-sm">💰 Perhitungan</div>';
+    html += '<div class="row"><span>Kontanan Diberikan:</span><span>' + fmt(kontananDiberikan) + '</span></div>';
+    html += '<div class="row"><span>Kontanan Seharusnya:</span><span>' + fmt(kontananSeharusnya) + '</span></div>';
+    html += '<div class="row selisih"><span>Selisih:</span><span>' + fmt(kontananSeharusnya - kontananDiberikan) + '</span></div>';
+    html += '<div class="divider"></div>';
+    html += '<div class="row"><span>Lembur Diberikan:</span><span>' + fmt(lemburDiberikan) + '</span></div>';
+    html += '<div class="row"><span>Lembur Seharusnya:</span><span>' + fmt(lemburSeharusnya) + '</span></div>';
+    html += '<div class="row selisih"><span>Selisih:</span><span>' + fmt(lemburSeharusnya - lemburDiberikan) + '</span></div>';
+    html += '<div class="divider"></div>';
+    html += '<div class="row"><span>Long Shift Diberikan:</span><span>' + fmt(longDiberikan) + '</span></div>';
+    html += '<div class="row"><span>Long Shift Seharusnya:</span><span>' + fmt(longSeharusnya) + '</span></div>';
+    html += '<div class="row selisih"><span>Selisih:</span><span>' + fmt(longSeharusnya - longDiberikan) + '</span></div>';
     
-    html += '<div style="background:#dc2626;color:white;padding:8px;border-radius:5px;text-align:center;font-weight:700;">';
-    html += '💸 TOTAL UPAH KURANG: ' + fmt(totalKurang);
-    html += '</div>';
+    html += '<div class="divider"></div>';
+    html += '<div class="total-row diberikan"><span>TOTAL DIBAYARKAN:</span><span>' + fmt(totalDiberikan) + '</span></div>';
+    html += '<div class="total-row seharusnya"><span>TOTAL SEHARUSNYA:</span><span>' + fmt(totalSeharusnya) + '</span></div>';
+    html += '<div class="kurang-row"><span>💸 UPAH KURANG:</span><span>' + fmt(totalKurang) + '</span></div>';
     
     document.getElementById('archive-view-title').textContent = '📁 Arsip: ' + getMonthNameFromKey(archiveData.month_key);
     document.getElementById('archive-view-content').innerHTML = html;
     document.getElementById('modal-archive-view').classList.add('active');
+  }
+
+  function exportArchiveExcel() {
+    if (!archiveData) return;
+    const stats = SHIFT_DATA.monthly_stats;
+    const saved = archiveData;
+    const hariKontanan = saved.kontanan_days.length;
+    const totalJamLembur = saved.lembur_records.reduce(function(s,r){return s+(r.jam||0);}, 0);
+    const hariLong = (saved.long_shift_days || []).length;
+    const kontananDiberikan = hariKontanan * stats.rate_hk;
+    const kontananSeharusnya = hariKontanan * stats.rate_kontanan;
+    const lemburDiberikan = totalJamLembur * stats.rate_lembur_perusahaan;
+    var lemburSeharusnya = 0;
+    if (totalJamLembur <= 2) lemburSeharusnya = totalJamLembur * stats.rate_lembur_jam1;
+    else lemburSeharusnya = (2 * stats.rate_lembur_jam1) + ((totalJamLembur - 2) * stats.rate_lembur_jam2);
+    const longDiberikan = hariLong * stats.rate_hk;
+    const longSeharusnya = hariLong * stats.rate_kontanan;
+    const totalDiberikan = kontananDiberikan + lemburDiberikan + longDiberikan;
+    const totalSeharusnya = kontananSeharusnya + lemburSeharusnya + longSeharusnya;
+    const totalKurang = totalSeharusnya - totalDiberikan;
+    const fmt = function(n) { return n.toLocaleString('id-ID'); };
+    const parts = saved.month_key.split('-');
+    const tahun = parts[0];
+    const namaBulan = getMonthNameFromKey(saved.month_key).split(' ')[0];
+    const html = '<html><head><meta charset="UTF-8"></head><body><table border="1" cellpadding="5"><tr><td colspan="2" style="background:#667eea;color:white;font-size:14pt;font-weight:bold;">REKAP ARSIP ' + namaBulan.toUpperCase() + ' ' + tahun + '</td></tr><tr><td>Kontanan</td><td>' + hariKontanan + ' hari</td></tr><tr><td>Lembur</td><td>' + totalJamLembur + ' jam</td></tr><tr><td>Long Shift</td><td>' + hariLong + ' hari</td></tr><tr><td colspan="2" style="background:#f0f0f0;font-weight:bold;">Perhitungan</td></tr><tr><td>Kontanan Diberikan</td><td>Rp ' + fmt(kontananDiberikan) + '</td></tr><tr><td>Kontanan Seharusnya</td><td>Rp ' + fmt(kontananSeharusnya) + '</td></tr><tr><td>Lembur Diberikan</td><td>Rp ' + fmt(lemburDiberikan) + '</td></tr><tr><td>Lembur Seharusnya</td><td>Rp ' + fmt(lemburSeharusnya) + '</td></tr><tr><td>Long Shift Diberikan</td><td>Rp ' + fmt(longDiberikan) + '</td></tr><tr><td>Long Shift Seharusnya</td><td>Rp ' + fmt(longSeharusnya) + '</td></tr><tr><td colspan="2" style="background:#f0f0f0;font-weight:bold;">TOTAL</td></tr><tr><td style="background:#94a3b8;color:white;font-weight:bold;">Total Dibayarkan</td><td style="background:#94a3b8;color:white;font-weight:bold;">Rp ' + fmt(totalDiberikan) + '</td></tr><tr><td style="background:#10b981;color:white;font-weight:bold;">Total Seharusnya</td><td style="background:#10b981;color:white;font-weight:bold;">Rp ' + fmt(totalSeharusnya) + '</td></tr><tr><td style="background:#dc2626;color:white;font-weight:bold;">Total Upah Kurang</td><td style="background:#dc2626;color:white;font-weight:bold;">Rp ' + fmt(totalKurang) + '</td></tr></table></body></html>';
+    const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Arsip_' + namaBulan + '_' + tahun + '.xls';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function konfirmasiHapusBulan() {
+    const monthKey = document.getElementById('select-archive-month').value;
+    if (!monthKey) { showStatus('Pilih bulan dulu', 'warning'); return; }
+    if (!confirm('Yakin ingin menghapus arsip ' + getMonthNameFromKey(monthKey) + '? Data tidak bisa dikembalikan!')) return;
+    showStatus('Menghapus arsip...', 'loading');
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'delete_archive', month_key: monthKey })
+    }).then(function(res) { return res.json(); })
+    .then(function(result) {
+      if (result.success) {
+        showStatus('Arsip dihapus!', 'success');
+        tutupModal('modal-archive');
+        bukaArchiveViewer();
+      } else {
+        showStatus((result.error || 'Gagal hapus'), 'error');
+      }
+    }).catch(function(e) {
+      showStatus('Gagal: ' + e.message, 'error');
+    });
+  }
+
+  async function bukaHapusTahun() {
+    const select = document.getElementById('select-archive-month');
+    const currentMonthKey = select.value;
+    if (!currentMonthKey) { showStatus('Pilih bulan dulu untuk menentukan tahun', 'warning'); return; }
+    const currentYear = getYearFromKey(currentMonthKey);
+    
+    showStatus('Memuat daftar tahun...', 'loading');
+    try {
+      const res = await fetch(APPS_SCRIPT_URL + '?action=list_archive');
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const yearSelect = document.getElementById('select-archive-year');
+      yearSelect.innerHTML = '<option value="' + currentYear + '">' + currentYear + ' (terpilih)</option>';
+      if (data.archive_list && data.archive_list.length > 0) {
+        const years = {};
+        data.archive_list.forEach(function(month) {
+          const y = getYearFromKey(month);
+          if (y !== currentYear) years[y] = true;
+        });
+        Object.keys(years).sort().forEach(function(y) {
+          const opt = document.createElement('option');
+          opt.value = y;
+          opt.textContent = y;
+          yearSelect.appendChild(opt);
+        });
+      }
+      tutupModal('modal-archive');
+      document.getElementById('modal-hapus-tahun').classList.add('active');
+      showStatus('', '');
+    } catch (e) {
+      showStatus('Gagal: ' + e.message, 'error');
+    }
+  }
+
+  function konfirmasiHapusTahun() {
+    const year = document.getElementById('select-archive-year').value;
+    if (!year) { showStatus('Pilih tahun dulu', 'warning'); return; }
+    if (!confirm('Yakin ingin menghapus SEMUA arsip tahun ' + year + '? Data tidak bisa dikembalikan!')) return;
+    showStatus('Menghapus arsip tahun ' + year + '...', 'loading');
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'delete_archive_year', year: year })
+    }).then(function(res) { return res.json(); })
+    .then(function(result) {
+      if (result.success) {
+        showStatus(result.deleted + ' bulan dihapus!', 'success');
+        tutupModal('modal-hapus-tahun');
+      } else {
+        showStatus((result.error || 'Gagal hapus'), 'error');
+      }
+    }).catch(function(e) {
+      showStatus('Gagal: ' + e.message, 'error');
+    });
   }
 
   function exportExcel() {
@@ -909,7 +1054,7 @@
     const parts = stats.month_key.split('-');
     const tahun = parts[0];
     const namaBulan = stats.month_name.split(' ')[0];
-    const html = '<html><head><meta charset="UTF-8"></head><body><table border="1" cellpadding="5"><tr><td colspan="2" style="background:#667eea;color:white;font-size:14pt;font-weight:bold;">REKAP ' + namaBulan.toUpperCase() + ' ' + tahun + '</td></tr><tr><td>Kontanan Diberikan</td><td>Rp ' + fmt(kontananDiberikan) + '</td></tr><tr><td>Kontanan Seharusnya</td><td>Rp ' + fmt(kontananSeharusnya) + '</td></tr><tr><td>Lembur Diberikan</td><td>Rp ' + fmt(lemburDiberikan) + '</td></tr><tr><td>Lembur Seharusnya</td><td>Rp ' + fmt(lemburSeharusnya) + '</td></tr><tr><td>Long Shift Diberikan</td><td>Rp ' + fmt(longDiberikan) + '</td></tr><tr><td>Long Shift Seharusnya</td><td>Rp ' + fmt(longSeharusnya) + '</td></tr><tr><td style="background:#dc2626;color:white;font-weight:bold;">TOTAL UPAH KURANG</td><td style="background:#dc2626;color:white;font-weight:bold;">Rp ' + fmt(totalKurang) + '</td></tr></table></body></html>';
+    const html = '<html><head><meta charset="UTF-8"></head><body><table border="1" cellpadding="5"><tr><td colspan="2" style="background:#667eea;color:white;font-size:14pt;font-weight:bold;">REKAP ' + namaBulan.toUpperCase() + ' ' + tahun + '</td></tr><tr><td>Kontanan Diberikan</td><td>Rp ' + fmt(kontananDiberikan) + '</td></tr><tr><td>Kontanan Seharusnya</td><td>Rp ' + fmt(kontananSeharusnya) + '</td></tr><tr><td>Lembur Diberikan</td><td>Rp ' + fmt(lemburDiberikan) + '</td></tr><tr><td>Lembur Seharusnya</td><td>Rp ' + fmt(lemburSeharusnya) + '</td></tr><tr><td>Long Shift Diberikan</td><td>Rp ' + fmt(longDiberikan) + '</td></tr><tr><td>Long Shift Seharusnya</td><td>Rp ' + fmt(longSeharusnya) + '</td></tr><tr><td style="background:#94a3b8;color:white;font-weight:bold;">Total Dibayarkan</td><td style="background:#94a3b8;color:white;font-weight:bold;">Rp ' + fmt(totalDiberikan) + '</td></tr><tr><td style="background:#10b981;color:white;font-weight:bold;">Total Seharusnya</td><td style="background:#10b981;color:white;font-weight:bold;">Rp ' + fmt(totalSeharusnya) + '</td></tr><tr><td style="background:#dc2626;color:white;font-weight:bold;">Total Upah Kurang</td><td style="background:#dc2626;color:white;font-weight:bold;">Rp ' + fmt(totalKurang) + '</td></tr></table></body></html>';
     const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -962,11 +1107,11 @@
       for (var i = 0; i < saved.lembur_records.length; i++) {
         if (saved.lembur_records[i].date === d) { lembur = saved.lembur_records[i]; break; }
       }
-      allRecords.push({ date: d, is_kontanan: true, is_long: false, jam: lembur ? lembur.jam : 0, is_extra: lembur ? lembur.is_extra : false });
+      allRecords.push({ date: d, is_kontanan: true, is_long: false, jam: lembur ? lembur.jam : 0 });
     });
     saved.lembur_records.forEach(function(r) {
       if (saved.kontanan_days.indexOf(r.date) === -1 && (saved.long_shift_days || []).indexOf(r.date) === -1) {
-        allRecords.push({ date: r.date, is_kontanan: false, is_long: false, jam: r.jam, is_extra: r.is_extra });
+        allRecords.push({ date: r.date, is_kontanan: false, is_long: false, jam: r.jam });
       }
     });
     (saved.long_shift_days || []).forEach(function(d) {
@@ -974,7 +1119,7 @@
       for (var i = 0; i < saved.lembur_records.length; i++) {
         if (saved.lembur_records[i].date === d && saved.lembur_records[i].is_extra) { lemburExtra = saved.lembur_records[i]; break; }
       }
-      allRecords.push({ date: d, is_kontanan: false, is_long: true, jam: lemburExtra ? lemburExtra.jam : 0, is_extra: true });
+      allRecords.push({ date: d, is_kontanan: false, is_long: true, jam: lemburExtra ? lemburExtra.jam : 0 });
     });
     allRecords.sort(function(a,b){return a.date - b.date;});
 
