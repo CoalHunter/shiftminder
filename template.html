@@ -109,8 +109,8 @@
   .jam-btn { background: #f3f4f6; border: 2px solid #e5e7eb; border-radius: 5px; padding: 6px; font-size: 0.8em; font-weight: 600; cursor: pointer; }
   .jam-btn:active { background: #667eea; color: white; border-color: #667eea; }
   .jam-btn.selected { background: #667eea; color: white; border-color: #667eea; }
-  .modal-buttons { display: flex; gap: 6px; }
-  .modal-btn { flex: 1; padding: 7px; border: none; border-radius: 5px; font-weight: 700; cursor: pointer; font-size: 0.8em; }
+  .modal-buttons { display: flex; gap: 6px; margin-top: 6px; }
+  .modal-btn { flex: 1; padding: 8px; border: none; border-radius: 5px; font-weight: 700; cursor: pointer; font-size: 0.8em; }
   .modal-btn.ya { background: #10b981; color: white; }
   .modal-btn.tidak { background: #e5e7eb; color: #374151; }
   .modal-btn.warn { background: #f59e0b; color: white; }
@@ -146,14 +146,12 @@
   .archive-summary .row { display: flex; justify-content: space-between; margin-bottom: 2px; }
   .archive-summary .row.selisih { color: #dc2626; font-weight: 600; }
   .archive-summary .divider { border-top: 1px solid #eee; margin: 5px 0; }
-  .archive-summary .total-row { background: #f0f9ff; padding: 6px; border-radius: 5px; margin: 4px 0; display: flex; justify-content: space-between; font-weight: 700; }
+  .archive-summary .total-row { padding: 6px; border-radius: 5px; margin: 4px 0; display: flex; justify-content: space-between; font-weight: 700; }
   .archive-summary .total-row.diberikan { background: #f1f5f9; }
   .archive-summary .total-row.seharusnya { background: #ecfdf5; color: #059669; }
-  .archive-summary .kurang-row { background: #dc2626; color: white; padding: 8px; border-radius: 5px; margin: 6px 0; display: flex; justify-content: space-between; font-weight: 700; font-size: 1.05em; }
+  .archive-summary .kurang-row { background: #dc2626; color: white; padding: 8px; border-radius: 5px; margin: 6px 0; display: flex; justify-content: space-between; font-weight: 700; font-size: 1em; }
   .btn-export-archive { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.85em; font-weight: 700; cursor: pointer; margin-top: 6px; width: 100%; }
   .btn-export-archive:active { opacity: 0.8; }
-  .delete-section { margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; }
-  .delete-section-title { font-size: 0.75em; color: #666; margin-bottom: 5px; font-weight: 600; }
   @media (max-width: 767px) {
     body { padding: 5px; }
     .header h1 { font-size: 1em; }
@@ -298,6 +296,7 @@
   </div>
 </div>
 
+<!-- Modal Kontanan -->
 <div id="modal-kontanan" class="modal-overlay">
   <div class="modal-box">
     <h3>🏖️ Konfirmasi Kontanan</h3>
@@ -315,6 +314,7 @@
   </div>
 </div>
 
+<!-- Modal Lembur -->
 <div id="modal-lembur" class="modal-overlay">
   <div class="modal-box">
     <h3>⏱️ Catat Lembur</h3>
@@ -352,6 +352,7 @@
   </div>
 </div>
 
+<!-- Modal Tambah Manual -->
 <div id="modal-tambah" class="modal-overlay">
   <div class="modal-box">
     <h3>➕ Tambah Catatan Manual</h3>
@@ -372,6 +373,7 @@
   </div>
 </div>
 
+<!-- Modal Edit -->
 <div id="modal-edit" class="modal-overlay">
   <div class="modal-box">
     <h3>✏️ Edit Catatan</h3>
@@ -391,6 +393,7 @@
   </div>
 </div>
 
+<!-- Modal Hapus Catatan -->
 <div id="modal-hapus" class="modal-overlay">
   <div class="modal-box">
     <h3>⚠️ Konfirmasi Hapus</h3>
@@ -402,6 +405,7 @@
   </div>
 </div>
 
+<!-- MODAL 1: Kelola Arsip (3 tombol: Tutup, Lihat, Hapus Arsip) -->
 <div id="modal-archive" class="modal-overlay">
   <div class="modal-box">
     <h3>📁 Kelola Arsip</h3>
@@ -411,16 +415,28 @@
       <button class="modal-btn tidak" onclick="tutupModal('modal-archive')">Tutup</button>
       <button class="modal-btn ya" onclick="viewArchiveData()">👁️ Lihat</button>
     </div>
-    <div class="delete-section">
-      <div class="delete-section-title">🗑️ Hapus Arsip</div>
-      <div class="modal-buttons">
-        <button class="modal-btn danger" onclick="konfirmasiHapusBulan()">🗑️ Hapus Bulan Ini</button>
-        <button class="modal-btn warn" onclick="bukaHapusTahun()">🗑️ Hapus 1 Tahun</button>
-      </div>
+    <div class="modal-buttons">
+      <button class="modal-btn danger" onclick="bukaModalHapusArsip()">🗑️ Hapus Arsip</button>
     </div>
   </div>
 </div>
 
+<!-- MODAL 2: Konfirmasi Hapus Arsip (2 pilihan) -->
+<div id="modal-hapus-arsip" class="modal-overlay">
+  <div class="modal-box">
+    <h3>🗑️ Hapus Arsip</h3>
+    <p id="hapus-arsip-info">Pilih jenis penghapusan:</p>
+    <div class="modal-buttons" style="flex-direction:column;gap:8px;">
+      <button class="modal-btn danger" id="btn-hapus-bulan" onclick="konfirmasiHapusBulan()">🗑️ Hapus Bulan Ini</button>
+      <button class="modal-btn warn" onclick="bukaModalHapusTahun()">🗑️ Hapus 1 Tahun</button>
+    </div>
+    <div class="modal-buttons">
+      <button class="modal-btn tidak" onclick="tutupModal('modal-hapus-arsip')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 3: Pilih Tahun untuk Dihapus -->
 <div id="modal-hapus-tahun" class="modal-overlay">
   <div class="modal-box">
     <h3>🗑️ Hapus Arsip 1 Tahun</h3>
@@ -429,17 +445,18 @@
     <p style="font-size:0.7em;color:#dc2626;margin:5px 0;">⚠️ Semua data bulan di tahun ini akan dihapus permanen!</p>
     <div class="modal-buttons">
       <button class="modal-btn tidak" onclick="tutupModal('modal-hapus-tahun')">Batal</button>
-      <button class="modal-btn danger" onclick="konfirmasiHapusTahun()">Ya, Hapus 1 Tahun!</button>
+      <button class="modal-btn danger" onclick="konfirmasiHapusTahun()">Ya, Hapus!</button>
     </div>
   </div>
 </div>
 
+<!-- Modal View Arsip (View Only + Export) -->
 <div id="modal-archive-view" class="modal-overlay">
   <div class="modal-box" style="max-width: 350px;">
     <h3 id="archive-view-title">📁 Arsip</h3>
     <div id="archive-view-content" class="archive-summary"></div>
     <button class="btn-export-archive" onclick="exportArchiveExcel()">📊 Export Excel</button>
-    <div class="modal-buttons" style="margin-top:6px;">
+    <div class="modal-buttons">
       <button class="modal-btn tidak" onclick="tutupModal('modal-archive-view')">✕ Tutup</button>
     </div>
   </div>
@@ -823,11 +840,13 @@
     tutupModal('modal-hapus');
   }
 
+  // ===== FUNGSI ARSIP =====
+
   async function bukaArchiveViewer() {
     showStatus('Memuat daftar arsip...', 'loading');
     try {
       const res = await fetch(APPS_SCRIPT_URL + '?action=list_archive');
-      if (!res.ok) { showStatus('Gagal muat arsip', 'error'); return; }
+      if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       const select = document.getElementById('select-archive-month');
       select.innerHTML = '<option value="">-- Pilih Bulan --</option>';
@@ -953,9 +972,23 @@
     URL.revokeObjectURL(url);
   }
 
+  // ===== FUNGSI HAPUS ARSIP =====
+
+  function bukaModalHapusArsip() {
+    const monthKey = document.getElementById('select-archive-month').value;
+    if (!monthKey) { 
+      showStatus('Pilih bulan dulu', 'warning'); 
+      return; 
+    }
+    document.getElementById('hapus-arsip-info').textContent = 'Pilih jenis penghapusan untuk ' + getMonthNameFromKey(monthKey) + ':';
+    document.getElementById('btn-hapus-bulan').textContent = '🗑️ Hapus ' + getMonthNameFromKey(monthKey);
+    tutupModal('modal-archive');
+    document.getElementById('modal-hapus-arsip').classList.add('active');
+  }
+
   function konfirmasiHapusBulan() {
     const monthKey = document.getElementById('select-archive-month').value;
-    if (!monthKey) { showStatus('Pilih bulan dulu', 'warning'); return; }
+    if (!monthKey) return;
     if (!confirm('Yakin ingin menghapus arsip ' + getMonthNameFromKey(monthKey) + '? Data tidak bisa dikembalikan!')) return;
     showStatus('Menghapus arsip...', 'loading');
     fetch(APPS_SCRIPT_URL, {
@@ -966,7 +999,7 @@
     .then(function(result) {
       if (result.success) {
         showStatus('Arsip dihapus!', 'success');
-        tutupModal('modal-archive');
+        tutupModal('modal-hapus-arsip');
         bukaArchiveViewer();
       } else {
         showStatus((result.error || 'Gagal hapus'), 'error');
@@ -976,10 +1009,13 @@
     });
   }
 
-  async function bukaHapusTahun() {
+  async function bukaModalHapusTahun() {
     const select = document.getElementById('select-archive-month');
     const currentMonthKey = select.value;
-    if (!currentMonthKey) { showStatus('Pilih bulan dulu untuk menentukan tahun', 'warning'); return; }
+    if (!currentMonthKey) { 
+      showStatus('Pilih bulan dulu untuk menentukan tahun', 'warning'); 
+      return; 
+    }
     const currentYear = getYearFromKey(currentMonthKey);
     
     showStatus('Memuat daftar tahun...', 'loading');
@@ -988,21 +1024,27 @@
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       const yearSelect = document.getElementById('select-archive-year');
-      yearSelect.innerHTML = '<option value="' + currentYear + '">' + currentYear + ' (terpilih)</option>';
+      yearSelect.innerHTML = '';
       if (data.archive_list && data.archive_list.length > 0) {
         const years = {};
         data.archive_list.forEach(function(month) {
           const y = getYearFromKey(month);
-          if (y !== currentYear) years[y] = true;
+          years[y] = true;
         });
         Object.keys(years).sort().forEach(function(y) {
           const opt = document.createElement('option');
           opt.value = y;
           opt.textContent = y;
+          if (y === currentYear) opt.selected = true;
           yearSelect.appendChild(opt);
         });
+      } else {
+        const opt = document.createElement('option');
+        opt.textContent = 'Tidak ada arsip';
+        opt.disabled = true;
+        yearSelect.appendChild(opt);
       }
-      tutupModal('modal-archive');
+      tutupModal('modal-hapus-arsip');
       document.getElementById('modal-hapus-tahun').classList.add('active');
       showStatus('', '');
     } catch (e) {
@@ -1024,6 +1066,7 @@
       if (result.success) {
         showStatus(result.deleted + ' bulan dihapus!', 'success');
         tutupModal('modal-hapus-tahun');
+        bukaArchiveViewer();
       } else {
         showStatus((result.error || 'Gagal hapus'), 'error');
       }
