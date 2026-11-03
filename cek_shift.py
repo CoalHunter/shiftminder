@@ -79,7 +79,11 @@ def generate_data():
         "next_7_days": next_7_days,
         "next_4_weeks": next_4_weeks,
         "monthly_stats": monthly_stats,
-        "saved_data": {"kontanan_days": [], "lembur_records": []}
+        "saved_data": {
+            "kontanan_days": [],
+            "lembur_records": [],
+            "long_shift_days": []
+        }
     }
 
 def inject_to_html(data):
