@@ -355,7 +355,6 @@
     <h3>📁 Lihat Data Arsip</h3>
     <p>Pilih bulan untuk melihat data:</p>
     <select id="select-archive-month"></select>
-    <div id="archive-preview" style="margin: 6px 0;"></div>
     <div class="modal-buttons">
       <button class="modal-btn tidak" onclick="tutupModal('modal-archive')">Tutup</button>
       <button class="modal-btn ya" onclick="viewArchiveData()">👁️ Lihat</button>
@@ -370,8 +369,8 @@
 <script src="config.js"></script>
 
 <script>
-  const SHIFT_DATA = {"last_updated": "03-11-2026 06:46:11", "today": {"day_name": "Selasa", "full_date": "Selasa, 3 November 2026", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, "next_7_days": [{"day_name": "Rabu", "short_date": "4 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Kamis", "short_date": "5 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Jumat", "short_date": "6 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Sabtu", "short_date": "7 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Minggu", "short_date": "8 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, {"day_name": "Senin", "short_date": "9 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Selasa", "short_date": "10 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}], "next_4_weeks": [{"week_label": "9 Nov - 14 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "16 Nov - 21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "23 Nov - 28 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "30 Nov - 5 Des", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "monthly_stats": {"month_name": "November 2026", "month_key": "2026-11", "total_minggu": 5, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}, "saved_data": {"kontanan_days": [], "lembur_records": []}};
-  // Variabel APPS_SCRIPT_URL sudah dimuat otomatis dari file config.js
+  const SHIFT_DATA = {"last_updated": "03-11-2026 14:44:17", "today": {"day_name": "Selasa", "full_date": "Selasa, 3 November 2026", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, "next_7_days": [{"day_name": "Rabu", "short_date": "4 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Kamis", "short_date": "5 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Jumat", "short_date": "6 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Sabtu", "short_date": "7 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Minggu", "short_date": "8 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, {"day_name": "Senin", "short_date": "9 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Selasa", "short_date": "10 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}], "next_4_weeks": [{"week_label": "9 Nov - 14 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "16 Nov - 21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "23 Nov - 28 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "30 Nov - 5 Des", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "monthly_stats": {"month_name": "November 2026", "month_key": "2026-11", "total_minggu": 5, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}, "saved_data": {"kontanan_days": [], "lembur_records": []}};
+  // Variabel APPS_SCRIPT_URL otomatis dimuat dari file config.js
   
   let selectedJam = 0;
   let selectedJamManual = 0;
@@ -386,22 +385,15 @@
   function getWibNow() { return new Date(new Date().getTime() + (7 * 60 * 60 * 1000)); }
   function getWibDate() { return getWibNow().getUTCDate(); }
   function getWibDay() { return getWibNow().getUTCDay(); }
-  function getCurrentMonthKey() {
-    const wib = getWibNow();
-    return wib.getUTCFullYear() + '-' + String(wib.getUTCMonth()+1).padStart(2,'0');
-  }
+  
   function getMonthNameFromKey(monthKey) {
     const bulanIndo = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    if (!monthKey) return 'November 2026';
     const parts = monthKey.split('-');
-    return bulanIndo[parseInt(parts[1]) - 1] + ' ' + parts[0];
-  }
-  function normalizeMonthKey(monthKey) {
-    if (!monthKey) return '2026-11';
-    if (typeof monthKey === 'string' && monthKey.includes('T')) {
-      const date = new Date(monthKey);
-      return date.getUTCFullYear() + '-' + String(date.getUTCMonth() + 1).padStart(2, '0');
-    }
-    return monthKey;
+    if (parts.length < 2) return 'November 2026';
+    const m = parseInt(parts[1]);
+    if (isNaN(m) || m < 1 || m > 12) return 'November 2026';
+    return bulanIndo[m - 1] + ' ' + parts[0];
   }
 
   async function getDataFromSheets() {
@@ -410,7 +402,6 @@
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      data.month_key = normalizeMonthKey(data.month_key);
       return data;
     } catch (e) {
       console.error('Gagal baca Sheets:', e);
@@ -887,9 +878,7 @@
     if (allRecords.length === 0) {
       listContainer.innerHTML = '<div class="no-catatan">Belum ada catatan bulan ini</div>';
     } else {
-      const displayMonthKey = normalizeMonthKey(saved.month_key || stats.month_key);
-      const bulanSingkat = getMonthNameFromKey(displayMonthKey).split(' ')[0].substring(0,3);
-      
+      const bulanSingkat = stats.month_name.split(' ')[0].substring(0,3);
       var html = '';
       allRecords.forEach(function(rec) {
         var label = '';
@@ -1000,13 +989,10 @@
     document.getElementById('week-list').innerHTML = weekHtml;
 
     const stats = data.monthly_stats;
-    const displayMonthKey = normalizeMonthKey(saved.month_key || stats.month_key);
-    const displayMonthName = getMonthNameFromKey(displayMonthKey);
-    
     const hariKontanan = saved.kontanan_days.length;
     const totalJamLembur = saved.lembur_records.reduce(function(s,r){return s+(r.jam||0);}, 0);
 
-    document.getElementById('stat-bulan').textContent = displayMonthName;
+    document.getElementById('stat-bulan').textContent = stats.month_name;
     document.getElementById('stat-minggu').textContent = stats.total_minggu + ' hari';
     document.getElementById('stat-kontanan').textContent = hariKontanan + ' hari';
     document.getElementById('stat-lembur').textContent = totalJamLembur + ' jam';
