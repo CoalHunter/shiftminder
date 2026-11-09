@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Test Koneksi Sheets</title>
+<style>
+body { font-family: Arial; padding: 20px; background: #f0f0f0; }
+.box { background: white; padding: 20px; border-radius: 10px; margin: 10px 0; }
+.success { color: green; font-weight: bold; }
+.error { color: red; font-weight: bold; }
+.loading { color: orange; }
+pre { background: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto; }
+</style>
+</head>
+<body>
+<h1>🧪 Test Koneksi Google Sheets</h1>
+
+<div class="box">
+<h2>1. Status Koneksi</h2>
+<div id="status" class="loading">⏳ Menguji koneksi...</div>
+</div>
+
+<div class="box">
+<h2>2. URL Apps Script</h2>
+<div id="url-display"></div>
+</div>
+
+<div class="box">
+<h2>3. Data dari Sheets</h2>
+<pre id="data-display">Menunggu...</pre>
+</div>
+
+<div class="box">
+<h2>4. Test Write (Tulis Data)</h2>
+<button onclick="testWrite()" style="padding:10px 20px;font-size:16px;">📝 Test Tulis Data</button>
+<div id="write-status" style="margin-top:10px;"></div>
+</div>
+
+<script>
+// GANTI URL INI DENGAN URL APPS SCRIPT KAMU
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwnLKNUr4ILw1BG0Efz9fgOGCm-wwGG2l2Z-uojYnLkedFdKK5jnOoThLhx0TPr2Abpsg/exec';
+
+document.getElementById('url-display').innerHTML = '<code>' + APPS_SCRIPT_URL + '</code>';
+
+async function testConnection() {
+  const statusEl = document.getElementById('status');
+  const dataEl = document.getElementById('data-display');
+  
+  try {
+    statusEl.textContent = '⏳ Menghubungi Apps Script...';
+    
+    const response = await fetch(APPS_SCRIPT_URL);
+    
+    if (!response.ok) {
+      throw new Error('HTTP Error: ' + response.status);
+    }
+    
+    const data = await response.json();
+    
+    if (data.error) {
+      statusEl.className = 'error';
+      statusEl.textContent = '❌ GAGAL: ' + data.error;
+    } else {
+      statusEl.className = 'success';
+      statusEl.textContent = '✅ BERHASIL TERHUBUNG!';
+      dataEl.textContent = JSON.stringify(data, null, 2);
+    }
+    
+  } catch (error) {
+    statusEl.className = 'error';
+    statusEl.textContent = '❌ GAGAL: ' + error.message;
+    dataEl.textContent = 'Error: ' + error.message;
+  }
+}
+
+async function testWrite() {
+  const writeStatus = document.getElementById('write-status');
+  writeStatus.innerHTML = '<span class="loading">⏳ Menulis test data...</span>';
+  
+  try {
+    const testData = {
+      month_key: '2026-11',
+      kontanan_days: [],
+      lembur_records: []
+    };
+    
+    const response = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(testData)
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      writeStatus.innerHTML = '<span class="success">✅ BERHASIL MENULIS DATA!</span>';
+    } else {
+      writeStatus.innerHTML = '<span class="error">❌ GAGAL: ' + (result.error || 'Unknown error') + '</span>';
+    }
+    
+  } catch (error) {
+    writeStatus.innerHTML = '<span class="error">❌ GAGAL: ' + error.message + '</span>';
+  }
+}
+
+// Auto test saat halaman dimuat
+testConnection();
+</script>
+</body>
+</html>
