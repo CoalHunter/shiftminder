@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Jadwal Shift & HK</title>
+<title>Jadwal Shift Kerja</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -32,6 +32,8 @@
   .btn-lembur { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
   .btn-lembur.sudah-catat { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
   .action-sub { font-size: 0.6em; font-weight: 400; opacity: 0.9; display: block; margin-top: 1px; }
+  .btn-estimasi { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; border: none; padding: 9px; border-radius: 8px; font-size: 0.8em; font-weight: 800; cursor: pointer; margin-bottom: 3px; box-shadow: 0 3px 10px rgba(220,38,38,0.35); flex-shrink: 0; width: 100%; }
+  .btn-estimasi:active { transform: scale(0.98); }
   .section-title { color: white; font-size: 0.7em; margin: 2px 0; font-weight: 600; flex-shrink: 0; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; padding: 0 2px; }
   .section-title:active { opacity: 0.8; }
   .scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; min-height: 0; }
@@ -49,52 +51,24 @@
   .status-siang { background: #e0f4ff; color: #2980b9; }
   .status-libur { background: #ffe0ec; color: #c0392b; }
   .week-range { font-weight: 500; color: #555; font-size: 0.65em; }
-  .calc-card { padding: 4px; }
-  .calc-row { display: flex; justify-content: space-between; margin-bottom: 1px; font-size: 0.6em; color: #555; }
-  .calc-row strong { color: #333; }
-  .calc-divider { height: 1px; background: #eee; margin: 2px 0; }
-  .info-hk { font-size: 0.5em; color: #888; text-align: center; font-style: italic; }
-  .compare-container { display: flex; gap: 3px; margin-bottom: 2px; }
-  .compare-box { flex: 1; padding: 3px 2px; border-radius: 5px; text-align: center; }
-  .compare-box.diberikan { background: #f1f5f9; border: 1px solid #cbd5e1; }
-  .compare-box.seharusnya { background: #ecfdf5; border: 1px solid #10b981; }
-  .compare-box .label { font-size: 0.5em; margin-bottom: 1px; font-weight: 600; }
-  .compare-box.diberikan .label { color: #64748b; }
-  .compare-box.seharusnya .label { color: #059669; }
-  .compare-box .value { font-size: 0.7em; font-weight: 800; color: #334155; }
-  .compare-box.seharusnya .value { color: #059669; }
-  .selisih-box { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 4px 6px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
-  .selisih-box span { font-size: 0.6em; opacity: 0.9; }
-  .selisih-box strong { font-size: 0.8em; font-weight: 800; }
-  .rate-info { background: #fef3c7; border: 1px solid #fbbf24; border-radius: 4px; padding: 3px 5px; margin-bottom: 3px; font-size: 0.55em; color: #92400e; line-height: 1.1; }
-  .rate-info strong { color: #78350f; }
-  .btn-toggle-data { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; padding: 5px; border-radius: 6px; font-size: 0.7em; font-weight: 700; cursor: pointer; margin: 3px 0; width: 100%; box-shadow: 0 3px 8px rgba(124,58,237,0.3); }
-  .btn-toggle-data:active { opacity: 0.8; }
-  .data-section { display: none; margin-top: 3px; }
-  .data-section.active { display: block; }
+  .kerja-card { padding: 4px; }
+  .kerja-summary { display: flex; gap: 3px; margin-bottom: 3px; }
+  .kerja-pill { flex: 1; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px 2px; text-align: center; }
+  .kerja-pill .kp-label { font-size: 0.5em; color: #64748b; font-weight: 600; }
+  .kerja-pill .kp-value { font-size: 0.75em; font-weight: 800; color: #334155; }
   .catatan-list { display: flex; flex-direction: column; gap: 3px; margin: 3px 0; }
   .catatan-item { background: #fef3c7; border-radius: 5px; padding: 5px 7px; }
   .catatan-item.double { background: #fee2e2; }
-  .catatan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+  .catatan-header { display: flex; justify-content: space-between; align-items: center; }
   .catatan-tanggal { font-weight: 700; font-size: 0.75em; color: #92400e; }
   .catatan-actions { display: flex; gap: 3px; }
   .catatan-btn { background: white; border: none; border-radius: 4px; padding: 2px 5px; font-size: 0.7em; cursor: pointer; font-weight: 600; }
   .catatan-btn.edit { color: #3b82f6; }
   .catatan-btn.hapus { color: #dc2626; }
   .catatan-btn.spl { color: #2563eb; }
-  .catatan-detail { background: white; border-radius: 4px; padding: 3px 5px; margin-top: 2px; font-size: 0.6em; }
-  .detail-row { display: flex; justify-content: space-between; margin-bottom: 1px; color: #555; }
-  .detail-row:last-child { margin-bottom: 0; }
-  .detail-row.total { border-top: 1px solid #e5e7eb; padding-top: 2px; margin-top: 2px; font-weight: 700; color: #333; }
-  .detail-label { flex: 1; }
-  .detail-value { font-weight: 600; color: #333; }
+  .catatan-jam { font-size: 0.65em; color: #78350f; margin-top: 2px; font-weight: 600; }
   .no-catatan { font-size: 0.6em; color: #888; font-style: italic; text-align: center; padding: 4px; }
   .btn-tambah { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 5px; border-radius: 5px; font-size: 0.65em; font-weight: 700; cursor: pointer; margin-top: 3px; width: 100%; }
-  .action-buttons { display: flex; gap: 3px; margin-top: 3px; }
-  .btn-aksi { flex: 1; padding: 5px; border: none; border-radius: 5px; font-size: 0.65em; font-weight: 700; cursor: pointer; color: white; }
-  .btn-aksi:active { opacity: 0.8; }
-  .btn-export { background: linear-gradient(135deg, #059669 0%, #047857 100%); }
-  .btn-archive { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); }
   .sync-status { font-size: 0.55em; text-align: center; margin-top: 2px; color: #888; font-style: italic; min-height: 8px; }
   .sync-status.success { color: #059669; }
   .sync-status.error { color: #dc2626; }
@@ -105,59 +79,26 @@
   .modal-box { background: white; border-radius: 10px; padding: 12px; max-width: 320px; width: 100%; text-align: center; max-height: 85vh; overflow-y: auto; }
   .modal-box h3 { margin-bottom: 6px; color: #333; font-size: 0.95em; }
   .modal-box p { color: #666; font-size: 0.8em; margin-bottom: 8px; white-space: pre-line; }
-  .modal-box input[type="date"], .modal-box select, .modal-box input[type="number"], .modal-box input[type="file"] { width: 100%; padding: 5px; border: 2px solid #667eea; border-radius: 5px; font-size: 0.75em; margin-bottom: 6px; }
-  .jam-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 8px; }
-  .jam-btn { background: #f3f4f6; border: 2px solid #e5e7eb; border-radius: 5px; padding: 6px; font-size: 0.8em; font-weight: 600; cursor: pointer; }
-  .jam-btn:active { background: #667eea; color: white; border-color: #667eea; }
+  .modal-box input[type="date"], .modal-box input[type="file"] { width: 100%; padding: 5px; border: 2px solid #667eea; border-radius: 5px; font-size: 0.75em; margin-bottom: 6px; }
+  .jam-options { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; margin-bottom: 8px; }
+  .jam-btn { background: #f3f4f6; border: 2px solid #e5e7eb; border-radius: 5px; padding: 6px 2px; font-size: 0.75em; font-weight: 600; cursor: pointer; }
   .jam-btn.selected { background: #667eea; color: white; border-color: #667eea; }
   .modal-buttons { display: flex; gap: 6px; margin-top: 6px; }
   .modal-btn { flex: 1; padding: 8px; border: none; border-radius: 5px; font-weight: 700; cursor: pointer; font-size: 0.8em; }
   .modal-btn.ya { background: #10b981; color: white; }
   .modal-btn.tidak { background: #e5e7eb; color: #374151; }
-  .modal-btn.warn { background: #f59e0b; color: white; }
-  .modal-btn.danger { background: #dc2626; color: white; }
   .modal-btn:active { opacity: 0.8; }
   .checkbox-group { margin: 6px 0; text-align: left; padding: 5px; background: #f9fafb; border-radius: 5px; }
   .checkbox-group label { font-size: 0.75em; color: #374151; display: flex; align-items: center; gap: 3px; }
-  .perhitungan-info { background: #f0f9ff; border: 1px solid #7dd3fc; border-radius: 5px; padding: 5px; margin: 6px 0; font-size: 0.65em; color: #0c4a6e; text-align: left; }
-  .perhitungan-info strong { color: #075985; }
   .shift-selector { display: flex; gap: 10px; justify-content: center; margin: 10px 0; }
   .shift-option { flex: 1; padding: 10px; border: 2px solid #e5e7eb; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85em; }
   .shift-option.active { border-color: #f59e0b; background: #fffbeb; color: #92400e; }
   .lembur-tambahan-section { margin: 10px 0; padding: 8px; background: #f0f9ff; border-radius: 6px; border: 1px solid #7dd3fc; }
   .lembur-tambahan-section p { font-size: 0.75em; color: #0c4a6e; margin-bottom: 5px; }
-  .total-akhir-section { margin-top: 3px; }
-  .total-akhir-label { font-size: 0.65em; color: #666; text-align: center; margin-bottom: 3px; font-weight: 600; }
-  .total-akhir-boxes { display: flex; gap: 3px; margin-bottom: 3px; }
-  .total-box-final { flex: 1; padding: 6px 3px; border-radius: 6px; text-align: center; }
-  .total-box-final.diberikan { background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%); color: white; }
-  .total-box-final.seharusnya { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
-  .total-box-final .ta-label { font-size: 0.55em; opacity: 0.9; margin-bottom: 1px; font-weight: 600; }
-  .total-box-final .ta-value { font-size: 0.9em; font-weight: 800; }
-  .total-kurang-box { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; padding: 8px 6px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(220,38,38,0.3); }
-  .total-kurang-box span { font-size: 0.7em; font-weight: 600; }
-  .total-kurang-box strong { font-size: 1em; font-weight: 800; }
   .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
   .collapsible-content.expanded { max-height: 800px; }
   .collapse-icon { font-size: 0.7em; transition: transform 0.3s; }
   .collapse-icon.rotated { transform: rotate(180deg); }
-  .archive-summary { text-align: left; font-size: 0.8em; margin: 8px 0; }
-  .archive-summary .section-title-sm { font-weight: 700; margin: 8px 0 4px 0; color: #333; font-size: 0.95em; }
-  .archive-summary .row { display: flex; justify-content: space-between; margin-bottom: 2px; }
-  .archive-summary .row.selisih { color: #dc2626; font-weight: 600; }
-  .archive-summary .divider { border-top: 1px solid #eee; margin: 5px 0; }
-  .archive-summary .total-row { padding: 6px; border-radius: 5px; margin: 4px 0; display: flex; justify-content: space-between; font-weight: 700; }
-  .archive-summary .total-row.diberikan { background: #f1f5f9; }
-  .archive-summary .total-row.seharusnya { background: #ecfdf5; color: #059669; }
-  .archive-summary .kurang-row { background: #dc2626; color: white; padding: 8px; border-radius: 5px; margin: 6px 0; display: flex; justify-content: space-between; font-weight: 700; font-size: 1em; }
-  .btn-export-archive { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 0.85em; font-weight: 700; cursor: pointer; margin-top: 6px; width: 100%; }
-  .btn-export-archive:active { opacity: 0.8; }
-  @media (max-width: 767px) {
-    body { padding: 5px; } .header h1 { font-size: 1em; } .header .subtitle { font-size: 0.55em; } .today-jam { font-size: 1.4em; } .today-status { font-size: 1em; } .today-card { padding: 6px; } .action-btn { padding: 6px; font-size: 0.7em; } .calc-card { padding: 3px; } .rate-info { font-size: 0.5em; padding: 2px 4px; } .calc-row { font-size: 0.55em; } .compare-box .value { font-size: 0.65em; } .selisih-box { padding: 3px 5px; } .selisih-box span { font-size: 0.55em; } .selisih-box strong { font-size: 0.75em; } .total-box-final .ta-value { font-size: 0.85em; } .total-kurang-box { padding: 6px 5px; } .total-kurang-box span { font-size: 0.65em; } .total-kurang-box strong { font-size: 0.9em; } .btn-toggle-data { padding: 4px; font-size: 0.65em; } .btn-aksi { padding: 4px; font-size: 0.6em; }
-  }
-  @media (min-width: 768px) {
-    body { padding: 10px; } .container { max-width: 700px; } .header h1 { font-size: 1.3em; } .header .subtitle { font-size: 0.7em; } .today-jam { font-size: 2em; } .today-status { font-size: 1.3em; } .today-card { padding: 10px; } .action-btn { padding: 8px; font-size: 0.85em; } .calc-card { padding: 6px; } .rate-info { font-size: 0.6em; padding: 4px 6px; } .calc-row { font-size: 0.65em; } .compare-box .value { font-size: 0.8em; } .selisih-box { padding: 5px 8px; } .selisih-box span { font-size: 0.65em; } .selisih-box strong { font-size: 0.9em; } .total-box-final .ta-value { font-size: 1.1em; } .total-kurang-box { padding: 10px 8px; } .total-kurang-box span { font-size: 0.8em; } .total-kurang-box strong { font-size: 1.2em; } .btn-toggle-data { padding: 6px; font-size: 0.75em; } .btn-aksi { padding: 6px; font-size: 0.7em; }
-  }
 </style>
 </head>
 <body>
@@ -183,6 +124,7 @@
     ⏱️ Apakah Hari Ini Lembur?
     <span class="action-sub">Tap untuk mencatat jam lembur</span>
   </button>
+  <button class="btn-estimasi" onclick="window.location.href='estimasi.html'">💰 Lihat Estimasi Upah & Bukti SPL</button>
   <div class="scroll-area">
     <div class="section-title" onclick="toggleCollapse('7hari')">
       <span>📅 7 Hari ke Depan</span><span class="collapse-icon" id="icon-7hari">▼</span>
@@ -192,48 +134,16 @@
       <span>🗓️ 4 Minggu ke Depan</span><span class="collapse-icon" id="icon-4minggu">▼</span>
     </div>
     <div id="collapse-4minggu" class="collapsible-content"><div id="week-list" class="card-box"></div></div>
-    <div class="section-title">💰 Catatan Lembur</div>
-    <div class="card-box calc-card">
-      <div class="rate-info"><strong>📋 Rate:</strong> HK Rp170rb | Kontanan 1 Shift: Rp340rb | Kontanan 2 Shift: Rp680rb | Lembur Gov: 1-2jam=Rp31.875, 3+=Rp42.500 | Lembur PT: Rp7.000/jam</div>
-      <div class="calc-row"><span>Bulan:</span> <strong id="stat-bulan">...</strong></div>
-      <div class="calc-row"><span>Hari Minggu:</span> <strong id="stat-minggu">...</strong></div>
-      <div class="calc-row"><span>📝 Kontanan (1 Shift):</span> <strong id="stat-kontanan">0 hari</strong></div>
-      <div class="calc-row"><span>🔥 Kontanan (2 Shift):</span> <strong id="stat-kontanan-double">0 hari</strong></div>
-      <div class="calc-row"><span>⏱️ Lembur:</span> <strong id="stat-lembur">0 jam</strong></div>
-      <div class="calc-divider"></div>
-      <div class="compare-container">
-        <div class="compare-box diberikan"><div class="label">KONTANAN DIBERIKAN</div><div class="value" id="kontanan-diberikan">Rp 0</div></div>
-        <div class="compare-box seharusnya"><div class="label">KONTANAN SEHARUSNYA</div><div class="value" id="kontanan-seharusnya">Rp 0</div></div>
+    <div class="section-title">📝 Catatan Kerja Bulan Ini</div>
+    <div class="card-box kerja-card">
+      <div class="kerja-summary">
+        <div class="kerja-pill"><div class="kp-label">KONTANAN 1</div><div class="kp-value" id="stat-kontanan">0</div></div>
+        <div class="kerja-pill"><div class="kp-label">KONTANAN 2</div><div class="kp-value" id="stat-kontanan-double">0</div></div>
+        <div class="kerja-pill"><div class="kp-label">JAM LEMBUR</div><div class="kp-value" id="stat-lembur">0</div></div>
       </div>
-      <div class="selisih-box"><span>📉 Selisih Kontanan:</span><strong id="selisih-kontanan">Rp 0</strong></div>
-      <div class="calc-divider"></div>
-      <div class="compare-container">
-        <div class="compare-box diberikan"><div class="label">LEMBUR DIBERIKAN</div><div class="value" id="lembur-diberikan">Rp 0</div></div>
-        <div class="compare-box seharusnya"><div class="label">LEMBUR SEHARUSNYA</div><div class="value" id="lembur-seharusnya">Rp 0</div></div>
-      </div>
-      <div class="selisih-box"><span>📉 Selisih Lembur:</span><strong id="selisih-lembur">Rp 0</strong></div>
-      <div class="calc-divider"></div>
-      <div class="total-akhir-section">
-        <div class="total-akhir-label">📊 NILAI AKHIR (KONTANAN + LEMBUR)</div>
-        <div class="total-akhir-boxes">
-          <div class="total-box-final diberikan"><div class="ta-label">DIBERIKAN</div><div class="ta-value" id="total-diberikan">Rp 0</div></div>
-          <div class="total-box-final seharusnya"><div class="ta-label">SEHARUSNYA</div><div class="ta-value" id="total-seharusnya">Rp 0</div></div>
-        </div>
-        <div class="total-kurang-box"><span>💸 UPAH YANG KURANG:</span><strong id="total-kurang">Rp 0</strong></div>
-      </div>
-      <button id="btn-toggle-data" class="btn-toggle-data" onclick="toggleData()">📊 Tampilkan Data</button>
-      <div id="data-section" class="data-section">
-        <div class="calc-divider"></div>
-        <div class="calc-row" style="margin-bottom: 2px;"><span style="font-weight: 600; font-size: 0.65em;">📌 Catatan Bulan Ini:</span></div>
-        <div id="catatan-list" class="catatan-list"></div>
-        <button class="btn-tambah" onclick="tanyaTambahManual()">➕ Tambah Manual</button>
-      </div>
-      <div class="action-buttons">
-        <button class="btn-aksi btn-export" onclick="exportExcel()">📊 Export Excel</button>
-        <button class="btn-aksi btn-archive" onclick="bukaArchiveViewer()">📁 Lihat Arsip</button>
-      </div>
+      <div id="catatan-list" class="catatan-list"></div>
+      <button class="btn-tambah" onclick="tanyaTambahManual()">➕ Tambah Manual</button>
       <div id="sync-status" class="sync-status"></div>
-      <div class="info-hk">*Data tersimpan di Google Sheets</div>
     </div>
   </div>
 </div>
@@ -243,26 +153,18 @@
   <div class="modal-box">
     <h3>🏖️ Konfirmasi Kontanan</h3>
     <p id="modal-tanggal-kontanan">Apakah Anda bekerja hari ini?</p>
-    
     <p style="font-size:0.8em; margin: 10px 0 5px 0; font-weight:600;">Berapa shift yang dikerjakan?</p>
     <div class="shift-selector">
-      <div class="shift-option active" onclick="selectShift(1)" id="shift-1">
-        1 Shift<br><span style="font-size:0.75em; font-weight:400;">(Seharusnya Rp 340rb)</span>
-      </div>
-      <div class="shift-option" onclick="selectShift(2)" id="shift-2">
-        2 Shift<br><span style="font-size:0.75em; font-weight:400;">(Seharusnya Rp 680rb)</span>
-      </div>
+      <div class="shift-option active" onclick="selectShift(1)" id="shift-1">1 Shift<br><span style="font-size:0.75em;font-weight:400;">(07-14 atau 14-21)</span></div>
+      <div class="shift-option" onclick="selectShift(2)" id="shift-2">2 Shift<br><span style="font-size:0.75em;font-weight:400;">(07-21, rekan absen)</span></div>
     </div>
     <input type="hidden" id="selected-kontanan-shifts" value="1">
-
     <div class="lembur-tambahan-section">
       <p><strong>⏱️ Lembur tambahan (lewat 21:00)?</strong></p>
-      <p style="font-size:0.7em; margin-bottom:5px;">Pilih jam lembur setelah shift selesai:</p>
       <div class="jam-options" id="jam-options-kontanan"></div>
       <p style="font-size:0.65em; color:#666;">0 jam = tidak ada lembur tambahan</p>
     </div>
-
-    <input type="file" id="spl-file-kontanan" accept="image/*" style="margin-top:10px; font-size:0.8em;">
+    <input type="file" id="spl-file-kontanan" accept="image/*" style="font-size:0.8em;">
     <p style="font-size:0.7em; color:#666; margin-top:-4px;">📎 Opsional: Upload foto SPL sebagai bukti</p>
     <div class="modal-buttons">
       <button class="modal-btn tidak" onclick="tutupModal('modal-kontanan')">Tidak</button>
@@ -277,12 +179,6 @@
     <h3>⏱️ Catat Jam Lembur</h3>
     <p id="modal-tanggal-lembur">Berapa jam Anda lembur hari ini?</p>
     <div class="jam-options" id="jam-options"></div>
-    <div class="perhitungan-info">
-      <strong>Perhitungan Lembur (UU Cipta Kerja):</strong><br>
-      • 2 jam pertama: 1.5× upah sejam = Rp 31.875/jam<br>
-      • Jam ke-3 dst: 2× upah sejam = Rp 42.500/jam<br>
-      • Perusahaan: Rp 7.000/jam (flat)
-    </div>
     <input type="file" id="spl-file-lembur" accept="image/*" style="margin-top:10px; font-size:0.8em;">
     <p style="font-size:0.7em; color:#666; margin-top:-4px;">📎 Opsional: Upload foto SPL sebagai bukti</p>
     <div class="modal-buttons">
@@ -347,74 +243,14 @@
   </div>
 </div>
 
-<!-- Modal Arsip -->
-<div id="modal-archive" class="modal-overlay">
-  <div class="modal-box">
-    <h3>📁 Kelola Arsip</h3>
-    <p>Pilih bulan untuk melihat data:</p>
-    <select id="select-archive-month"></select>
-    <div class="modal-buttons">
-      <button class="modal-btn tidak" onclick="tutupModal('modal-archive')">Tutup</button>
-      <button class="modal-btn ya" onclick="viewArchiveData()">👁️ Lihat</button>
-    </div>
-    <div class="modal-buttons">
-      <button class="modal-btn danger" onclick="bukaModalHapusArsip()">🗑️ Hapus Arsip</button>
-    </div>
-  </div>
-</div>
-
-<div id="modal-hapus-arsip" class="modal-overlay">
-  <div class="modal-box">
-    <h3>🗑️ Hapus Arsip</h3>
-    <p id="hapus-arsip-info">Pilih jenis penghapusan:</p>
-    <div class="modal-buttons" style="flex-direction:column;gap:8px;">
-      <button class="modal-btn danger" id="btn-hapus-bulan" onclick="konfirmasiHapusBulan()">🗑️ Hapus Bulan Ini</button>
-      <button class="modal-btn warn" onclick="bukaModalHapusTahun()">🗑️ Hapus 1 Tahun</button>
-    </div>
-    <div class="modal-buttons"><button class="modal-btn tidak" onclick="tutupModal('modal-hapus-arsip')">Batal</button></div>
-  </div>
-</div>
-
-<div id="modal-hapus-tahun" class="modal-overlay">
-  <div class="modal-box">
-    <h3>🗑️ Hapus Arsip 1 Tahun</h3>
-    <p>Pilih tahun yang ingin dihapus SEMUA arsipnya:</p>
-    <select id="select-archive-year"></select>
-    <p style="font-size:0.7em;color:#dc2626;margin:5px 0;">⚠️ Semua data bulan di tahun ini akan dihapus permanen!</p>
-    <div class="modal-buttons">
-      <button class="modal-btn tidak" onclick="tutupModal('modal-hapus-tahun')">Batal</button>
-      <button class="modal-btn danger" onclick="konfirmasiHapusTahun()">Ya, Hapus!</button>
-    </div>
-  </div>
-</div>
-
-<div id="modal-archive-view" class="modal-overlay">
-  <div class="modal-box" style="max-width: 350px;">
-    <h3 id="archive-view-title">📁 Arsip</h3>
-    <div id="archive-view-content" class="archive-summary"></div>
-    <button class="btn-export-archive" onclick="exportArchiveExcel()">📊 Export Excel</button>
-    <div class="modal-buttons"><button class="modal-btn tidak" onclick="tutupModal('modal-archive-view')">✕ Tutup</button></div>
-  </div>
-</div>
-
 <script src="config.js"></script>
 <script>
-  const SHIFT_DATA = {"last_updated": "17-11-2026 07:36:56", "today": {"day_name": "Selasa", "full_date": "Selasa, 17 November 2026", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, "next_7_days": [{"day_name": "Rabu", "short_date": "18 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Kamis", "short_date": "19 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Jumat", "short_date": "20 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Sabtu", "short_date": "21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Minggu", "short_date": "22 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, {"day_name": "Senin", "short_date": "23 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Selasa", "short_date": "24 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}], "next_4_weeks": [{"week_label": "23 Nov - 28 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "30 Nov - 5 Des", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "7 Des - 12 Des", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "14 Des - 19 Des", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "monthly_stats": {"month_name": "November 2026", "month_key": "2026-11", "total_minggu": 5, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}, "saved_data": {"kontanan_days": [], "lembur_records": []}};
-  let selectedJam = 0, selectedJamKontanan = 0, selectedJamManual = 0, editTanggal = null, hapusTanggal = null, lastDateChecked = null, dataVisible = false, isSaving = false, archiveData = null;
+  const SHIFT_DATA = {"last_updated": "18-11-2026 05:38:11", "today": {"day_name": "Rabu", "full_date": "Rabu, 18 November 2026", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, "next_7_days": [{"day_name": "Kamis", "short_date": "19 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Jumat", "short_date": "20 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Sabtu", "short_date": "21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Minggu", "short_date": "22 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, {"day_name": "Senin", "short_date": "23 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Selasa", "short_date": "24 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Rabu", "short_date": "25 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}], "next_4_weeks": [{"week_label": "23 Nov - 28 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "30 Nov - 5 Des", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "7 Des - 12 Des", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "14 Des - 19 Des", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "monthly_stats": {"month_name": "November 2026", "month_key": "2026-11", "total_minggu": 5, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}, "saved_data": {"kontanan_days": [], "kontanan_double_days": [], "lembur_records": [], "spl_links": []}};
+  let selectedJam = 0, selectedJamKontanan = 0, selectedJamManual = 0, editTanggal = null, hapusTanggal = null, lastDateChecked = null, isSaving = false;
 
   function getWibNow() { return new Date(new Date().getTime() + (7 * 60 * 60 * 1000)); }
   function getWibDate() { return getWibNow().getUTCDate(); }
   function getWibDay() { return getWibNow().getUTCDay(); }
-  function getMonthNameFromKey(monthKey) {
-    const bulanIndo = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    if (!monthKey) return 'November 2026';
-    const parts = String(monthKey).split('-');
-    if (parts.length < 2) return 'November 2026';
-    const m = parseInt(parts[1]);
-    if (isNaN(m) || m < 1 || m > 12) return 'November 2026';
-    return bulanIndo[m - 1] + ' ' + parts[0];
-  }
-  function getYearFromKey(monthKey) { if (!monthKey) return '2026'; return String(monthKey).split('-')[0]; }
 
   async function getDataFromSheets() {
     try {
@@ -462,27 +298,12 @@
           const res = await fetch(APPS_SCRIPT_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({
-              action: 'upload_spl',
-              date: date,
-              type: type,
-              filename: `SPL_${type}_${date}.jpg`,
-              mimeType: file.type,
-              base64: e.target.result
-            })
+            body: JSON.stringify({ action: 'upload_spl', date: date, type: type, filename: `SPL_${type}_${date}.jpg`, mimeType: file.type, base64: e.target.result })
           });
           const result = await res.json();
-          if (result.success) {
-            showStatus('Foto SPL berhasil diupload!', 'success');
-            resolve(result.url);
-          } else {
-            showStatus('Gagal upload: ' + result.error, 'error');
-            resolve(null);
-          }
-        } catch (err) {
-          showStatus('Error upload: ' + err.message, 'error');
-          resolve(null);
-        }
+          if (result.success) { showStatus('Foto SPL berhasil diupload!', 'success'); resolve(result.url); }
+          else { showStatus('Gagal upload: ' + result.error, 'error'); resolve(null); }
+        } catch (err) { showStatus('Error upload: ' + err.message, 'error'); resolve(null); }
       };
       reader.readAsDataURL(file);
     });
@@ -495,30 +316,17 @@
     setTimeout(function() { el.textContent = ''; el.className = 'sync-status'; }, 3000);
   }
   function toggleCollapse(id) {
-    const content = document.getElementById('collapse-' + id);
-    const icon = document.getElementById('icon-' + id);
-    content.classList.toggle('expanded');
-    icon.classList.toggle('rotated');
-  }
-  function toggleData() {
-    dataVisible = !dataVisible;
-    const section = document.getElementById('data-section');
-    const btn = document.getElementById('btn-toggle-data');
-    if (dataVisible) { section.classList.add('active'); btn.textContent = '🙈 Sembunyikan Data'; renderCatatan(); } 
-    else { section.classList.remove('active'); btn.textContent = '📊 Tampilkan Data'; }
+    document.getElementById('collapse-' + id).classList.toggle('expanded');
+    document.getElementById('icon-' + id).classList.toggle('rotated');
   }
   function updateJam() {
     const wib = getWibNow();
-    const h = String(wib.getUTCHours()).padStart(2, '0');
-    const m = String(wib.getUTCMinutes()).padStart(2, '0');
-    const s = String(wib.getUTCSeconds()).padStart(2, '0');
-    document.getElementById('today-jam').textContent = h + ':' + m + ':' + s;
+    document.getElementById('today-jam').textContent = String(wib.getUTCHours()).padStart(2,'0') + ':' + String(wib.getUTCMinutes()).padStart(2,'0') + ':' + String(wib.getUTCSeconds()).padStart(2,'0');
     const currentDate = wib.getUTCDate();
     if (lastDateChecked !== null && currentDate !== lastDateChecked) forceRefresh();
     lastDateChecked = currentDate;
   }
   function tutupModal(id) { document.getElementById(id).classList.remove('active'); }
-  
   function selectShift(shifts) {
     document.getElementById('selected-kontanan-shifts').value = shifts;
     document.getElementById('shift-1').classList.toggle('active', shifts === 1);
@@ -529,59 +337,41 @@
     const wib = getWibNow();
     const hariIndo = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
     const bulanIndo = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    document.getElementById('modal-tanggal-kontanan').textContent = 'Apakah Anda bekerja hari ini?\n(' + hariIndo[wib.getUTCDay()] + ', ' + wib.getUTCDate() + ' ' + bulanIndo[wib.getUTCMonth()] + ' ' + wib.getUTCFullYear() + ')';
+    document.getElementById('modal-tanggal-kontanan').textContent = 'Apakah Anda bekerja hari ini?\n(' + hariIndo[wib.getUTCDay()] + ', ' + wib.getUTCDate() + ' ' + bulanIndo[wib.getUTCMonth()] + ')';
     document.getElementById('spl-file-kontanan').value = '';
     selectShift(1);
     selectedJamKontanan = 0;
     renderJamOptions('jam-options-kontanan', 0);
     document.getElementById('modal-kontanan').classList.add('active');
   }
-  
+
   async function catatKontanan() {
     const tanggalHariIni = getWibDate();
     const shifts = parseInt(document.getElementById('selected-kontanan-shifts').value);
     const jamLemburTambahan = selectedJamKontanan;
     showStatus('Menyimpan ke Sheets...', 'loading');
-    
     await uploadSPL(tanggalHariIni, shifts === 2 ? 'kontanan_double' : 'kontanan', 'spl-file-kontanan');
-    
     const currentData = await getDataFromSheets();
     if (!currentData) { tutupModal('modal-kontanan'); return; }
-    
     if (shifts === 2) {
-      if (currentData.kontanan_double_days.indexOf(tanggalHariIni) === -1) {
-        currentData.kontanan_double_days.push(tanggalHariIni);
-        currentData.kontanan_double_days.sort(function(a,b){return a-b;});
-      }
+      if (currentData.kontanan_double_days.indexOf(tanggalHariIni) === -1) { currentData.kontanan_double_days.push(tanggalHariIni); currentData.kontanan_double_days.sort(function(a,b){return a-b;}); }
     } else {
-      if (currentData.kontanan_days.indexOf(tanggalHariIni) === -1) {
-        currentData.kontanan_days.push(tanggalHariIni);
-        currentData.kontanan_days.sort(function(a,b){return a-b;});
-      }
+      if (currentData.kontanan_days.indexOf(tanggalHariIni) === -1) { currentData.kontanan_days.push(tanggalHariIni); currentData.kontanan_days.sort(function(a,b){return a-b;}); }
     }
-    
-    // Simpan lembur tambahan jika ada
     if (jamLemburTambahan > 0) {
       var existingIdx = -1;
-      for (var i = 0; i < currentData.lembur_records.length; i++) { 
-        if (currentData.lembur_records[i].date === tanggalHariIni) { existingIdx = i; break; } 
-      }
-      if (existingIdx >= 0) {
-        currentData.lembur_records[existingIdx].jam = (currentData.lembur_records[existingIdx].jam || 0) + jamLemburTambahan;
-      } else {
-        currentData.lembur_records.push({ date: tanggalHariIni, jam: jamLemburTambahan, is_extra: true });
-      }
+      for (var i = 0; i < currentData.lembur_records.length; i++) { if (currentData.lembur_records[i].date === tanggalHariIni) { existingIdx = i; break; } }
+      if (existingIdx >= 0) currentData.lembur_records[existingIdx].jam = (currentData.lembur_records[existingIdx].jam || 0) + jamLemburTambahan;
+      else currentData.lembur_records.push({ date: tanggalHariIni, jam: jamLemburTambahan, is_extra: true });
       currentData.lembur_records.sort(function(a,b){return a.date - b.date;});
     }
-    
     const success = await updateDataToSheets(currentData);
-    if (success) { 
-      SHIFT_DATA.saved_data = currentData; 
+    if (success) {
+      SHIFT_DATA.saved_data = currentData;
       var msg = shifts === 2 ? 'Kontanan 2 Shift dicatat!' : 'Kontanan dicatat!';
-      if (jamLemburTambahan > 0) msg += ' + ' + jamLemburTambahan + ' jam lembur tambahan';
-      showStatus(msg, 'success'); 
-      render(); 
-      if (dataVisible) renderCatatan(); 
+      if (jamLemburTambahan > 0) msg += ' + ' + jamLemburTambahan + ' jam lembur';
+      showStatus(msg, 'success');
+      render();
     }
     tutupModal('modal-kontanan');
   }
@@ -596,6 +386,7 @@
     document.getElementById('spl-file-lembur').value = '';
     document.getElementById('modal-lembur').classList.add('active');
   }
+
   function renderJamOptions(containerId, selected) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
@@ -603,22 +394,21 @@
       var btn = document.createElement('button');
       btn.className = 'jam-btn' + (i === selected ? ' selected' : '');
       btn.textContent = i + ' jam';
-      (function(idx) { btn.onclick = function() { 
-        if (containerId === 'jam-options-manual') selectedJamManual = idx; 
-        else if (containerId === 'jam-options-kontanan') selectedJamKontanan = idx; 
-        else selectedJam = idx; 
-        renderJamOptions(containerId, idx); 
+      (function(idx) { btn.onclick = function() {
+        if (containerId === 'jam-options-manual') selectedJamManual = idx;
+        else if (containerId === 'jam-options-kontanan') selectedJamKontanan = idx;
+        else selectedJam = idx;
+        renderJamOptions(containerId, idx);
       }; })(i);
       container.appendChild(btn);
     }
   }
+
   async function simpanLemburManual() {
     if (selectedJam === 0) { showStatus('Pilih jam dulu!', 'error'); return; }
     const tanggalHariIni = getWibDate();
     showStatus('Menyimpan lembur...', 'loading');
-    
     await uploadSPL(tanggalHariIni, 'lembur', 'spl-file-lembur');
-    
     const currentData = await getDataFromSheets();
     if (!currentData) { tutupModal('modal-lembur'); return; }
     var existingIdx = -1;
@@ -627,14 +417,13 @@
     else currentData.lembur_records.push({ date: tanggalHariIni, jam: selectedJam });
     currentData.lembur_records.sort(function(a,b){return a.date - b.date;});
     const success = await updateDataToSheets(currentData);
-    if (success) { SHIFT_DATA.saved_data = currentData; showStatus('Lembur ' + selectedJam + ' jam dicatat!', 'success'); render(); if (dataVisible) renderCatatan(); }
+    if (success) { SHIFT_DATA.saved_data = currentData; showStatus('Lembur ' + selectedJam + ' jam dicatat!', 'success'); render(); }
     tutupModal('modal-lembur');
   }
 
   function tanyaTambahManual() {
     const today = getWibNow();
-    const dateStr = today.getUTCFullYear() + '-' + String(today.getUTCMonth()+1).padStart(2,'0') + '-' + String(today.getUTCDate()).padStart(2,'0');
-    document.getElementById('input-tanggal-manual').value = dateStr;
+    document.getElementById('input-tanggal-manual').value = today.getUTCFullYear() + '-' + String(today.getUTCMonth()+1).padStart(2,'0') + '-' + String(today.getUTCDate()).padStart(2,'0');
     document.getElementById('checkbox-kontanan-manual').checked = false;
     document.getElementById('checkbox-kontanan-double-manual').checked = false;
     document.getElementById('manual-double-shift-group').style.display = 'none';
@@ -643,7 +432,6 @@
     document.getElementById('spl-file-manual').value = '';
     document.getElementById('modal-tambah').classList.add('active');
   }
-  
   document.getElementById('checkbox-kontanan-manual').addEventListener('change', function() {
     document.getElementById('manual-double-shift-group').style.display = this.checked ? 'block' : 'none';
   });
@@ -651,27 +439,18 @@
   async function simpanTambahManual() {
     const dateInput = document.getElementById('input-tanggal-manual').value;
     if (!dateInput) { showStatus('Pilih tanggal!', 'error'); return; }
-    const parts = dateInput.split('-').map(Number);
-    const tanggal = parts[2];
+    const tanggal = dateInput.split('-').map(Number)[2];
     const isKontanan = document.getElementById('checkbox-kontanan-manual').checked;
     const isDouble = document.getElementById('checkbox-kontanan-double-manual').checked;
     const jamLembur = selectedJamManual;
     showStatus('Menyimpan...', 'loading');
-    
-    const type = isKontanan ? (isDouble ? 'kontanan_double' : 'kontanan') : 'lembur';
-    await uploadSPL(tanggal, type, 'spl-file-manual');
-    
+    await uploadSPL(tanggal, isKontanan ? (isDouble ? 'kontanan_double' : 'kontanan') : 'lembur', 'spl-file-manual');
     const currentData = await getDataFromSheets();
     if (!currentData) { tutupModal('modal-tambah'); return; }
-    
     if (isKontanan) {
-      if (isDouble) {
-        if (currentData.kontanan_double_days.indexOf(tanggal) === -1) { currentData.kontanan_double_days.push(tanggal); currentData.kontanan_double_days.sort(function(a,b){return a-b;}); }
-      } else {
-        if (currentData.kontanan_days.indexOf(tanggal) === -1) { currentData.kontanan_days.push(tanggal); currentData.kontanan_days.sort(function(a,b){return a-b;}); }
-      }
+      if (isDouble) { if (currentData.kontanan_double_days.indexOf(tanggal) === -1) { currentData.kontanan_double_days.push(tanggal); currentData.kontanan_double_days.sort(function(a,b){return a-b;}); } }
+      else { if (currentData.kontanan_days.indexOf(tanggal) === -1) { currentData.kontanan_days.push(tanggal); currentData.kontanan_days.sort(function(a,b){return a-b;}); } }
     }
-    
     if (jamLembur > 0) {
       var existingIdx = -1;
       for (var i = 0; i < currentData.lembur_records.length; i++) { if (currentData.lembur_records[i].date === tanggal) { existingIdx = i; break; } }
@@ -680,7 +459,7 @@
       currentData.lembur_records.sort(function(a,b){return a.date - b.date;});
     }
     const success = await updateDataToSheets(currentData);
-    if (success) { SHIFT_DATA.saved_data = currentData; showStatus('Berhasil!', 'success'); render(); if (dataVisible) renderCatatan(); }
+    if (success) { SHIFT_DATA.saved_data = currentData; showStatus('Berhasil!', 'success'); render(); }
     tutupModal('modal-tambah');
   }
 
@@ -699,7 +478,6 @@
     renderJamOptions('jam-options-edit', jamLembur);
     document.getElementById('modal-edit').classList.add('active');
   }
-  
   document.getElementById('edit-kontanan').addEventListener('change', function() {
     document.getElementById('edit-double-shift-group').style.display = this.checked ? 'block' : 'none';
     if (!this.checked) document.getElementById('edit-kontanan-double').checked = false;
@@ -710,31 +488,22 @@
     showStatus('Menyimpan...', 'loading');
     const currentData = await getDataFromSheets();
     if (!currentData) { tutupModal('modal-edit'); return; }
-    
     const isKontanan = document.getElementById('edit-kontanan').checked;
     const isDouble = document.getElementById('edit-kontanan-double').checked;
-    
     currentData.kontanan_days = currentData.kontanan_days.filter(function(d){return d !== editTanggal;});
     currentData.kontanan_double_days = currentData.kontanan_double_days.filter(function(d){return d !== editTanggal;});
-    
-    if (isKontanan) {
-      if (isDouble) currentData.kontanan_double_days.push(editTanggal);
-      else currentData.kontanan_days.push(editTanggal);
-    }
-    
+    if (isKontanan) { if (isDouble) currentData.kontanan_double_days.push(editTanggal); else currentData.kontanan_days.push(editTanggal); }
     if (selectedJam > 0) {
       var existingIdx = -1;
       for (var i = 0; i < currentData.lembur_records.length; i++) { if (currentData.lembur_records[i].date === editTanggal) { existingIdx = i; break; } }
       if (existingIdx >= 0) currentData.lembur_records[existingIdx].jam = selectedJam;
       else currentData.lembur_records.push({ date: editTanggal, jam: selectedJam });
     } else { currentData.lembur_records = currentData.lembur_records.filter(function(r){return r.date !== editTanggal;}); }
-    
     currentData.kontanan_days.sort(function(a,b){return a-b;});
     currentData.kontanan_double_days.sort(function(a,b){return a-b;});
     currentData.lembur_records.sort(function(a,b){return a.date - b.date;});
-    
     const success = await updateDataToSheets(currentData);
-    if (success) { SHIFT_DATA.saved_data = currentData; showStatus('Perubahan disimpan!', 'success'); render(); if (dataVisible) renderCatatan(); }
+    if (success) { SHIFT_DATA.saved_data = currentData; showStatus('Perubahan disimpan!', 'success'); render(); }
     tutupModal('modal-edit');
   }
 
@@ -753,223 +522,14 @@
     currentData.lembur_records = currentData.lembur_records.filter(function(r){return r.date !== hapusTanggal;});
     currentData.spl_links = currentData.spl_links.filter(function(s){return s.date !== hapusTanggal;});
     const success = await updateDataToSheets(currentData);
-    if (success) { SHIFT_DATA.saved_data = currentData; showStatus('Dihapus!', 'success'); render(); if (dataVisible) renderCatatan(); }
+    if (success) { SHIFT_DATA.saved_data = currentData; showStatus('Dihapus!', 'success'); render(); }
     tutupModal('modal-hapus');
   }
 
-  async function bukaArchiveViewer() {
-    showStatus('Memuat daftar arsip...', 'loading');
-    try {
-      const res = await fetch(APPS_SCRIPT_URL + '?action=list_archive');
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const data = await res.json();
-      const select = document.getElementById('select-archive-month');
-      select.innerHTML = '<option value="">-- Pilih Bulan --</option>';
-      if (data.archive_list && data.archive_list.length > 0) {
-        data.archive_list.forEach(function(month) {
-          const opt = document.createElement('option');
-          opt.value = month;
-          opt.textContent = getMonthNameFromKey(month);
-          select.appendChild(opt);
-        });
-      } else {
-        const opt = document.createElement('option');
-        opt.textContent = 'Belum ada arsip';
-        opt.disabled = true;
-        select.appendChild(opt);
-      }
-      document.getElementById('modal-archive').classList.add('active');
-      showStatus('', '');
-    } catch (e) { showStatus('Gagal: ' + e.message, 'error'); }
-  }
-
-  async function viewArchiveData() {
-    const monthKey = document.getElementById('select-archive-month').value;
-    if (!monthKey) { showStatus('Pilih bulan dulu', 'warning'); return; }
-    showStatus('Memuat data...', 'loading');
-    try {
-      const res = await fetch(APPS_SCRIPT_URL + '?action=get_archive&month=' + monthKey);
-      if (!res.ok) { showStatus('Gagal muat data', 'error'); return; }
-      const data = await res.json();
-      if (data.error) { showStatus(data.error, 'error'); return; }
-      archiveData = data;
-      archiveData.kontanan_days = archiveData.kontanan_days || [];
-      archiveData.kontanan_double_days = archiveData.kontanan_double_days || [];
-      archiveData.lembur_records = archiveData.lembur_records || [];
-      archiveData.spl_links = archiveData.spl_links || [];
-      tutupModal('modal-archive');
-      showArchiveView();
-      showStatus('Menampilkan data ' + getMonthNameFromKey(monthKey), 'success');
-    } catch (e) { showStatus('Gagal: ' + e.message, 'error'); }
-  }
-
-  function showArchiveView() {
-    if (!archiveData) return;
-    const stats = SHIFT_DATA.monthly_stats;
-    const saved = archiveData;
-    const hariKontanan = saved.kontanan_days.length;
-    const hariKontananDouble = saved.kontanan_double_days.length;
-    const totalJamLembur = saved.lembur_records.reduce(function(s,r){return s+(r.jam||0);}, 0);
-    
-    const kontananDiberikan = (hariKontanan * 170000) + (hariKontananDouble * 340000);
-    const kontananSeharusnya = (hariKontanan * 340000) + (hariKontananDouble * 680000);
-    const lemburDiberikan = totalJamLembur * stats.rate_lembur_perusahaan;
-    var lemburSeharusnya = 0;
-    if (totalJamLembur <= 2) lemburSeharusnya = totalJamLembur * stats.rate_lembur_jam1;
-    else lemburSeharusnya = (2 * stats.rate_lembur_jam1) + ((totalJamLembur - 2) * stats.rate_lembur_jam2);
-    
-    const totalDiberikan = kontananDiberikan + lemburDiberikan;
-    const totalSeharusnya = kontananSeharusnya + lemburSeharusnya;
-    const totalKurang = totalSeharusnya - totalDiberikan;
-    const fmt = function(n) { return 'Rp ' + n.toLocaleString('id-ID'); };
-    
-    let html = '<div class="section-title-sm">📊 Ringkasan ' + getMonthNameFromKey(archiveData.month_key) + '</div>';
-    html += '<div class="row"><span>Kontanan (1 Shift):</span><span>' + hariKontanan + ' hari</span></div>';
-    html += '<div class="row"><span>Kontanan (2 Shift):</span><span>' + hariKontananDouble + ' hari</span></div>';
-    html += '<div class="row"><span>Lembur:</span><span>' + totalJamLembur + ' jam</span></div>';
-    html += '<div class="section-title-sm">💰 Perhitungan</div>';
-    html += '<div class="row"><span>Kontanan Diberikan:</span><span>' + fmt(kontananDiberikan) + '</span></div>';
-    html += '<div class="row"><span>Kontanan Seharusnya:</span><span>' + fmt(kontananSeharusnya) + '</span></div>';
-    html += '<div class="row selisih"><span>Selisih:</span><span>' + fmt(kontananSeharusnya - kontananDiberikan) + '</span></div>';
-    html += '<div class="divider"></div>';
-    html += '<div class="row"><span>Lembur Diberikan:</span><span>' + fmt(lemburDiberikan) + '</span></div>';
-    html += '<div class="row"><span>Lembur Seharusnya:</span><span>' + fmt(lemburSeharusnya) + '</span></div>';
-    html += '<div class="row selisih"><span>Selisih:</span><span>' + fmt(lemburSeharusnya - lemburDiberikan) + '</span></div>';
-    html += '<div class="divider"></div>';
-    html += '<div class="total-row diberikan"><span>TOTAL DIBAYARKAN:</span><span>' + fmt(totalDiberikan) + '</span></div>';
-    html += '<div class="total-row seharusnya"><span>TOTAL SEHARUSNYA:</span><span>' + fmt(totalSeharusnya) + '</span></div>';
-    html += '<div class="kurang-row"><span>💸 UPAH KURANG:</span><span>' + fmt(totalKurang) + '</span></div>';
-    
-    document.getElementById('archive-view-title').textContent = '📁 Arsip: ' + getMonthNameFromKey(archiveData.month_key);
-    document.getElementById('archive-view-content').innerHTML = html;
-    document.getElementById('modal-archive-view').classList.add('active');
-  }
-
-  function exportArchiveExcel() {
-    if (!archiveData) return;
-    showStatus('Fitur export arsip sedang diproses...', 'loading');
-    setTimeout(() => showStatus('Silakan gunakan export dari halaman utama untuk saat ini', 'warning'), 2000);
-  }
-
-  function bukaModalHapusArsip() {
-    const monthKey = document.getElementById('select-archive-month').value;
-    if (!monthKey) { showStatus('Pilih bulan dulu', 'warning'); return; }
-    document.getElementById('hapus-arsip-info').textContent = 'Pilih jenis penghapusan untuk ' + getMonthNameFromKey(monthKey) + ':';
-    document.getElementById('btn-hapus-bulan').textContent = '🗑️ Hapus ' + getMonthNameFromKey(monthKey);
-    tutupModal('modal-archive');
-    document.getElementById('modal-hapus-arsip').classList.add('active');
-  }
-  function konfirmasiHapusBulan() {
-    const monthKey = document.getElementById('select-archive-month').value;
-    if (!monthKey) return;
-    if (!confirm('Yakin ingin menghapus arsip ' + getMonthNameFromKey(monthKey) + '? Data tidak bisa dikembalikan!')) return;
-    showStatus('Menghapus arsip...', 'loading');
-    fetch(APPS_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'delete_archive', month_key: monthKey }) })
-    .then(function(res) { return res.json(); })
-    .then(function(result) {
-      if (result.success) { showStatus('Arsip dihapus!', 'success'); tutupModal('modal-hapus-arsip'); bukaArchiveViewer(); } 
-      else { showStatus((result.error || 'Gagal hapus'), 'error'); }
-    }).catch(function(e) { showStatus('Gagal: ' + e.message, 'error'); });
-  }
-  async function bukaModalHapusTahun() {
-    const select = document.getElementById('select-archive-month');
-    const currentMonthKey = select.value;
-    if (!currentMonthKey) { showStatus('Pilih bulan dulu untuk menentukan tahun', 'warning'); return; }
-    const currentYear = getYearFromKey(currentMonthKey);
-    showStatus('Memuat daftar tahun...', 'loading');
-    try {
-      const res = await fetch(APPS_SCRIPT_URL + '?action=list_archive');
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const data = await res.json();
-      const yearSelect = document.getElementById('select-archive-year');
-      yearSelect.innerHTML = '';
-      if (data.archive_list && data.archive_list.length > 0) {
-        const years = {};
-        data.archive_list.forEach(function(month) { const y = getYearFromKey(month); years[y] = true; });
-        Object.keys(years).sort().forEach(function(y) {
-          const opt = document.createElement('option');
-          opt.value = y;
-          opt.textContent = y;
-          if (y === currentYear) opt.selected = true;
-          yearSelect.appendChild(opt);
-        });
-      } else {
-        const opt = document.createElement('option');
-        opt.textContent = 'Tidak ada arsip';
-        opt.disabled = true;
-        yearSelect.appendChild(opt);
-      }
-      tutupModal('modal-hapus-arsip');
-      document.getElementById('modal-hapus-tahun').classList.add('active');
-      showStatus('', '');
-    } catch (e) { showStatus('Gagal: ' + e.message, 'error'); }
-  }
-  function konfirmasiHapusTahun() {
-    const year = document.getElementById('select-archive-year').value;
-    if (!year) { showStatus('Pilih tahun dulu', 'warning'); return; }
-    if (!confirm('Yakin ingin menghapus SEMUA arsip tahun ' + year + '? Data tidak bisa dikembalikan!')) return;
-    showStatus('Menghapus arsip tahun ' + year + '...', 'loading');
-    fetch(APPS_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'delete_archive_year', year: year }) })
-    .then(function(res) { return res.json(); })
-    .then(function(result) {
-      if (result.success) { showStatus((result.deleted || 0) + ' bulan dihapus!', 'success'); tutupModal('modal-hapus-tahun'); bukaArchiveViewer(); } 
-      else { showStatus((result.error || 'Gagal hapus'), 'error'); }
-    }).catch(function(e) { showStatus('Gagal: ' + e.message, 'error'); });
-  }
-
-  function exportExcel() {
-    const data = SHIFT_DATA;
-    const stats = data.monthly_stats;
-    const saved = data.saved_data;
-    const hariKontanan = saved.kontanan_days.length;
-    const hariKontananDouble = saved.kontanan_double_days.length;
-    const totalJamLembur = saved.lembur_records.reduce(function(s,r){return s+(r.jam||0);}, 0);
-    const kontananDiberikan = (hariKontanan * 170000) + (hariKontananDouble * 340000);
-    const kontananSeharusnya = (hariKontanan * 340000) + (hariKontananDouble * 680000);
-    const lemburDiberikan = totalJamLembur * stats.rate_lembur_perusahaan;
-    var lemburSeharusnya = 0;
-    if (totalJamLembur <= 2) lemburSeharusnya = totalJamLembur * stats.rate_lembur_jam1;
-    else lemburSeharusnya = (2 * stats.rate_lembur_jam1) + ((totalJamLembur - 2) * stats.rate_lembur_jam2);
-    const totalDiberikan = kontananDiberikan + lemburDiberikan;
-    const totalSeharusnya = kontananSeharusnya + lemburSeharusnya;
-    const totalKurang = totalSeharusnya - totalDiberikan;
-    const fmt = function(n) { return n.toLocaleString('id-ID'); };
-    const parts = String(stats.month_key).split('-');
-    const tahun = parts[0];
-    const namaBulan = stats.month_name.split(' ')[0];
-    const html = '<html><head><meta charset="UTF-8"></head><body><table border="1" cellpadding="5"><tr><td colspan="2" style="background:#667eea;color:white;font-size:14pt;font-weight:bold;">REKAP ' + namaBulan.toUpperCase() + ' ' + tahun + '</td></tr><tr><td>Kontanan (1 Shift)</td><td>' + hariKontanan + ' hari</td></tr><tr><td>Kontanan (2 Shift)</td><td>' + hariKontananDouble + ' hari</td></tr><tr><td>Lembur</td><td>' + totalJamLembur + ' jam</td></tr><tr><td style="background:#94a3b8;color:white;font-weight:bold;">Total Dibayarkan</td><td style="background:#94a3b8;color:white;font-weight:bold;">Rp ' + fmt(totalDiberikan) + '</td></tr><tr><td style="background:#10b981;color:white;font-weight:bold;">Total Seharusnya</td><td style="background:#10b981;color:white;font-weight:bold;">Rp ' + fmt(totalSeharusnya) + '</td></tr><tr><td style="background:#dc2626;color:white;font-weight:bold;">Total Upah Kurang</td><td style="background:#dc2626;color:white;font-weight:bold;">Rp ' + fmt(totalKurang) + '</td></tr></table></body></html>';
-    const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'Rekap_' + namaBulan + '_' + tahun + '.xls';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
-
-  function forceRefresh() { 
-    const url = new URL(window.location.href); 
-    url.searchParams.set('v', Date.now()); 
-    window.location.href = url.toString(); 
-  }
-  function formatRupiah(angka) { return angka.toLocaleString('id-ID'); }
-  function hitungDetailKontanan(shifts) {
-    const stats = SHIFT_DATA.monthly_stats;
-    if (shifts === 2) {
-      return { diberikan: stats.rate_hk * 2, seharusnya: stats.rate_hk * 4, selisih: (stats.rate_hk * 4) - (stats.rate_hk * 2) };
-    }
-    return { diberikan: stats.rate_hk, seharusnya: stats.rate_kontanan, selisih: stats.rate_kontanan - stats.rate_hk };
-  }
-  function hitungDetailLembur(jam) {
-    const stats = SHIFT_DATA.monthly_stats;
-    const diberikan = jam * stats.rate_lembur_perusahaan;
-    var seharusnya = 0;
-    var breakdown = [];
-    if (jam <= 2) { seharusnya = jam * stats.rate_lembur_jam1; breakdown.push(jam + ' jam × Rp ' + formatRupiah(stats.rate_lembur_jam1) + ' = Rp ' + formatRupiah(seharusnya)); } 
-    else { const jam2Pertama = 2 * stats.rate_lembur_jam1; const jamSisanya = (jam - 2) * stats.rate_lembur_jam2; seharusnya = jam2Pertama + jamSisanya; breakdown.push('2 jam × Rp ' + formatRupiah(stats.rate_lembur_jam1) + ' = Rp ' + formatRupiah(jam2Pertama)); breakdown.push((jam-2) + ' jam × Rp ' + formatRupiah(stats.rate_lembur_jam2) + ' = Rp ' + formatRupiah(jamSisanya)); }
-    return { diberikan: diberikan, seharusnya: seharusnya, selisih: seharusnya - diberikan, breakdown: breakdown };
+  function forceRefresh() {
+    const url = new URL(window.location.href);
+    url.searchParams.set('v', Date.now());
+    window.location.href = url.toString();
   }
 
   function renderCatatan() {
@@ -977,19 +537,14 @@
     const stats = SHIFT_DATA.monthly_stats;
     const listContainer = document.getElementById('catatan-list');
     const allRecords = [];
-    
     saved.kontanan_days.forEach(function(d) {
-      var lembur = null;
-      for (var i = 0; i < saved.lembur_records.length; i++) { if (saved.lembur_records[i].date === d) { lembur = saved.lembur_records[i]; break; } }
+      var lembur = saved.lembur_records.find(function(r){return r.date === d;});
       allRecords.push({ date: d, type: 'kontanan', shifts: 1, jam: lembur ? lembur.jam : 0 });
     });
-    
     saved.kontanan_double_days.forEach(function(d) {
-      var lembur = null;
-      for (var i = 0; i < saved.lembur_records.length; i++) { if (saved.lembur_records[i].date === d) { lembur = saved.lembur_records[i]; break; } }
+      var lembur = saved.lembur_records.find(function(r){return r.date === d;});
       allRecords.push({ date: d, type: 'kontanan_double', shifts: 2, jam: lembur ? lembur.jam : 0 });
     });
-    
     saved.lembur_records.forEach(function(r) {
       if (saved.kontanan_days.indexOf(r.date) === -1 && saved.kontanan_double_days.indexOf(r.date) === -1) {
         allRecords.push({ date: r.date, type: 'lembur', shifts: 0, jam: r.jam });
@@ -997,72 +552,38 @@
     });
     allRecords.sort(function(a,b){return a.date - b.date;});
 
-    if (allRecords.length === 0) { listContainer.innerHTML = '<div class="no-catatan">Belum ada catatan bulan ini</div>'; } 
-    else {
-      const bulanSingkat = stats.month_name.split(' ')[0].substring(0,3);
-      var html = '';
-      allRecords.forEach(function(rec) {
-        var label = '';
-        var detailHtml = '';
-        var itemClass = 'catatan-item';
-        
-        if (rec.type === 'kontanan_double') {
-          label = '🔥 KONTANAN (2 SHIFT)';
-          itemClass += ' double';
-          const detail = hitungDetailKontanan(2);
-          detailHtml = '<div class="catatan-detail"><div class="detail-row"><span class="detail-label">Diberikan (HK×2):</span><span class="detail-value">Rp ' + formatRupiah(detail.diberikan) + '</span></div><div class="detail-row"><span class="detail-label">Seharusnya (HK×4):</span><span class="detail-value">Rp ' + formatRupiah(detail.seharusnya) + '</span></div>';
-          if (rec.jam > 0) {
-            const detailL = hitungDetailLembur(rec.jam);
-            var breakdownHtml = '';
-            detailL.breakdown.forEach(function(b) { breakdownHtml += '<div class="detail-row" style="font-size:0.9em;color:#888;"><span class="detail-label">  ' + b + '</span></div>'; });
-            detailHtml += '<div class="detail-row"><span class="detail-label">Lembur tambahan ' + rec.jam + ' jam:</span><span class="detail-value">Rp ' + formatRupiah(detailL.seharusnya) + '</span></div>' + breakdownHtml;
-            const totalSeharusnya = detail.seharusnya + detailL.seharusnya;
-            const totalDiberikan = detail.diberikan + detailL.diberikan;
-            detailHtml += '<div class="detail-row total"><span class="detail-label">Total Seharusnya:</span><span class="detail-value">Rp ' + formatRupiah(totalSeharusnya) + '</span></div>';
-            detailHtml += '<div class="detail-row total"><span class="detail-label">Total Diberikan:</span><span class="detail-value">Rp ' + formatRupiah(totalDiberikan) + '</span></div>';
-            detailHtml += '<div class="detail-row total"><span class="detail-label">Selisih:</span><span class="detail-value" style="color:#dc2626;">Rp ' + formatRupiah(totalSeharusnya - totalDiberikan) + '</span></div>';
-          } else {
-            detailHtml += '<div class="detail-row total"><span class="detail-label">Selisih:</span><span class="detail-value" style="color:#dc2626;">Rp ' + formatRupiah(detail.selisih) + '</span></div>';
-          }
-          detailHtml += '</div>';
-        } else if (rec.type === 'kontanan' && rec.jam > 0) {
-          label = 'KONTANAN + LEMBUR ' + rec.jam + ' JAM';
-          const detailK = hitungDetailKontanan(1);
-          const detailL = hitungDetailLembur(rec.jam);
-          var breakdownHtml = '';
-          detailL.breakdown.forEach(function(b) { breakdownHtml += '<div class="detail-row" style="font-size:0.9em;color:#888;"><span class="detail-label">  ' + b + '</span></div>'; });
-          detailHtml = '<div class="catatan-detail"><div class="detail-row"><span class="detail-label">Kontanan (HK×2):</span><span class="detail-value">Rp ' + formatRupiah(detailK.seharusnya) + '</span></div><div class="detail-row"><span class="detail-label">Lembur ' + rec.jam + ' jam:</span><span class="detail-value">Rp ' + formatRupiah(detailL.seharusnya) + '</span></div>' + breakdownHtml + '<div class="detail-row total"><span class="detail-label">Total Seharusnya:</span><span class="detail-value">Rp ' + formatRupiah(detailK.seharusnya + detailL.seharusnya) + '</span></div></div>';
-        } else if (rec.type === 'kontanan') {
-          label = 'KONTANAN (1 SHIFT)';
-          const detail = hitungDetailKontanan(1);
-          detailHtml = '<div class="catatan-detail"><div class="detail-row"><span class="detail-label">Diberikan (HK×1):</span><span class="detail-value">Rp ' + formatRupiah(detail.diberikan) + '</span></div><div class="detail-row"><span class="detail-label">Seharusnya (HK×2):</span><span class="detail-value">Rp ' + formatRupiah(detail.seharusnya) + '</span></div><div class="detail-row total"><span class="detail-label">Selisih:</span><span class="detail-value" style="color:#dc2626;">Rp ' + formatRupiah(detail.selisih) + '</span></div></div>';
-        } else {
-          label = 'LEMBUR ' + rec.jam + ' JAM';
-          const detail = hitungDetailLembur(rec.jam);
-          var breakdownHtml = '';
-          detail.breakdown.forEach(function(b) { breakdownHtml += '<div class="detail-row" style="font-size:0.9em;color:#888;"><span class="detail-label">  ' + b + '</span></div>'; });
-          detailHtml = '<div class="catatan-detail"><div class="detail-row"><span class="detail-label">Diberikan:</span><span class="detail-value">Rp ' + formatRupiah(detail.diberikan) + '</span></div>' + breakdownHtml + '<div class="detail-row"><span class="detail-label">Seharusnya:</span><span class="detail-value">Rp ' + formatRupiah(detail.seharusnya) + '</span></div><div class="detail-row total"><span class="detail-label">Selisih:</span><span class="detail-value" style="color:#dc2626;">Rp ' + formatRupiah(detail.selisih) + '</span></div></div>';
-        }
-        
-        const splType = rec.type === 'kontanan_double' ? 'kontanan_double' : (rec.type === 'kontanan' ? 'kontanan' : 'lembur');
-        const splData = saved.spl_links.find(s => s.date === rec.date && s.type === splType);
-        let splButton = '';
-        if (splData && splData.url) {
-          splButton = `<button class="catatan-btn spl" onclick="window.open('${splData.url}', '_blank')">📎 Lihat SPL</button>`;
-        }
-
-        html += '<div class="' + itemClass + '"><div class="catatan-header"><div class="catatan-tanggal">' + rec.date + ' ' + bulanSingkat + '</div><div class="catatan-actions">' + splButton + '<button class="catatan-btn edit" onclick="editCatatan(' + rec.date + ')">✏️</button><button class="catatan-btn hapus" onclick="tanyaHapus(' + rec.date + ')">✕</button></div></div><div style="font-size:0.65em;color:#78350f;margin-bottom:2px;font-weight:600;">' + label + '</div>' + detailHtml + '</div>';
-      });
-      listContainer.innerHTML = html;
-    }
+    if (allRecords.length === 0) { listContainer.innerHTML = '<div class="no-catatan">Belum ada catatan bulan ini</div>'; return; }
+    const bulanSingkat = stats.month_name.split(' ')[0].substring(0,3);
+    var html = '';
+    allRecords.forEach(function(rec) {
+      var label = '', jamText = '', itemClass = 'catatan-item';
+      if (rec.type === 'kontanan_double') {
+        label = '🔥 KONTANAN (2 SHIFT)';
+        itemClass += ' double';
+        jamText = '14 jam kerja';
+        if (rec.jam > 0) jamText += ' + ' + rec.jam + ' jam lembur';
+      } else if (rec.type === 'kontanan') {
+        label = '🏖️ KONTANAN (1 SHIFT)';
+        jamText = '7 jam kerja';
+        if (rec.jam > 0) jamText += ' + ' + rec.jam + ' jam lembur';
+      } else {
+        label = '⏱️ LEMBUR';
+        jamText = rec.jam + ' jam lembur';
+      }
+      const splType = rec.type === 'kontanan_double' ? 'kontanan_double' : (rec.type === 'kontanan' ? 'kontanan' : 'lembur');
+      const splData = saved.spl_links.find(function(s){return s.date === rec.date && s.type === splType;});
+      let splButton = '';
+      if (splData && splData.url) splButton = '<button class="catatan-btn spl" onclick="window.open(\'' + splData.url + '\', \'_blank\')">📎</button>';
+      html += '<div class="' + itemClass + '"><div class="catatan-header"><div class="catatan-tanggal">' + rec.date + ' ' + bulanSingkat + '</div><div class="catatan-actions">' + splButton + '<button class="catatan-btn edit" onclick="editCatatan(' + rec.date + ')">✏️</button><button class="catatan-btn hapus" onclick="tanyaHapus(' + rec.date + ')">✕</button></div></div><div style="font-size:0.65em;color:#78350f;margin-top:2px;font-weight:600;">' + label + '</div><div class="catatan-jam">' + jamText + '</div></div>';
+    });
+    listContainer.innerHTML = html;
   }
 
   function render() {
     const data = SHIFT_DATA;
     if (!data || !data.today) return;
     const card = document.getElementById('today-card');
-    const cls = data.today.status === 'SHIFT PAGI' ? 'pagi' : data.today.status === 'SHIFT SIANG' ? 'siang' : 'libur';
-    card.className = 'today-card ' + cls;
+    card.className = 'today-card ' + (data.today.status === 'SHIFT PAGI' ? 'pagi' : data.today.status === 'SHIFT SIANG' ? 'siang' : 'libur');
     document.getElementById('today-emoji').textContent = data.today.emoji;
     document.getElementById('today-date').textContent = data.today.full_date;
     document.getElementById('today-status').textContent = data.today.status;
@@ -1073,30 +594,28 @@
     const saved = data.saved_data;
     const wibDate = getWibDate();
     const wibDay = getWibDay();
-    var lemburToday = null;
-    for (var i = 0; i < saved.lembur_records.length; i++) { if (saved.lembur_records[i].date === wibDate) { lemburToday = saved.lembur_records[i]; break; } }
-    const isLemburToday = lemburToday !== null;
+    var lemburToday = saved.lembur_records.find(function(r){return r.date === wibDate;});
+    const isLemburToday = lemburToday !== undefined && lemburToday !== null;
     const isKontananToday = saved.kontanan_days.indexOf(wibDate) !== -1 || saved.kontanan_double_days.indexOf(wibDate) !== -1;
-    
+
     if (wibDay === 0) {
       document.getElementById('btn-kontanan').style.display = 'block';
       document.getElementById('btn-lembur').style.display = 'none';
       const btn = document.getElementById('btn-kontanan');
-      if (isKontananToday) { btn.classList.add('sudah-catat'); btn.innerHTML = '✅ Sudah Dicatat Hari Ini<span class="action-sub">Tap untuk konfirmasi ulang</span>'; } 
+      if (isKontananToday) { btn.classList.add('sudah-catat'); btn.innerHTML = '✅ Sudah Dicatat Hari Ini<span class="action-sub">Tap untuk ubah</span>'; }
       else { btn.classList.remove('sudah-catat'); btn.innerHTML = '🏖️ Ada Kontanan Hari Ini?<span class="action-sub">Tap untuk mencatat</span>'; }
     } else {
       document.getElementById('btn-kontanan').style.display = 'none';
       document.getElementById('btn-lembur').style.display = 'block';
       const btn = document.getElementById('btn-lembur');
-      if (isLemburToday) { btn.classList.add('sudah-catat'); btn.innerHTML = '✅ Lembur: ' + lemburToday.jam + ' Jam<span class="action-sub">Tap untuk ubah</span>'; } 
+      if (isLemburToday) { btn.classList.add('sudah-catat'); btn.innerHTML = '✅ Lembur: ' + lemburToday.jam + ' Jam<span class="action-sub">Tap untuk ubah</span>'; }
       else { btn.classList.remove('sudah-catat'); btn.innerHTML = '⏱️ Apakah Hari Ini Lembur?<span class="action-sub">Tap untuk mencatat</span>'; }
     }
 
     var dayHtml = '';
     data.next_7_days.forEach(function(d) {
       const c = d.status === 'SHIFT PAGI' ? 'status-pagi' : d.status === 'SHIFT SIANG' ? 'status-siang' : 'status-libur';
-      const label = d.status === 'LIBUR' ? 'LIBUR' : d.status;
-      dayHtml += '<div class="day-item"><div class="day-info"><span class="day-emoji">' + d.emoji + '</span><div><div class="day-name">' + d.day_name + '</div><div class="day-date">' + d.short_date + '</div></div></div><span class="day-status ' + c + '">' + label + '</span></div>';
+      dayHtml += '<div class="day-item"><div class="day-info"><span class="day-emoji">' + d.emoji + '</span><div><div class="day-name">' + d.day_name + '</div><div class="day-date">' + d.short_date + '</div></div></div><span class="day-status ' + c + '">' + (d.status === 'LIBUR' ? 'LIBUR' : d.status) + '</span></div>';
     });
     document.getElementById('day-list').innerHTML = dayHtml;
 
@@ -1107,46 +626,20 @@
     });
     document.getElementById('week-list').innerHTML = weekHtml;
 
-    const stats = data.monthly_stats;
-    const hariKontanan = saved.kontanan_days.length;
-    const hariKontananDouble = saved.kontanan_double_days.length;
-    const totalJamLembur = saved.lembur_records.reduce(function(s,r){return s+(r.jam||0);}, 0);
+    document.getElementById('stat-kontanan').textContent = saved.kontanan_days.length;
+    document.getElementById('stat-kontanan-double').textContent = saved.kontanan_double_days.length;
+    document.getElementById('stat-lembur').textContent = saved.lembur_records.reduce(function(s,r){return s+(r.jam||0);}, 0);
 
-    document.getElementById('stat-bulan').textContent = stats.month_name;
-    document.getElementById('stat-minggu').textContent = stats.total_minggu + ' hari';
-    document.getElementById('stat-kontanan').textContent = hariKontanan + ' hari';
-    document.getElementById('stat-kontanan-double').textContent = hariKontananDouble + ' hari';
-    document.getElementById('stat-lembur').textContent = totalJamLembur + ' jam';
-
-    const kontananDiberikan = (hariKontanan * 170000) + (hariKontananDouble * 340000);
-    const kontananSeharusnya = (hariKontanan * 340000) + (hariKontananDouble * 680000);
-    document.getElementById('kontanan-diberikan').textContent = 'Rp ' + formatRupiah(kontananDiberikan);
-    document.getElementById('kontanan-seharusnya').textContent = 'Rp ' + formatRupiah(kontananSeharusnya);
-    document.getElementById('selisih-kontanan').textContent = 'Rp ' + formatRupiah(kontananSeharusnya - kontananDiberikan);
-
-    const lemburDiberikan = totalJamLembur * stats.rate_lembur_perusahaan;
-    var lemburSeharusnya = 0;
-    if (totalJamLembur <= 2) lemburSeharusnya = totalJamLembur * stats.rate_lembur_jam1;
-    else lemburSeharusnya = (2 * stats.rate_lembur_jam1) + ((totalJamLembur - 2) * stats.rate_lembur_jam2);
-    document.getElementById('lembur-diberikan').textContent = 'Rp ' + formatRupiah(lemburDiberikan);
-    document.getElementById('lembur-seharusnya').textContent = 'Rp ' + formatRupiah(lemburSeharusnya);
-    document.getElementById('selisih-lembur').textContent = 'Rp ' + formatRupiah(lemburSeharusnya - lemburDiberikan);
-
-    const totalDiberikan = kontananDiberikan + lemburDiberikan;
-    const totalSeharusnya = kontananSeharusnya + lemburSeharusnya;
-    document.getElementById('total-diberikan').textContent = 'Rp ' + formatRupiah(totalDiberikan);
-    document.getElementById('total-seharusnya').textContent = 'Rp ' + formatRupiah(totalSeharusnya);
-    document.getElementById('total-kurang').textContent = 'Rp ' + formatRupiah(totalSeharusnya - totalDiberikan);
+    renderCatatan();
   }
 
   async function init() {
-    console.log('ShiftMinder init...');
     const sheetsData = await getDataFromSheets();
-    if (sheetsData) { SHIFT_DATA.saved_data = sheetsData; console.log('Data dari Sheets dimuat:', sheetsData); }
+    if (sheetsData) SHIFT_DATA.saved_data = sheetsData;
     render();
     setInterval(updateJam, 1000);
   }
   init();
 </script>
 </body>
-</html>
+  </html>
