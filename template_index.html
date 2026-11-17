@@ -74,6 +74,20 @@
   .sync-status.error { color: #dc2626; }
   .sync-status.warning { color: #f59e0b; }
   .sync-status.loading { color: #3b82f6; }
+  /* ===== MEMO / CATATAN PRIBADI ===== */
+  .memo-badge { background: #8b5cf6; color: white; border-radius: 10px; padding: 1px 7px; font-size: 0.85em; margin-left: 5px; }
+  .memo-box { padding: 6px; }
+  .memo-box textarea { width: 100%; padding: 6px; border: 2px solid #8b5cf6; border-radius: 6px; font-size: 0.75em; resize: none; min-height: 50px; margin-bottom: 4px; font-family: inherit; }
+  .memo-add-btn { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; padding: 6px; border-radius: 5px; font-size: 0.7em; font-weight: 700; cursor: pointer; width: 100%; }
+  .memo-add-btn:active { opacity: 0.8; }
+  .memo-list { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; }
+  .memo-item { background: #f5f3ff; border-left: 3px solid #8b5cf6; border-radius: 4px; padding: 5px 7px; display: flex; justify-content: space-between; align-items: flex-start; gap: 5px; }
+  .memo-text { font-size: 0.7em; color: #4c1d95; flex: 1; white-space: pre-wrap; word-break: break-word; }
+  .memo-time { font-size: 0.55em; color: #8b5cf6; display: block; margin-top: 2px; }
+  .memo-del { background: white; border: none; color: #dc2626; font-size: 0.85em; cursor: pointer; padding: 2px 5px; border-radius: 4px; font-weight: 700; }
+  .no-memo { font-size: 0.6em; color: #888; font-style: italic; text-align: center; padding: 4px; }
+  .memo-note { font-size: 0.55em; color: #888; font-style: italic; text-align: center; margin-top: 4px; }
+  /* ===== MODAL ===== */
   .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 15px; }
   .modal-overlay.active { display: flex; }
   .modal-box { background: white; border-radius: 10px; padding: 12px; max-width: 320px; width: 100%; text-align: center; max-height: 85vh; overflow-y: auto; }
@@ -96,7 +110,7 @@
   .lembur-tambahan-section { margin: 10px 0; padding: 8px; background: #f0f9ff; border-radius: 6px; border: 1px solid #7dd3fc; }
   .lembur-tambahan-section p { font-size: 0.75em; color: #0c4a6e; margin-bottom: 5px; }
   .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-  .collapsible-content.expanded { max-height: 800px; }
+  .collapsible-content.expanded { max-height: 2000px; }
   .collapse-icon { font-size: 0.7em; transition: transform 0.3s; }
   .collapse-icon.rotated { transform: rotate(180deg); }
 </style>
@@ -134,16 +148,35 @@
       <span>🗓️ 4 Minggu ke Depan</span><span class="collapse-icon" id="icon-4minggu">▼</span>
     </div>
     <div id="collapse-4minggu" class="collapsible-content"><div id="week-list" class="card-box"></div></div>
-    <div class="section-title">📝 Catatan Kerja Bulan Ini</div>
-    <div class="card-box kerja-card">
-      <div class="kerja-summary">
-        <div class="kerja-pill"><div class="kp-label">KONTANAN 1</div><div class="kp-value" id="stat-kontanan">0</div></div>
-        <div class="kerja-pill"><div class="kp-label">KONTANAN 2</div><div class="kp-value" id="stat-kontanan-double">0</div></div>
-        <div class="kerja-pill"><div class="kp-label">JAM LEMBUR</div><div class="kp-value" id="stat-lembur">0</div></div>
+
+    <!-- CATATAN KERJA: default TERTUTUP -->
+    <div class="section-title" onclick="toggleCollapse('catatan')">
+      <span>📝 Catatan Kerja Bulan Ini</span><span class="collapse-icon" id="icon-catatan">▼</span>
+    </div>
+    <div id="collapse-catatan" class="collapsible-content">
+      <div class="card-box kerja-card">
+        <div class="kerja-summary">
+          <div class="kerja-pill"><div class="kp-label">KONTANAN 1</div><div class="kp-value" id="stat-kontanan">0</div></div>
+          <div class="kerja-pill"><div class="kp-label">KONTANAN 2</div><div class="kp-value" id="stat-kontanan-double">0</div></div>
+          <div class="kerja-pill"><div class="kp-label">JAM LEMBUR</div><div class="kp-value" id="stat-lembur">0</div></div>
+        </div>
+        <div id="catatan-list" class="catatan-list"></div>
+        <button class="btn-tambah" onclick="tanyaTambahManual()">➕ Tambah Manual</button>
+        <div id="sync-status" class="sync-status"></div>
       </div>
-      <div id="catatan-list" class="catatan-list"></div>
-      <button class="btn-tambah" onclick="tanyaTambahManual()">➕ Tambah Manual</button>
-      <div id="sync-status" class="sync-status"></div>
+    </div>
+
+    <!-- CATATAN PRIBADI / REMINDER: default TERTUTUP, pakai localStorage -->
+    <div class="section-title" onclick="toggleCollapse('memo')">
+      <span>📌 Catatan Pribadi<span class="memo-badge" id="memo-badge" style="display:none;">0</span></span><span class="collapse-icon" id="icon-memo">▼</span>
+    </div>
+    <div id="collapse-memo" class="collapsible-content">
+      <div class="card-box memo-box">
+        <textarea id="memo-input" placeholder="Tulis reminder / catatan penting di sini... (misal: 'besok ambil slip gaji', 'jangan lupa SPL tgl 20')"></textarea>
+        <button class="memo-add-btn" onclick="addMemo()">➕ Simpan Catatan</button>
+        <div id="memo-list" class="memo-list"></div>
+        <p class="memo-note">*Tersimpan di HP ini saja, tidak ke server</p>
+      </div>
     </div>
   </div>
 </div>
@@ -246,6 +279,7 @@
 <script src="config.js"></script>
 <script>
   const SHIFT_DATA = __SHIFT_DATA_PLACEHOLDER__;
+  const MEMO_KEY = 'shiftminder_memo';
   let selectedJam = 0, selectedJamKontanan = 0, selectedJamManual = 0, editTanggal = null, hapusTanggal = null, lastDateChecked = null, isSaving = false;
 
   function getWibNow() { return new Date(new Date().getTime() + (7 * 60 * 60 * 1000)); }
@@ -532,6 +566,45 @@
     window.location.href = url.toString();
   }
 
+  /* ===== FITUR CATATAN PRIBADI (localStorage) ===== */
+  function getMemo() { try { return JSON.parse(localStorage.getItem(MEMO_KEY)) || []; } catch(e) { return []; } }
+  function saveMemo(arr) { localStorage.setItem(MEMO_KEY, JSON.stringify(arr)); }
+  function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function renderMemo() {
+    const arr = getMemo();
+    const list = document.getElementById('memo-list');
+    const badge = document.getElementById('memo-badge');
+    if (!list || !badge) return;
+    badge.textContent = arr.length;
+    badge.style.display = arr.length > 0 ? 'inline-block' : 'none';
+    if (arr.length === 0) { list.innerHTML = '<div class="no-memo">Belum ada catatan pribadi</div>'; return; }
+    var html = '';
+    arr.forEach(function(m, i) {
+      html += '<div class="memo-item"><div class="memo-text">' + escapeHtml(m.text) + '<span class="memo-time">' + m.date + '</span></div><button class="memo-del" onclick="hapusMemo(' + i + ')">✕</button></div>';
+    });
+    list.innerHTML = html;
+  }
+  function addMemo() {
+    const inp = document.getElementById('memo-input');
+    const text = inp.value.trim();
+    if (!text) { showStatus('Tulis dulu catatannya!', 'warning'); return; }
+    const arr = getMemo();
+    const wib = getWibNow();
+    const dateStr = String(wib.getUTCDate()).padStart(2,'0') + '-' + String(wib.getUTCMonth()+1).padStart(2,'0') + ' ' + String(wib.getUTCHours()).padStart(2,'0') + ':' + String(wib.getUTCMinutes()).padStart(2,'0');
+    arr.unshift({ text: text, date: dateStr });
+    saveMemo(arr);
+    inp.value = '';
+    renderMemo();
+    showStatus('Catatan disimpan!', 'success');
+  }
+  function hapusMemo(i) {
+    if (!confirm('Hapus catatan ini?')) return;
+    const arr = getMemo();
+    arr.splice(i, 1);
+    saveMemo(arr);
+    renderMemo();
+  }
+
   function renderCatatan() {
     const saved = SHIFT_DATA.saved_data;
     const stats = SHIFT_DATA.monthly_stats;
@@ -637,9 +710,10 @@
     const sheetsData = await getDataFromSheets();
     if (sheetsData) SHIFT_DATA.saved_data = sheetsData;
     render();
+    renderMemo();
     setInterval(updateJam, 1000);
   }
   init();
 </script>
 </body>
-  </html>
+</html>
