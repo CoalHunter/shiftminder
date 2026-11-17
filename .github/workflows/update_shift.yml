@@ -15,13 +15,13 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Generate index.html
+      - name: Generate HTML Files
         run: python cek_shift.py
 
       - name: Commit & Push
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add index.html config.js
+          git add index.html estimasi.html config.js
           git diff --staged --quiet || git commit -m "Daily update: $(TZ=Asia/Jakarta date '+%d-%m-%Y %H:%M WIB')"
           git push
