@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Jadwal Shift Kerja</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #333; -webkit-tap-highlight-color: transparent; }
+  body { display: flex; flex-direction: column; padding: 6px; }
+  .container { flex: 1; display: flex; flex-direction: column; max-width: 600px; margin: 0 auto; width: 100%; overflow: hidden; }
+  .header { text-align: center; margin-bottom: 3px; flex-shrink: 0; }
+  .header h1 { color: white; font-size: 1.1em; margin-bottom: 1px; }
+  .header .subtitle { color: rgba(255,255,255,0.85); font-size: 0.6em; }
+  .btn-refresh { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 2px 8px; border-radius: 10px; font-size: 0.55em; cursor: pointer; margin: 0 auto 3px; display: block; }
+  .today-card { background: white; border-radius: 8px; padding: 8px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15); margin-bottom: 3px; position: relative; flex-shrink: 0; }
+  .today-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 8px 8px 0 0; }
+  .today-card.pagi::before { background: linear-gradient(90deg, #f6d365, #fda085); }
+  .today-card.siang::before { background: linear-gradient(90deg, #4facfe, #00f2fe); }
+  .today-card.libur::before { background: linear-gradient(90deg, #fa709a, #fee140); }
+  .today-emoji { font-size: 1.3em; margin-bottom: 1px; }
+  .today-date { color: #888; font-size: 0.65em; }
+  .today-status { font-size: 1.1em; font-weight: 800; margin: 1px 0; }
+  .today-time { font-size: 0.75em; color: #555; }
+  .today-jam { font-size: 1.6em; font-weight: 800; color: #667eea; margin: 4px 0 2px; font-family: 'Courier New', monospace; letter-spacing: 2px; }
+  .updated { color: #aaa; font-size: 0.5em; margin-top: 1px; }
+  .action-btn { color: white; border: none; padding: 7px; border-radius: 8px; font-size: 0.75em; font-weight: 700; cursor: pointer; margin-bottom: 3px; box-shadow: 0 3px 8px rgba(0,0,0,0.2); flex-shrink: 0; display: none; width: 100%; }
+  .action-btn:active { transform: scale(0.98); }
+  .btn-kontanan { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+  .btn-kontanan.sudah-catat { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+  .btn-lembur { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+  .btn-lembur.sudah-catat { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+  .action-sub { font-size: 0.6em; font-weight: 400; opacity: 0.9; display: block; margin-top: 1px; }
+  .btn-estimasi { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: white; border: none; padding: 9px; border-radius: 8px; font-size: 0.8em; font-weight: 800; cursor: pointer; margin-bottom: 3px; box-shadow: 0 3px 10px rgba(220,38,38,0.35); flex-shrink: 0; width: 100%; }
+  .btn-estimasi:active { transform: scale(0.98); }
+  .section-title { color: white; font-size: 0.7em; margin: 2px 0; font-weight: 600; flex-shrink: 0; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; padding: 0 2px; }
+  .section-title:active { opacity: 0.8; }
+  .scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; min-height: 0; }
+  .scroll-area::-webkit-scrollbar { width: 3px; }
+  .scroll-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
+  .card-box { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 3px 8px rgba(0,0,0,0.1); margin-bottom: 3px; }
+  .day-item, .week-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 10px; border-bottom: 1px solid #f0f0f0; }
+  .day-item:last-child, .week-item:last-child { border-bottom: none; }
+  .day-info { display: flex; align-items: center; gap: 5px; }
+  .day-emoji { font-size: 0.85em; }
+  .day-name { font-weight: 600; font-size: 0.7em; }
+  .day-date { color: #888; font-size: 0.6em; }
+  .day-status { font-weight: 600; font-size: 0.6em; padding: 2px 5px; border-radius: 10px; }
+  .status-pagi { background: #fff4e0; color: #e67e22; }
+  .status-siang { background: #e0f4ff; color: #2980b9; }
+  .status-libur { background: #ffe0ec; color: #c0392b; }
+  .week-range { font-weight: 500; color: #555; font-size: 0.65em; }
+  .kerja-card { padding: 4px; }
+  .kerja-summary { display: flex; gap: 3px; margin-bottom: 3px; }
+  .kerja-pill { flex: 1; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px 2px; text-align: center; }
+  .kerja-pill .kp-label { font-size: 0.5em; color: #64748b; font-weight: 600; }
+  .kerja-pill .kp-value { font-size: 0.75em; font-weight: 800; color: #334155; }
+  .catatan-list { display: flex; flex-direction: column; gap: 3px; margin: 3px 0; }
+  .catatan-item { background: #fef3c7; border-radius: 5px; padding: 5px 7px; }
+  .catatan-item.double { background: #fee2e2; }
+  .catatan-header { display: flex; justify-content: space-between; align-items: center; }
+  .catatan-tanggal { font-weight: 700; font-size: 0.75em; color: #92400e; }
+  .catatan-actions { display: flex; gap: 3px; }
+  .catatan-btn { background: white; border: none; border-radius: 4px; padding: 2px 5px; font-size: 0.7em; cursor: pointer; font-weight: 600; }
+  .catatan-btn.edit { color: #3b82f6; }
+  .catatan-btn.hapus { color: #dc2626; }
+  .catatan-btn.spl { color: #2563eb; }
+  .catatan-jam { font-size: 0.65em; color: #78350f; margin-top: 2px; font-weight: 600; }
+  .no-catatan { font-size: 0.6em; color: #888; font-style: italic; text-align: center; padding: 4px; }
+  .btn-tambah { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 5px; border-radius: 5px; font-size: 0.65em; font-weight: 700; cursor: pointer; margin-top: 3px; width: 100%; }
+  .sync-status { font-size: 0.55em; text-align: center; margin-top: 2px; color: #888; font-style: italic; min-height: 8px; }
+  .sync-status.success { color: #059669; }
+  .sync-status.error { color: #dc2626; }
+  .sync-status.warning { color: #f59e0b; }
+  .sync-status.loading { color: #3b82f6; }
+  .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 15px; }
+  .modal-overlay.active { display: flex; }
+  .modal-box { background: white; border-radius: 10px; padding: 12px; max-width: 320px; width: 100%; text-align: center; max-height: 85vh; overflow-y: auto; }
+  .modal-box h3 { margin-bottom: 6px; color: #333; font-size: 0.95em; }
+  .modal-box p { color: #666; font-size: 0.8em; margin-bottom: 8px; white-space: pre-line; }
+  .modal-box input[type="date"], .modal-box input[type="file"] { width: 100%; padding: 5px; border: 2px solid #667eea; border-radius: 5px; font-size: 0.75em; margin-bottom: 6px; }
+  .jam-options { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; margin-bottom: 8px; }
+  .jam-btn { background: #f3f4f6; border: 2px solid #e5e7eb; border-radius: 5px; padding: 6px 2px; font-size: 0.75em; font-weight: 600; cursor: pointer; }
+  .jam-btn.selected { background: #667eea; color: white; border-color: #667eea; }
+  .modal-buttons { display: flex; gap: 6px; margin-top: 6px; }
+  .modal-btn { flex: 1; padding: 8px; border: none; border-radius: 5px; font-weight: 700; cursor: pointer; font-size: 0.8em; }
+  .modal-btn.ya { background: #10b981; color: white; }
+  .modal-btn.tidak { background: #e5e7eb; color: #374151; }
+  .modal-btn:active { opacity: 0.8; }
+  .checkbox-group { margin: 6px 0; text-align: left; padding: 5px; background: #f9fafb; border-radius: 5px; }
+  .checkbox-group label { font-size: 0.75em; color: #374151; display: flex; align-items: center; gap: 3px; }
+  .shift-selector { display: flex; gap: 10px; justify-content: center; margin: 10px 0; }
+  .shift-option { flex: 1; padding: 10px; border: 2px solid #e5e7eb; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85em; }
+  .shift-option.active { border-color: #f59e0b; background: #fffbeb; color: #92400e; }
+  .lembur-tambahan-section { margin: 10px 0; padding: 8px; background: #f0f9ff; border-radius: 6px; border: 1px solid #7dd3fc; }
+  .lembur-tambahan-section p { font-size: 0.75em; color: #0c4a6e; margin-bottom: 5px; }
+  .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+  .collapsible-content.expanded { max-height: 800px; }
+  .collapse-icon { font-size: 0.7em; transition: transform 0.3s; }
+  .collapse-icon.rotated { transform: rotate(180deg); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>⏰ Jadwal Shift Kerja</h1>
+    <p class="subtitle">Pagi (07-14) · Siang (14-21) · Minggu Libur</p>
+  </div>
+  <button onclick="forceRefresh()" class="btn-refresh">🔄 Paksa Refresh</button>
+  <div id="today-card" class="today-card">
+    <div class="today-emoji" id="today-emoji">...</div>
+    <div class="today-date" id="today-date">Memuat...</div>
+    <div class="today-jam" id="today-jam">--:--:--</div>
+    <div class="today-status" id="today-status">...</div>
+    <div class="today-time" id="today-time">...</div>
+    <div class="updated" id="updated">...</div>
+  </div>
+  <button id="btn-kontanan" class="action-btn btn-kontanan" onclick="tanyaKontanan()">
+    🏖️ Ada Kontanan Hari Ini?
+    <span class="action-sub">Tap untuk mencatat hari libur kerja</span>
+  </button>
+  <button id="btn-lembur" class="action-btn btn-lembur" onclick="tanyaLembur()">
+    ⏱️ Apakah Hari Ini Lembur?
+    <span class="action-sub">Tap untuk mencatat jam lembur</span>
+  </button>
+  <button class="btn-estimasi" onclick="window.location.href='estimasi.html'">💰 Lihat Estimasi Upah & Bukti SPL</button>
+  <div class="scroll-area">
+    <div class="section-title" onclick="toggleCollapse('7hari')">
+      <span>📅 7 Hari ke Depan</span><span class="collapse-icon" id="icon-7hari">▼</span>
+    </div>
+    <div id="collapse-7hari" class="collapsible-content"><div id="day-list" class="card-box"></div></div>
+    <div class="section-title" onclick="toggleCollapse('4minggu')">
+      <span>🗓️ 4 Minggu ke Depan</span><span class="collapse-icon" id="icon-4minggu">▼</span>
+    </div>
+    <div id="collapse-4minggu" class="collapsible-content"><div id="week-list" class="card-box"></div></div>
+    <div class="section-title">📝 Catatan Kerja Bulan Ini</div>
+    <div class="card-box kerja-card">
+      <div class="kerja-summary">
+        <div class="kerja-pill"><div class="kp-label">KONTANAN 1</div><div class="kp-value" id="stat-kontanan">0</div></div>
+        <div class="kerja-pill"><div class="kp-label">KONTANAN 2</div><div class="kp-value" id="stat-kontanan-double">0</div></div>
+        <div class="kerja-pill"><div class="kp-label">JAM LEMBUR</div><div class="kp-value" id="stat-lembur">0</div></div>
+      </div>
+      <div id="catatan-list" class="catatan-list"></div>
+      <button class="btn-tambah" onclick="tanyaTambahManual()">➕ Tambah Manual</button>
+      <div id="sync-status" class="sync-status"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Kontanan -->
+<div id="modal-kontanan" class="modal-overlay">
+  <div class="modal-box">
+    <h3>🏖️ Konfirmasi Kontanan</h3>
+    <p id="modal-tanggal-kontanan">Apakah Anda bekerja hari ini?</p>
+    <p style="font-size:0.8em; margin: 10px 0 5px 0; font-weight:600;">Berapa shift yang dikerjakan?</p>
+    <div class="shift-selector">
+      <div class="shift-option active" onclick="selectShift(1)" id="shift-1">1 Shift<br><span style="font-size:0.75em;font-weight:400;">(07-14 atau 14-21)</span></div>
+      <div class="shift-option" onclick="selectShift(2)" id="shift-2">2 Shift<br><span style="font-size:0.75em;font-weight:400;">(07-21, rekan absen)</span></div>
+    </div>
+    <input type="hidden" id="selected-kontanan-shifts" value="1">
+    <div class="lembur-tambahan-section">
+      <p><strong>⏱️ Lembur tambahan (lewat 21:00)?</strong></p>
+      <div class="jam-options" id="jam-options-kontanan"></div>
+      <p style="font-size:0.65em; color:#666;">0 jam = tidak ada lembur tambahan</p>
+    </div>
+    <input type="file" id="spl-file-kontanan" accept="image/*" style="font-size:0.8em;">
+    <p style="font-size:0.7em; color:#666; margin-top:-4px;">📎 Opsional: Upload foto SPL sebagai bukti</p>
+    <div class="modal-buttons">
+      <button class="modal-btn tidak" onclick="tutupModal('modal-kontanan')">Tidak</button>
+      <button class="modal-btn ya" onclick="catatKontanan()">Ya, Catat!</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Lembur -->
+<div id="modal-lembur" class="modal-overlay">
+  <div class="modal-box">
+    <h3>⏱️ Catat Jam Lembur</h3>
+    <p id="modal-tanggal-lembur">Berapa jam Anda lembur hari ini?</p>
+    <div class="jam-options" id="jam-options"></div>
+    <input type="file" id="spl-file-lembur" accept="image/*" style="margin-top:10px; font-size:0.8em;">
+    <p style="font-size:0.7em; color:#666; margin-top:-4px;">📎 Opsional: Upload foto SPL sebagai bukti</p>
+    <div class="modal-buttons">
+      <button class="modal-btn tidak" onclick="tutupModal('modal-lembur')">Batal</button>
+      <button class="modal-btn ya" onclick="simpanLemburManual()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Tambah Manual -->
+<div id="modal-tambah" class="modal-overlay">
+  <div class="modal-box">
+    <h3>➕ Tambah Catatan Manual</h3>
+    <p>Pilih tanggal dan jenis catatan:</p>
+    <input type="date" id="input-tanggal-manual">
+    <div class="checkbox-group">
+      <label><input type="checkbox" id="checkbox-kontanan-manual"> Status Kontanan (Hari Libur)</label>
+    </div>
+    <div class="checkbox-group" id="manual-double-shift-group" style="display:none;">
+      <label><input type="checkbox" id="checkbox-kontanan-double-manual"> Kontanan 2 Shift (Double)</label>
+    </div>
+    <p style="font-size: 0.75em; margin-bottom: 5px;">Jam Lembur (0 jika tidak lembur):</p>
+    <div class="jam-options" id="jam-options-manual"></div>
+    <input type="file" id="spl-file-manual" accept="image/*" style="margin-top:10px; font-size:0.8em;">
+    <p style="font-size:0.7em; color:#666; margin-top:-4px;">📎 Opsional: Upload foto SPL</p>
+    <div class="modal-buttons">
+      <button class="modal-btn tidak" onclick="tutupModal('modal-tambah')">Batal</button>
+      <button class="modal-btn ya" onclick="simpanTambahManual()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Edit -->
+<div id="modal-edit" class="modal-overlay">
+  <div class="modal-box">
+    <h3>✏️ Edit Catatan</h3>
+    <p id="modal-edit-info">Edit catatan:</p>
+    <div class="checkbox-group">
+      <label><input type="checkbox" id="edit-kontanan"> Status Kontanan</label>
+    </div>
+    <div class="checkbox-group" id="edit-double-shift-group" style="display:none;">
+      <label><input type="checkbox" id="edit-kontanan-double"> Kontanan 2 Shift (Double)</label>
+    </div>
+    <p style="font-size: 0.75em; margin-bottom: 5px;">Jam Lembur:</p>
+    <div class="jam-options" id="jam-options-edit"></div>
+    <div class="modal-buttons">
+      <button class="modal-btn tidak" onclick="tutupModal('modal-edit')">Batal</button>
+      <button class="modal-btn ya" onclick="simpanEdit()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Hapus -->
+<div id="modal-hapus" class="modal-overlay">
+  <div class="modal-box">
+    <h3>⚠️ Konfirmasi Hapus</h3>
+    <p id="modal-hapus-info">Yakin ingin menghapus catatan ini?</p>
+    <div class="modal-buttons">
+      <button class="modal-btn tidak" onclick="tutupModal('modal-hapus')">Tidak</button>
+      <button class="modal-btn ya" onclick="konfirmasiHapus()">Ya, Hapus!</button>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+  const SHIFT_DATA = __SHIFT_DATA_PLACEHOLDER__;
+  let selectedJam = 0, selectedJamKontanan = 0, selectedJamManual = 0, editTanggal = null, hapusTanggal = null, lastDateChecked = null, isSaving = false;
+
+  function getWibNow() { return new Date(new Date().getTime() + (7 * 60 * 60 * 1000)); }
+  function getWibDate() { return getWibNow().getUTCDate(); }
+  function getWibDay() { return getWibNow().getUTCDay(); }
+
+  async function getDataFromSheets() {
+    try {
+      const res = await fetch(APPS_SCRIPT_URL, { method: 'GET' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      data.kontanan_days = data.kontanan_days || [];
+      data.kontanan_double_days = data.kontanan_double_days || [];
+      data.lembur_records = data.lembur_records || [];
+      data.spl_links = data.spl_links || [];
+      return data;
+    } catch (e) {
+      console.error('Gagal baca Sheets:', e);
+      showStatus('Gagal koneksi ke Sheets', 'error');
+      return null;
+    }
+  }
+
+  async function updateDataToSheets(newData) {
+    if (isSaving) { showStatus('Sedang menyimpan...', 'loading'); return false; }
+    isSaving = true;
+    try {
+      const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(newData) });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const result = await res.json();
+      if (result.error) throw new Error(result.error);
+      return true;
+    } catch (e) {
+      console.error('Gagal simpan:', e);
+      showStatus('Gagal simpan: ' + e.message, 'error');
+      return false;
+    } finally { isSaving = false; }
+  }
+
+  async function uploadSPL(date, type, fileInputId) {
+    const fileInput = document.getElementById(fileInputId);
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) return null;
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+    return new Promise((resolve) => {
+      reader.onload = async function(e) {
+        try {
+          showStatus('Mengupload foto SPL...', 'loading');
+          const res = await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'upload_spl', date: date, type: type, filename: `SPL_${type}_${date}.jpg`, mimeType: file.type, base64: e.target.result })
+          });
+          const result = await res.json();
+          if (result.success) { showStatus('Foto SPL berhasil diupload!', 'success'); resolve(result.url); }
+          else { showStatus('Gagal upload: ' + result.error, 'error'); resolve(null); }
+        } catch (err) { showStatus('Error upload: ' + err.message, 'error'); resolve(null); }
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function showStatus(msg, type) {
+    const el = document.getElementById('sync-status');
+    el.textContent = msg;
+    el.className = 'sync-status ' + (type || '');
+    setTimeout(function() { el.textContent = ''; el.className = 'sync-status'; }, 3000);
+  }
+  function toggleCollapse(id) {
+    document.getElementById('collapse-' + id).classList.toggle('expanded');
+    document.getElementById('icon-' + id).classList.toggle('rotated');
+  }
+  function updateJam() {
+    const wib = getWibNow();
+    document.getElementById('today-jam').textContent = String(wib.getUTCHours()).padStart(2,'0') + ':' + String(wib.getUTCMinutes()).padStart(2,'0') + ':' + String(wib.getUTCSeconds()).padStart(2,'0');
+    const currentDate = wib.getUTCDate();
+    if (lastDateChecked !== null && currentDate !== lastDateChecked) forceRefresh();
+    lastDateChecked = currentDate;
+  }
+  function tutupModal(id) { document.getElementById(id).classList.remove('active'); }
+  function selectShift(shifts) {
+    document.getElementById('selected-kontanan-shifts').value = shifts;
+    document.getElementById('shift-1').classList.toggle('active', shifts === 1);
+    document.getElementById('shift-2').classList.toggle('active', shifts === 2);
+  }
+
+  function tanyaKontanan() {
+    const wib = getWibNow();
+    const hariIndo = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    const bulanIndo = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    document.getElementById('modal-tanggal-kontanan').textContent = 'Apakah Anda bekerja hari ini?\n(' + hariIndo[wib.getUTCDay()] + ', ' + wib.getUTCDate() + ' ' + bulanIndo[wib.getUTCMonth()] + ')';
+    document.getElementById('spl-file-kontanan').value = '';
+    selectShift(1);
+    selectedJamKontanan = 0;
+    renderJamOptions('jam-options-kontanan', 0);
+    document.getElementById('modal-kontanan').classList.add('active');
+  }
+
+  async function catatKontanan() {
+    const tanggalHariIni = getWibDate();
+    const shifts = parseInt(document.getElementById('selected-kontanan-shifts').value);
+    const jamLemburTambahan = selectedJamKontanan;
+    showStatus('Menyimpan ke Sheets...', 'loading');
+    await uploadSPL(tanggalHariIni, shifts === 2 ? 'kontanan_double' : 'kontanan', 'spl-file-kontanan');
+    const currentData = await getDataFromSheets();
+    if (!currentData) { tutupModal('modal-kontanan'); return; }
+    if (shifts === 2) {
+      if (currentData.kontanan_double_days.indexOf(tanggalHariIni) === -1) { currentData.kontanan_double_days.push(tanggalHariIni); currentData.kontanan_double_days.sort(function(a,b){return a-b;}); }
+    } else {
+      if (currentData.kontanan_days.indexOf(tanggalHariIni) === -1) { currentData.kontanan_days.push(tanggalHariIni); currentData.kontanan_days.sort(function(a,b){return a-b;}); }
+    }
+    if (jamLemburTambahan > 0) {
+      var existingIdx = -1;
+      for (var i = 0; i < currentData.lembur_records.length; i++) { if (currentData.lembur_records[i].date === tanggalHariIni) { existingIdx = i; break; } }
+      if (existingIdx >= 0) currentData.lembur_records[existingIdx].jam = (currentData.lembur_records[existingIdx].jam || 0) + jamLemburTambahan;
+      else currentData.lembur_records.push({ date: tanggalHariIni, jam: jamLemburTambahan, is_extra: true });
+      currentData.lembur_records.sort(function(a,b){return a.date - b.date;});
+    }
+    const success = await updateDataToSheets(currentData);
+    if (success) {
+      SHIFT_DATA.saved_data = currentData;
+      var msg = shifts === 2 ? 'Kontanan 2 Shift dicatat!' : 'Kontanan dicatat!';
+      if (jamLemburTambahan > 0) msg += ' + ' + jamLemburTambahan + ' jam lembur';
+      showStatus(msg, 'success');
+      render();
+    }
+    tutupModal('modal-kontanan');
+  }
+
+  function tanyaLembur() {
+    const wib = getWibNow();
+    const hariIndo = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    const bulanIndo = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    document.getElementById('modal-tanggal-lembur').textContent = 'Berapa jam Anda lembur hari ini?\n(' + hariIndo[wib.getUTCDay()] + ', ' + wib.getUTCDate() + ' ' + bulanIndo[wib.getUTCMonth()] + ')';
+    selectedJam = 0;
+    renderJamOptions('jam-options', 0);
+    document.getElementById('spl-file-lembur').value = '';
+    document.getElementById('modal-lembur').classList.add('active');
+  }
+
+  function renderJamOptions(containerId, selected) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    for (var i = 0; i <= 8; i++) {
+      var btn = document.createElement('button');
+      btn.className = 'jam-btn' + (i === selected ? ' selected' : '');
+      btn.textContent = i + ' jam';
+      (function(idx) { btn.onclick = function() {
+        if (containerId === 'jam-options-manual') selectedJamManual = idx;
+        else if (containerId === 'jam-options-kontanan') selectedJamKontanan = idx;
+        else selectedJam = idx;
+        renderJamOptions(containerId, idx);
+      }; })(i);
+      container.appendChild(btn);
+    }
+  }
+
+  async function simpanLemburManual() {
+    if (selectedJam === 0) { showStatus('Pilih jam dulu!', 'error'); return; }
+    const tanggalHariIni = getWibDate();
+    showStatus('Menyimpan lembur...', 'loading');
+    await uploadSPL(tanggalHariIni, 'lembur', 'spl-file-lembur');
+    const currentData = await getDataFromSheets();
+    if (!currentData) { tutupModal('modal-lembur'); return; }
+    var existingIdx = -1;
+    for (var i = 0; i < currentData.lembur_records.length; i++) { if (currentData.lembur_records[i].date === tanggalHariIni) { existingIdx = i; break; } }
+    if (existingIdx >= 0) currentData.lembur_records[existingIdx].jam = selectedJam;
+    else currentData.lembur_records.push({ date: tanggalHariIni, jam: selectedJam });
+    currentData.lembur_records.sort(function(a,b){return a.date - b.date;});
+    const success = await updateDataToSheets(currentData);
+    if (success) { SHIFT_DATA.saved_data = currentData; showStatus('Lembur ' + selectedJam + ' jam dicatat!', 'success'); render(); }
+    tutupModal('modal-lembur');
+  }
+
+  function tanyaTambahManual() {
+    const today = getWibNow();
+    document.getElementById('input-tanggal-manual').value = today.getUTCFullYear() + '-' + String(today.getUTCMonth()+1).padStart(2,'0') + '-' + String(today.getUTCDate()).padStart(2,'0');
+    document.getElementById('checkbox-kontanan-manual').checked = false;
+    document.getElementById('checkbox-kontanan-double-manual').checked = false;
+    document.getElementById('manual-double-shift-group').style.display = 'none';
+    selectedJamManual = 0;
+    renderJamOptions('jam-options-manual', 0);
+    document.getElementById('spl-file-manual').value = '';
+    document.getElementById('modal-tambah').classList.add('active');
+  }
+  document.getElementById('checkbox-kontanan-manual').addEventListener('change', function() {
+    document.getElementById('manual-double-shift-group').style.display = this.checked ? 'block' : 'none';
+  });
+
+  async function simpanTambahManual() {
+    const dateInput = document.getElementById('input-tanggal-manual').value;
+    if (!dateInput) { showStatus('Pilih tanggal!', 'error'); return; }
+    const tanggal = dateInput.split('-').map(Number)[2];
+    const isKontanan = document.getElementById('checkbox-kontanan-manual').checked;
+    const isDouble = document.getElementById('checkbox-kontanan-double-manual').checked;
+    const jamLembur = selectedJamManual;
+    showStatus('Menyimpan...', 'loading');
+    await uploadSPL(tanggal, isKontanan ? (isDouble ? 'kontanan_double' : 'kontanan') : 'lembur', 'spl-file-manual');
+    const currentData = await getDataFromSheets();
+    if (!currentData) { tutupModal('modal-tambah'); return; }
+    if (isKontanan) {
+      if (isDouble) { if (currentData.kontanan_double_days.indexOf(tanggal) === -1) { currentData.kontanan_double_days.push(tanggal); currentData.kontanan_double_days.sort(function(a,b){return a-b;}); } }
+      else { if (currentData.kontanan_days.indexOf(tanggal) === -1) { currentData.kontanan_days.push(tanggal); currentData.kontanan_days.sort(function(a,b){return a-b;}); } }
+    }
+    if (jamLembur > 0) {
+      var existingIdx = -1;
+      for (var i = 0; i < currentData.lembur_records.length; i++) { if (currentData.lembur_records[i].date === tanggal) { existingIdx = i; break; } }
+      if (existingIdx >= 0) currentData.lembur_records[existingIdx].jam = jamLembur;
+      else currentData.lembur_records.push({ date: tanggal, jam: jamLembur });
+      currentData.lembur_records.sort(function(a,b){return a.date - b.date;});
+    }
+    const success = await updateDataToSheets(currentData);
+    if (success) { SHIFT_DATA.saved_data = currentData; showStatus('Berhasil!', 'success'); render(); }
+    tutupModal('modal-tambah');
+  }
+
+  function editCatatan(tanggal) {
+    editTanggal = tanggal;
+    const saved = SHIFT_DATA.saved_data;
+    const isKontanan = saved.kontanan_days.indexOf(tanggal) !== -1;
+    const isDouble = saved.kontanan_double_days.indexOf(tanggal) !== -1;
+    var jamLembur = 0;
+    for (var i = 0; i < saved.lembur_records.length; i++) { if (saved.lembur_records[i].date === tanggal) { jamLembur = saved.lembur_records[i].jam; break; } }
+    selectedJam = jamLembur;
+    document.getElementById('modal-edit-info').textContent = 'Edit catatan tanggal ' + tanggal + ':';
+    document.getElementById('edit-kontanan').checked = isKontanan || isDouble;
+    document.getElementById('edit-kontanan-double').checked = isDouble;
+    document.getElementById('edit-double-shift-group').style.display = (isKontanan || isDouble) ? 'block' : 'none';
+    renderJamOptions('jam-options-edit', jamLembur);
+    document.getElementById('modal-edit').classList.add('active');
+  }
+  document.getElementById('edit-kontanan').addEventListener('change', function() {
+    document.getElementById('edit-double-shift-group').style.display = this.checked ? 'block' : 'none';
+    if (!this.checked) document.getElementById('edit-kontanan-double').checked = false;
+  });
+
+  async function simpanEdit() {
+    if (editTanggal === null) return;
+    showStatus('Menyimpan...', 'loading');
+    const currentData = await getDataFromSheets();
+    if (!currentData) { tutupModal('modal-edit'); return; }
+    const isKontanan = document.getElementById('edit-kontanan').checked;
+    const isDouble = document.getElementById('edit-kontanan-double').checked;
+    currentData.kontanan_days = currentData.kontanan_days.filter(function(d){return d !== editTanggal;});
+    currentData.kontanan_double_days = currentData.kontanan_double_days.filter(function(d){return d !== editTanggal;});
+    if (isKontanan) { if (isDouble) currentData.kontanan_double_days.push(editTanggal); else currentData.kontanan_days.push(editTanggal); }
+    if (selectedJam > 0) {
+      var existingIdx = -1;
+      for (var i = 0; i < currentData.lembur_records.length; i++) { if (currentData.lembur_records[i].date === editTanggal) { existingIdx = i; break; } }
+      if (existingIdx >= 0) currentData.lembur_records[existingIdx].jam = selectedJam;
+      else currentData.lembur_records.push({ date: editTanggal, jam: selectedJam });
+    } else { currentData.lembur_records = currentData.lembur_records.filter(function(r){return r.date !== editTanggal;}); }
+    currentData.kontanan_days.sort(function(a,b){return a-b;});
+    currentData.kontanan_double_days.sort(function(a,b){return a-b;});
+    currentData.lembur_records.sort(function(a,b){return a.date - b.date;});
+    const success = await updateDataToSheets(currentData);
+    if (success) { SHIFT_DATA.saved_data = currentData; showStatus('Perubahan disimpan!', 'success'); render(); }
+    tutupModal('modal-edit');
+  }
+
+  function tanyaHapus(tanggal) {
+    hapusTanggal = tanggal;
+    document.getElementById('modal-hapus-info').textContent = 'Yakin ingin menghapus catatan tanggal ' + tanggal + '?';
+    document.getElementById('modal-hapus').classList.add('active');
+  }
+  async function konfirmasiHapus() {
+    if (hapusTanggal === null) return;
+    showStatus('Menghapus...', 'loading');
+    const currentData = await getDataFromSheets();
+    if (!currentData) { tutupModal('modal-hapus'); return; }
+    currentData.kontanan_days = currentData.kontanan_days.filter(function(d){return d !== hapusTanggal;});
+    currentData.kontanan_double_days = currentData.kontanan_double_days.filter(function(d){return d !== hapusTanggal;});
+    currentData.lembur_records = currentData.lembur_records.filter(function(r){return r.date !== hapusTanggal;});
+    currentData.spl_links = currentData.spl_links.filter(function(s){return s.date !== hapusTanggal;});
+    const success = await updateDataToSheets(currentData);
+    if (success) { SHIFT_DATA.saved_data = currentData; showStatus('Dihapus!', 'success'); render(); }
+    tutupModal('modal-hapus');
+  }
+
+  function forceRefresh() {
+    const url = new URL(window.location.href);
+    url.searchParams.set('v', Date.now());
+    window.location.href = url.toString();
+  }
+
+  function renderCatatan() {
+    const saved = SHIFT_DATA.saved_data;
+    const stats = SHIFT_DATA.monthly_stats;
+    const listContainer = document.getElementById('catatan-list');
+    const allRecords = [];
+    saved.kontanan_days.forEach(function(d) {
+      var lembur = saved.lembur_records.find(function(r){return r.date === d;});
+      allRecords.push({ date: d, type: 'kontanan', shifts: 1, jam: lembur ? lembur.jam : 0 });
+    });
+    saved.kontanan_double_days.forEach(function(d) {
+      var lembur = saved.lembur_records.find(function(r){return r.date === d;});
+      allRecords.push({ date: d, type: 'kontanan_double', shifts: 2, jam: lembur ? lembur.jam : 0 });
+    });
+    saved.lembur_records.forEach(function(r) {
+      if (saved.kontanan_days.indexOf(r.date) === -1 && saved.kontanan_double_days.indexOf(r.date) === -1) {
+        allRecords.push({ date: r.date, type: 'lembur', shifts: 0, jam: r.jam });
+      }
+    });
+    allRecords.sort(function(a,b){return a.date - b.date;});
+
+    if (allRecords.length === 0) { listContainer.innerHTML = '<div class="no-catatan">Belum ada catatan bulan ini</div>'; return; }
+    const bulanSingkat = stats.month_name.split(' ')[0].substring(0,3);
+    var html = '';
+    allRecords.forEach(function(rec) {
+      var label = '', jamText = '', itemClass = 'catatan-item';
+      if (rec.type === 'kontanan_double') {
+        label = '🔥 KONTANAN (2 SHIFT)';
+        itemClass += ' double';
+        jamText = '14 jam kerja';
+        if (rec.jam > 0) jamText += ' + ' + rec.jam + ' jam lembur';
+      } else if (rec.type === 'kontanan') {
+        label = '🏖️ KONTANAN (1 SHIFT)';
+        jamText = '7 jam kerja';
+        if (rec.jam > 0) jamText += ' + ' + rec.jam + ' jam lembur';
+      } else {
+        label = '⏱️ LEMBUR';
+        jamText = rec.jam + ' jam lembur';
+      }
+      const splType = rec.type === 'kontanan_double' ? 'kontanan_double' : (rec.type === 'kontanan' ? 'kontanan' : 'lembur');
+      const splData = saved.spl_links.find(function(s){return s.date === rec.date && s.type === splType;});
+      let splButton = '';
+      if (splData && splData.url) splButton = '<button class="catatan-btn spl" onclick="window.open(\'' + splData.url + '\', \'_blank\')">📎</button>';
+      html += '<div class="' + itemClass + '"><div class="catatan-header"><div class="catatan-tanggal">' + rec.date + ' ' + bulanSingkat + '</div><div class="catatan-actions">' + splButton + '<button class="catatan-btn edit" onclick="editCatatan(' + rec.date + ')">✏️</button><button class="catatan-btn hapus" onclick="tanyaHapus(' + rec.date + ')">✕</button></div></div><div style="font-size:0.65em;color:#78350f;margin-top:2px;font-weight:600;">' + label + '</div><div class="catatan-jam">' + jamText + '</div></div>';
+    });
+    listContainer.innerHTML = html;
+  }
+
+  function render() {
+    const data = SHIFT_DATA;
+    if (!data || !data.today) return;
+    const card = document.getElementById('today-card');
+    card.className = 'today-card ' + (data.today.status === 'SHIFT PAGI' ? 'pagi' : data.today.status === 'SHIFT SIANG' ? 'siang' : 'libur');
+    document.getElementById('today-emoji').textContent = data.today.emoji;
+    document.getElementById('today-date').textContent = data.today.full_date;
+    document.getElementById('today-status').textContent = data.today.status;
+    document.getElementById('today-time').textContent = data.today.status === 'LIBUR' ? 'Nikmati hari liburmu!' : data.today.time;
+    document.getElementById('updated').textContent = 'Data diupdate: ' + data.last_updated;
+    updateJam();
+
+    const saved = data.saved_data;
+    const wibDate = getWibDate();
+    const wibDay = getWibDay();
+    var lemburToday = saved.lembur_records.find(function(r){return r.date === wibDate;});
+    const isLemburToday = lemburToday !== undefined && lemburToday !== null;
+    const isKontananToday = saved.kontanan_days.indexOf(wibDate) !== -1 || saved.kontanan_double_days.indexOf(wibDate) !== -1;
+
+    if (wibDay === 0) {
+      document.getElementById('btn-kontanan').style.display = 'block';
+      document.getElementById('btn-lembur').style.display = 'none';
+      const btn = document.getElementById('btn-kontanan');
+      if (isKontananToday) { btn.classList.add('sudah-catat'); btn.innerHTML = '✅ Sudah Dicatat Hari Ini<span class="action-sub">Tap untuk ubah</span>'; }
+      else { btn.classList.remove('sudah-catat'); btn.innerHTML = '🏖️ Ada Kontanan Hari Ini?<span class="action-sub">Tap untuk mencatat</span>'; }
+    } else {
+      document.getElementById('btn-kontanan').style.display = 'none';
+      document.getElementById('btn-lembur').style.display = 'block';
+      const btn = document.getElementById('btn-lembur');
+      if (isLemburToday) { btn.classList.add('sudah-catat'); btn.innerHTML = '✅ Lembur: ' + lemburToday.jam + ' Jam<span class="action-sub">Tap untuk ubah</span>'; }
+      else { btn.classList.remove('sudah-catat'); btn.innerHTML = '⏱️ Apakah Hari Ini Lembur?<span class="action-sub">Tap untuk mencatat</span>'; }
+    }
+
+    var dayHtml = '';
+    data.next_7_days.forEach(function(d) {
+      const c = d.status === 'SHIFT PAGI' ? 'status-pagi' : d.status === 'SHIFT SIANG' ? 'status-siang' : 'status-libur';
+      dayHtml += '<div class="day-item"><div class="day-info"><span class="day-emoji">' + d.emoji + '</span><div><div class="day-name">' + d.day_name + '</div><div class="day-date">' + d.short_date + '</div></div></div><span class="day-status ' + c + '">' + (d.status === 'LIBUR' ? 'LIBUR' : d.status) + '</span></div>';
+    });
+    document.getElementById('day-list').innerHTML = dayHtml;
+
+    var weekHtml = '';
+    data.next_4_weeks.forEach(function(w) {
+      const c = w.status === 'SHIFT PAGI' ? 'status-pagi' : 'status-siang';
+      weekHtml += '<div class="week-item"><span class="week-range">📆 ' + w.week_label + '</span><span class="day-status ' + c + '">' + w.status + '</span></div>';
+    });
+    document.getElementById('week-list').innerHTML = weekHtml;
+
+    document.getElementById('stat-kontanan').textContent = saved.kontanan_days.length;
+    document.getElementById('stat-kontanan-double').textContent = saved.kontanan_double_days.length;
+    document.getElementById('stat-lembur').textContent = saved.lembur_records.reduce(function(s,r){return s+(r.jam||0);}, 0);
+
+    renderCatatan();
+  }
+
+  async function init() {
+    const sheetsData = await getDataFromSheets();
+    if (sheetsData) SHIFT_DATA.saved_data = sheetsData;
+    render();
+    setInterval(updateJam, 1000);
+  }
+  init();
+</script>
+</body>
+  </html>
