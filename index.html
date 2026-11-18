@@ -61,14 +61,16 @@
   .catatan-item.double { background: #fee2e2; }
   .catatan-header { display: flex; justify-content: space-between; align-items: center; }
   .catatan-tanggal { font-weight: 700; font-size: 0.75em; color: #92400e; }
-  .catatan-actions { display: flex; gap: 3px; }
+  .catatan-actions { display: flex; gap: 3px; flex-wrap: wrap; }
   .catatan-btn { background: white; border: none; border-radius: 4px; padding: 2px 5px; font-size: 0.7em; cursor: pointer; font-weight: 600; }
   .catatan-btn.edit { color: #3b82f6; }
   .catatan-btn.hapus { color: #dc2626; }
   .catatan-btn.spl { color: #2563eb; }
   .catatan-btn.memo { color: #8b5cf6; }
+  .catatan-btn.time { color: #059669; }
   .catatan-jam { font-size: 0.65em; color: #78350f; margin-top: 2px; font-weight: 600; }
-  .catatan-note { background: #f5f3ff; border-left: 3px solid #8b5cf6; border-radius: 4px; padding: 4px 6px; margin-top: 4px; font-size: 0.65em; color: #4c1d95; white-space: pre-wrap; word-break: break-word; }
+  .catatan-waktu { background: #ecfdf5; border-left: 3px solid #059669; border-radius: 4px; padding: 4px 6px; margin-top: 3px; font-size: 0.65em; color: #065f46; font-weight: 600; }
+  .catatan-note { background: #f5f3ff; border-left: 3px solid #8b5cf6; border-radius: 4px; padding: 4px 6px; margin-top: 3px; font-size: 0.65em; color: #4c1d95; white-space: pre-wrap; word-break: break-word; }
   .no-catatan { font-size: 0.6em; color: #888; font-style: italic; text-align: center; padding: 4px; }
   .btn-tambah { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 5px; border-radius: 5px; font-size: 0.65em; font-weight: 700; cursor: pointer; margin-top: 3px; width: 100%; }
   .sync-status { font-size: 0.55em; text-align: center; margin-top: 2px; color: #888; font-style: italic; min-height: 8px; }
@@ -81,7 +83,7 @@
   .modal-box { background: white; border-radius: 10px; padding: 12px; max-width: 320px; width: 100%; text-align: center; max-height: 85vh; overflow-y: auto; }
   .modal-box h3 { margin-bottom: 6px; color: #333; font-size: 0.95em; }
   .modal-box p { color: #666; font-size: 0.8em; margin-bottom: 8px; white-space: pre-line; }
-  .modal-box input[type="date"], .modal-box input[type="file"] { width: 100%; padding: 5px; border: 2px solid #667eea; border-radius: 5px; font-size: 0.75em; margin-bottom: 6px; }
+  .modal-box input[type="date"], .modal-box input[type="file"], .modal-box input[type="time"] { width: 100%; padding: 5px; border: 2px solid #667eea; border-radius: 5px; font-size: 0.75em; margin-bottom: 6px; }
   .modal-box textarea { width: 100%; padding: 6px; border: 2px solid #8b5cf6; border-radius: 6px; font-size: 0.75em; resize: none; min-height: 60px; margin-bottom: 6px; font-family: inherit; }
   .jam-options { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; margin-bottom: 8px; }
   .jam-btn { background: #f3f4f6; border: 2px solid #e5e7eb; border-radius: 5px; padding: 6px 2px; font-size: 0.75em; font-weight: 600; cursor: pointer; }
@@ -102,6 +104,9 @@
   .collapsible-content.expanded { max-height: 800px; }
   .collapse-icon { font-size: 0.7em; transition: transform 0.3s; }
   .collapse-icon.rotated { transform: rotate(180deg); }
+  .time-input-group { display: flex; gap: 8px; margin: 8px 0; }
+  .time-input-group div { flex: 1; }
+  .time-input-group label { display: block; font-size: 0.7em; color: #059669; font-weight: 600; margin-bottom: 3px; }
 </style>
 </head>
 <body>
@@ -264,11 +269,35 @@
   </div>
 </div>
 
+<!-- Modal Jam Kerja -->
+<div id="modal-waktu" class="modal-overlay">
+  <div class="modal-box">
+    <h3>🕐 Jam Kerja <span id="waktu-tanggal-label"></span></h3>
+    <p style="font-size:0.7em; color:#666; margin-bottom:8px;">Masukkan jam masuk & pulang aktual</p>
+    <div class="time-input-group">
+      <div>
+        <label>Jam Masuk</label>
+        <input type="time" id="input-jam-masuk">
+      </div>
+      <div>
+        <label>Jam Pulang</label>
+        <input type="time" id="input-jam-pulang">
+      </div>
+    </div>
+    <p style="font-size:0.65em; color:#888; margin-top:-4px;">Kosongkan jika tidak ingin mencatat jam kerja</p>
+    <div class="modal-buttons">
+      <button class="modal-btn tidak" onclick="tutupModal('modal-waktu')">Batal</button>
+      <button class="modal-btn ya" onclick="simpanWaktu()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
 <script src="config.js"></script>
 <script>
-  const SHIFT_DATA = {"last_updated": "18-11-2026 06:43:04", "today": {"day_name": "Rabu", "full_date": "Rabu, 18 November 2026", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, "next_7_days": [{"day_name": "Kamis", "short_date": "19 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Jumat", "short_date": "20 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Sabtu", "short_date": "21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Minggu", "short_date": "22 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, {"day_name": "Senin", "short_date": "23 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Selasa", "short_date": "24 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Rabu", "short_date": "25 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}], "next_4_weeks": [{"week_label": "23 Nov - 28 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "30 Nov - 5 Des", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "7 Des - 12 Des", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "14 Des - 19 Des", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "monthly_stats": {"month_name": "November 2026", "month_key": "2026-11", "total_minggu": 5, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}, "saved_data": {"kontanan_days": [], "kontanan_double_days": [], "lembur_records": [], "spl_links": []}};
+  const SHIFT_DATA = {"last_updated": "18-11-2026 11:33:10", "today": {"day_name": "Rabu", "full_date": "Rabu, 18 November 2026", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, "next_7_days": [{"day_name": "Kamis", "short_date": "19 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Jumat", "short_date": "20 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Sabtu", "short_date": "21 Nov", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"day_name": "Minggu", "short_date": "22 Nov", "status": "LIBUR", "time": "-", "emoji": "🏖️"}, {"day_name": "Senin", "short_date": "23 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Selasa", "short_date": "24 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"day_name": "Rabu", "short_date": "25 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}], "next_4_weeks": [{"week_label": "23 Nov - 28 Nov", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "30 Nov - 5 Des", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}, {"week_label": "7 Des - 12 Des", "status": "SHIFT SIANG", "time": "14:00 - 21:00", "emoji": ""}, {"week_label": "14 Des - 19 Des", "status": "SHIFT PAGI", "time": "07:00 - 14:00", "emoji": "🌅"}], "monthly_stats": {"month_name": "November 2026", "month_key": "2026-11", "total_minggu": 5, "rate_hk": 170000, "rate_kontanan": 340000, "rate_lembur_jam1": 31875, "rate_lembur_jam2": 42500, "rate_lembur_perusahaan": 7000}, "saved_data": {"kontanan_days": [], "kontanan_double_days": [], "lembur_records": [], "spl_links": []}};
   const MEMO_PREFIX = 'shiftminder_memo_';
-  let selectedJam = 0, selectedJamKontanan = 0, selectedJamManual = 0, editTanggal = null, hapusTanggal = null, lastDateChecked = null, isSaving = false, memoTanggal = null;
+  const TIME_PREFIX = 'shiftminder_time_';
+  let selectedJam = 0, selectedJamKontanan = 0, selectedJamManual = 0, editTanggal = null, hapusTanggal = null, lastDateChecked = null, isSaving = false, memoTanggal = null, waktuTanggal = null;
 
   function getWibNow() { return new Date(new Date().getTime() + (7 * 60 * 60 * 1000)); }
   function getWibDate() { return getWibNow().getUTCDate(); }
@@ -581,6 +610,44 @@
     renderCatatan();
   }
 
+  /* ===== FITUR JAM KERJA (localStorage) ===== */
+  function getTimeKey(tanggal) { return TIME_PREFIX + SHIFT_DATA.monthly_stats.month_key + '_' + tanggal; }
+  function getTime(tanggal) {
+    try { return JSON.parse(localStorage.getItem(getTimeKey(tanggal))) || {}; }
+    catch(e) { return {}; }
+  }
+  function saveTime(tanggal, masuk, pulang) {
+    if (masuk && pulang) {
+      localStorage.setItem(getTimeKey(tanggal), JSON.stringify({ masuk: masuk, pulang: pulang }));
+    } else {
+      localStorage.removeItem(getTimeKey(tanggal));
+    }
+  }
+
+  function bukaWaktu(tanggal) {
+    waktuTanggal = tanggal;
+    const timeData = getTime(tanggal);
+    document.getElementById('waktu-tanggal-label').textContent = tanggal + ' ' + SHIFT_DATA.monthly_stats.month_name.split(' ')[0].substring(0,3);
+    document.getElementById('input-jam-masuk').value = timeData.masuk || '';
+    document.getElementById('input-jam-pulang').value = timeData.pulang || '';
+    document.getElementById('modal-waktu').classList.add('active');
+  }
+
+  function simpanWaktu() {
+    if (waktuTanggal === null) return;
+    const masuk = document.getElementById('input-jam-masuk').value;
+    const pulang = document.getElementById('input-jam-pulang').value;
+    if (masuk && pulang) {
+      saveTime(waktuTanggal, masuk, pulang);
+      showStatus('Jam kerja disimpan!', 'success');
+    } else {
+      localStorage.removeItem(getTimeKey(waktuTanggal));
+      showStatus('Jam kerja dihapus!', 'success');
+    }
+    tutupModal('modal-waktu');
+    renderCatatan();
+  }
+
   function renderCatatan() {
     const saved = SHIFT_DATA.saved_data;
     const stats = SHIFT_DATA.monthly_stats;
@@ -631,7 +698,14 @@
         memoDisplay = '<div class="catatan-note">' + escapeHtml(memoText) + '</div>';
       }
       
-      html += '<div class="' + itemClass + '"><div class="catatan-header"><div class="catatan-tanggal">' + rec.date + ' ' + bulanSingkat + '</div><div class="catatan-actions">' + memoButton + splButton + '<button class="catatan-btn edit" onclick="editCatatan(' + rec.date + ')">✏️</button><button class="catatan-btn hapus" onclick="tanyaHapus(' + rec.date + ')">✕</button></div></div><div style="font-size:0.65em;color:#78350f;margin-top:2px;font-weight:600;">' + label + '</div><div class="catatan-jam">' + jamText + '</div>' + memoDisplay + '</div>';
+      const timeData = getTime(rec.date);
+      let timeButton = '<button class="catatan-btn time" onclick="bukaWaktu(' + rec.date + ')">🕐' + (timeData.masuk ? '✓' : '') + '</button>';
+      let timeDisplay = '';
+      if (timeData.masuk && timeData.pulang) {
+        timeDisplay = '<div class="catatan-waktu">🕐 Masuk: ' + timeData.masuk + ' | Pulang: ' + timeData.pulang + '</div>';
+      }
+      
+      html += '<div class="' + itemClass + '"><div class="catatan-header"><div class="catatan-tanggal">' + rec.date + ' ' + bulanSingkat + '</div><div class="catatan-actions">' + timeButton + memoButton + splButton + '<button class="catatan-btn edit" onclick="editCatatan(' + rec.date + ')">✏️</button><button class="catatan-btn hapus" onclick="tanyaHapus(' + rec.date + ')">✕</button></div></div><div style="font-size:0.65em;color:#78350f;margin-top:2px;font-weight:600;">' + label + '</div><div class="catatan-jam">' + jamText + '</div>' + timeDisplay + memoDisplay + '</div>';
     });
     listContainer.innerHTML = html;
   }
@@ -699,4 +773,4 @@
   init();
 </script>
 </body>
-</html>
+ </html>
